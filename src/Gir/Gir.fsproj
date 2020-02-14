@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Compile Include="Shared/Layout.fs" />
+    <Compile Include="Index/Domain.fs" />
     <Compile Include="Index/Views.fs" />
     <Compile Include="Index/HttpHandlers.fs" />
     <Compile Include="Cart/Views.fs" />
