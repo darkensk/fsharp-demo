@@ -1,7 +1,7 @@
-module Gir.Router
+module Gir.Cart.HttpHandlers
 
 open Giraffe
-open Gir.Views
+open Gir.Cart.Views
 open Thoth.Json.Net
 open FSharp.Data
 
@@ -76,7 +76,7 @@ let getPurchaseToken merchantToken =
                ("Authorization", bearerString) ], body = TextRequest newPaymentPayload)
     |> parsePurchaseToken
 
-let indexHandler next ctx =
+let cartHandler next ctx =
     let token = getCachedToken "badba2bd-11e1-4c68-9030-47d532aa4ea1" "6Z@2}.ZV^Z[){}pM].c;?"
     let purchaseToken = getPurchaseToken token
-    htmlView (Views.index purchaseToken) next ctx
+    htmlView (cartView purchaseToken) next ctx

@@ -16,3 +16,4 @@ config.development.json
 local.settings.json
 .paket/
 .vscode/
+.DS_Store

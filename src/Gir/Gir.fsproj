@@ -10,8 +10,11 @@
 
 
   <ItemGroup>
-    <Compile Include="Views.fs" />
-    <Compile Include="Router.fs" />
+    <Compile Include="Shared/Layout.fs" />
+    <Compile Include="Index/Views.fs" />
+    <Compile Include="Index/HttpHandlers.fs" />
+    <Compile Include="Cart/Views.fs" />
+    <Compile Include="Cart/HttpHandlers.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

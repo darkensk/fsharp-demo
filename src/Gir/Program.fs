@@ -9,15 +9,15 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Giraffe
-open Gir.Views
-open Gir.Router
+
 
 
 let webApp =
     choose [
         GET >=>
             choose [
-                route "/" >=> indexHandler
+                route "/" >=> Index.HttpHandlers.indexHandler
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
