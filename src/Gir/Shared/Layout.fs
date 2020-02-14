@@ -14,14 +14,14 @@ let _dataToggle = attr "data-toggle"
 
 let _ariaExpanded = attr "aria-expanded"
 
-let header() =
+let headerView =
     header [ _class "header-area clearfix" ]
         [ div [ _class "nav-close" ]
               [ i
                   [ _class "fa fa-close"
                     _ariaHidden "true" ] [] ]
           div [ _class "logo" ]
-              [ a [ _href "index.html" ]
+              [ a [ _href "/" ]
                     [ img
                         [ _src "/img/core-img/logo.png"
                           _alt "" ] ] ]
@@ -80,21 +80,21 @@ let header() =
                         [ _class "fa fa-twitter"
                           _ariaHidden "true" ] [] ] ] ]
 
-let footer() =
+let footerView =
     footer [ _class "footer_area clearfix" ]
         [ div [ _class "container" ]
               [ div [ _class "row align-items-center" ]
                     [ div [ _class "col-12 col-lg-4" ]
                           [ div [ _class "single_widget_area" ]
                                 [ div [ _class "footer-logo mr-50" ]
-                                      [ a [ _href "index.html" ]
+                                      [ a [ _href "/" ]
                                             [ img
                                                 [ _src "/img/core-img/logo2.png"
                                                   _alt "" ] ] ]
                                   p [ _class "copywrite" ]
-                                      [ str "Copyright &copy;"
+                                      [ str "Copyright ©"
                                         script [] [ str "document.write(new Date().getFullYear());" ]
-                                        str "All rights reserved | This template is made with "
+                                        str " All rights reserved | This template is made with "
                                         i
                                             [ _class "fa fa-heart-o"
                                               _ariaHidden "true" ] []
@@ -121,7 +121,7 @@ let footer() =
                                                         [ li [ _class "nav-item active" ]
                                                               [ a
                                                                   [ _class "nav-link"
-                                                                    _href "index.html" ] [ str "Home" ] ]
+                                                                    _href "/" ] [ str "Home" ] ]
                                                           li [ _class "nav-item" ]
                                                               [ a
                                                                   [ _class "nav-link"
@@ -133,16 +133,42 @@ let footer() =
                                                           li [ _class "nav-item" ]
                                                               [ a
                                                                   [ _class "nav-link"
-                                                                    _href "cart.html" ] [ str "Cart" ] ]
+                                                                    _href "/cart/" ] [ str "Cart" ] ]
                                                           li [ _class "nav-item" ]
                                                               [ a
                                                                   [ _class "nav-link"
-                                                                    _href "checkout.html" ] [ str "Checkout" ] ] ] ] ] ] ] ] ] ] ]
+                                                                    _href "#" ] [ str "Checkout" ] ] ] ] ] ] ] ] ] ] ]
+
+let subscribeSectionView =
+            section [ _class "newsletter-area section-padding-100-0" ]
+              [ div [ _class "container" ]
+                    [ div [ _class "row align-items-center" ]
+                          [ div [ _class "col-12 col-lg-6 col-xl-7" ]
+                                [ div [ _class "newsletter-text mb-100" ]
+                                      [ h2 []
+                                            [ str "Subscribe for a"
+                                              span [] [ str " 25% Discount" ] ]
+                                        p []
+                                            [ str
+                                                "Nulla ac convallis lorem, eget euismod nisl. Donec in libero sit amet mi vulputate consectetur. Donec auctor interdum purus, ac finibus massa bibendum nec." ] ] ]
+                            div [ _class "col-12 col-lg-6 col-xl-5" ]
+                                [ div [ _class "newsletter-form mb-100" ]
+                                      [ form
+                                          [ _action "#"
+                                            _method "post" ]
+                                            [ input
+                                                [ _type "email"
+                                                  _name "email"
+                                                  _class "nl-email"
+                                                  _placeholder "Your E-mail" ]
+                                              input
+                                                  [ _type "submit"
+                                                    _value "Subscribe" ] ] ] ] ] ] ]
 
 let layout (content: XmlNode List) =
     html []
         [ head []
-              [ title [] [ encodedText "Gir" ]
+              [ title [] [ encodedText "GirShop" ]
                 link
                     [ _rel "stylesheet"
                       _type "text/css"
@@ -157,3 +183,4 @@ let layout (content: XmlNode List) =
                            script [ _src "/js/bootstrap.min.js" ] []
                            script [ _src "/js/plugins.js" ] []
                            script [ _src "/js/active.js" ] [] ]) ]
+

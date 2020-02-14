@@ -86,7 +86,7 @@ let template (purchaseToken: string) =
                                 [ span [] []
                                   span [] []
                                   span [] [] ] ]
-                      header()
+                      headerView
                       div [ _class "cart-table-area section-padding-100" ]
                           [ div [ _class "container-fluid" ]
                                 [ div [ _class "row" ]
@@ -229,30 +229,7 @@ let template (purchaseToken: string) =
                                                         [ a
                                                             [ _href "/cart/"
                                                               _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ] ] ] ] ]
-                section [ _class "newsletter-area section-padding-100-0" ]
-                    [ div [ _class "container" ]
-                          [ div [ _class "row align-items-center" ]
-                                [ div [ _class "col-12 col-lg-6 col-xl-7" ]
-                                      [ div [ _class "newsletter-text mb-100" ]
-                                            [ h2 []
-                                                  [ str "Subscribe for a "
-                                                    span [] [ str " 25% Discount" ] ]
-                                              p [] [ str "Nulla ac convallis lorem, eget euismod nisl. Donec in libero sit
-                      amet mi vulputate consectetur. Donec auctor interdum purus, ac
-                      finibus massa bibendum nec." ] ] ]
-                                  div [ _class "col-12 col-lg-6 col-xl-5" ]
-                                      [ div [ _class "newsletter-form mb-100" ]
-                                            [ form
-                                                [ _action "#"
-                                                  _method "post" ]
-                                                  [ input
-                                                      [ _type "email"
-                                                        _name "email"
-                                                        _class "nl-email"
-                                                        _placeholder "Your E-mail" ]
-                                                    input
-                                                        [ _type "submit"
-                                                          _value "Subscribe" ] ] ] ] ] ] ]
-                footer() ] ]
+                subscribeSectionView
+                footerView ] ]
 
 let cartView (purchaseToken: string) = [ template purchaseToken ] |> layout
