@@ -1,0 +1,6 @@
+{
+    "clientId": "",
+    "clientSecret": "",
+    "checkoutBackendApiUrl" : "https://avdonl-t-checkout.westeurope.cloudapp.azure.com",
+    "checkoutFrontendBundleUrl": "https://avdonl0t0checkout0fe.blob.core.windows.net/frontend/static/js/main.js"
+}

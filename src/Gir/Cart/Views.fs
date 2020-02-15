@@ -4,7 +4,7 @@ open Giraffe.GiraffeViewEngine
 open Gir.Shared.Layout
 
 
-let initCheckoutInstance (purchaseToken: string) =
+let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
     div
         [ _id "checkout-form" ]
         [ 
@@ -28,7 +28,7 @@ let initCheckoutInstance (purchaseToken: string) =
                 "avardaCheckoutInit",
                 "avardaCheckout",
                 "1.0.0",
-                "https://avdonl0t0checkout0fe.blob.core.windows.net/frontend/static/js/main.js"
+                "%s"
               );
               var handleByMerchantCallback = function(avardaCheckoutInstance) {
                 console.log("Handle external payment here");
@@ -48,9 +48,9 @@ let initCheckoutInstance (purchaseToken: string) =
                 disableFocus: true,
                 handleByMerchantCallback: handleByMerchantCallback
               });
-            """                                                   purchaseToken ] ]
+            """                                                   checkoutFrontendBundleUrl purchaseToken ] ]
 
-let template (purchaseToken: string) =
+let template checkoutFrontendBundleUrl (purchaseToken: string) =
     div []
         [ div []
               [ div [ _class "search-wrapper section-padding-100" ]
@@ -228,9 +228,9 @@ let template (purchaseToken: string) =
                                                         [ a
                                                             [ _href "/cart/"
                                                               _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ]               
-                                        div [_class "col-12 col-lg-8"][ initCheckoutInstance purchaseToken ]                        
+                                        div [_class "col-12 col-lg-8"][ initCheckoutInstance checkoutFrontendBundleUrl purchaseToken ]                        
                                                               ] ] ] ]
                 subscribeSectionView
                 footerView ] ]
 
-let cartView (purchaseToken: string) = [ template purchaseToken ] |> layout
+let cartView checkoutFrontendBundleUrl (purchaseToken: string) = [ template checkoutFrontendBundleUrl purchaseToken ] |> layout

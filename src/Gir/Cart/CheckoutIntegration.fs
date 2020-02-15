@@ -11,24 +11,24 @@ let parseToken (s: string) =
     | Ok v -> v
     | Error e -> failwithf "Cannot parse token, error = %A" e
 
-let getAccessToken clientId clientSecret =
+let getMerchantToken url clientId clientSecret =
     let merchantAccessString =
         Encode.object
             [ "clientId", Encode.string clientId
               "clientSecret", Encode.string clientSecret ]
         |> Encode.toString 0
     Http.RequestString
-        ("https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/tokens",
+        (url,
          headers = [ ("Content-Type", "application/json") ], body = TextRequest merchantAccessString) |> parseToken
 
 let isValid t =
     if true then (Some t) else None
 
-let getCachedToken clientId clientSecret =
+let getCachedToken url clientId clientSecret =
     tokenCache
     |> Option.bind isValid
     |> Option.defaultWith (fun _ ->
-        let token = getAccessToken clientId clientSecret
+        let token = getMerchantToken url clientId clientSecret
         tokenCache <- Some token
         token)
 

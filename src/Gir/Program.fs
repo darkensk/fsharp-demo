@@ -16,7 +16,7 @@ let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.GetPurchaseToken
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken
                 subRoute "/product" (
                     choose [
                         subRoutef "/%i" (sprintf "Cely den zajebavam %i" >> text)

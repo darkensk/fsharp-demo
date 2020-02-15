@@ -3,6 +3,6 @@ module Gir.Cart.HttpHandlers
 open Giraffe
 open Gir.Cart.Views
 
-let cartHandler getPurchaseToken next ctx =
+let cartHandler checkoutFrontendBundleUrl getPurchaseToken next ctx =
     let token = getPurchaseToken()
-    htmlView (cartView token) next ctx
+    htmlView (cartView checkoutFrontendBundleUrl token) next ctx
