@@ -1,4 +1,4 @@
-module Gir.Shared.Layout
+module Gir.Layout
 
 open Giraffe.GiraffeViewEngine
 

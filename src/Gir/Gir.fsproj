@@ -10,15 +10,13 @@
 
 
   <ItemGroup>
-    <Compile Include="Shared/Layout.fs" />
-    <Compile Include="Index/Domain.fs" />
-    <Compile Include="Index/Views.fs" />
-    <Compile Include="Index/HttpHandlers.fs" />
+    <Compile Include="Layout.fs" />
+    <Compile Include="Domain.fs" />
+    <Compile Include="Products/Views.fs" />
+    <Compile Include="Products/HttpHandlers.fs" />
     <Compile Include="Cart/Views.fs" />
     <Compile Include="Cart/HttpHandlers.fs" />
     <Compile Include="Cart/CheckoutIntegration.fs" />
-    <Compile Include="ProductDetail/Views.fs" />
-    <Compile Include="ProductDetail/HttpHandlers.fs" />
     <Compile Include="CompositionRoot.fs" />
     <Compile Include="Program.fs" />
 

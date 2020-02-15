@@ -1,7 +1,7 @@
-module Gir.Index.Domain
-
+module Gir.Domain
 
 type Product = {
+    Id : int
     Name : string
     Price : float
     Img : string 

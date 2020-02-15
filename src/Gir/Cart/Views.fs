@@ -1,7 +1,7 @@
 module Gir.Cart.Views
 
 open Giraffe.GiraffeViewEngine
-open Gir.Shared.Layout
+open Gir.Layout
 
 
 let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =

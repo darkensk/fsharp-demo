@@ -19,12 +19,12 @@ let webApp (root:CompositionRoot) =
                 route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken
                 subRoute "/product" (
                     choose [
-                        subRoutef "/%i" (sprintf "Cely den zajebavam %i" >> text)
-                        subRoute "/" ProductDetail.HttpHandlers.productDetailHandler
+
+                        subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById)
                     ]
                 )
 
-                route "/" >=> Index.HttpHandlers.indexHandler
+                route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
