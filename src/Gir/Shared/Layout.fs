@@ -14,6 +14,12 @@ let _dataToggle = attr "data-toggle"
 
 let _ariaExpanded = attr "aria-expanded"
 
+let _ariaCurrent = attr "aria-current"
+
+let _dataSlideTo = attr "data-slide-to"
+
+let _dataRide = attr "data-ride"
+
 let headerView =
     header [ _class "header-area clearfix" ]
         [ div [ _class "nav-close" ]

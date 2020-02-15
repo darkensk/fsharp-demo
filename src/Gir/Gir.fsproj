@@ -16,13 +16,22 @@
     <Compile Include="Index/HttpHandlers.fs" />
     <Compile Include="Cart/Views.fs" />
     <Compile Include="Cart/HttpHandlers.fs" />
+    <Compile Include="Cart/CheckoutIntegration.fs" />
+    <Compile Include="ProductDetail/Views.fs" />
+    <Compile Include="ProductDetail/HttpHandlers.fs" />
+    <Compile Include="CompositionRoot.fs" />
     <Compile Include="Program.fs" />
+
   </ItemGroup>
 
   <ItemGroup>
     <None Include="web.config" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="WebRoot\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="./local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 
