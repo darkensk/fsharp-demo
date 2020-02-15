@@ -10,6 +10,13 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Giraffe
 
+open Microsoft.Extensions.Configuration
+
+let cfg = 
+    (ConfigurationBuilder())
+                      .AddJsonFile("local.settings.json", true)
+                      .AddJsonFile("local.settings.json", true)
+                      .AddEnvironmentVariables().Build()
 
 
 let webApp =
@@ -58,8 +65,14 @@ let configureLogging (builder : ILoggingBuilder) =
            .AddConsole()
            .AddDebug() |> ignore
 
+type Dependencies = {
+    MerchantConfig : string
+}
+
 [<EntryPoint>]
 let main _ =
+    // let root = cfg |> compose
+    
     let contentRoot = Directory.GetCurrentDirectory()
     let webRoot     = Path.Combine(contentRoot, "WebRoot")
     WebHostBuilder()

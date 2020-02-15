@@ -6,9 +6,8 @@ open Gir.Shared.Layout
 
 let initCheckoutInstance (purchaseToken: string) =
     div
-        [ _id "checkout-form"
-          _class "hey" ]
-        [ h2 [] [ rawText purchaseToken ]
+        [ _id "checkout-form" ]
+        [ 
           script [ _type "application/javascript" ] [ rawText <| sprintf """
               (function(e, t, n, a, s, c, o, i, r) {
                 e[a] =
@@ -228,7 +227,9 @@ let template (purchaseToken: string) =
                                                     div [ _class "cart-btn mt-100" ]
                                                         [ a
                                                             [ _href "/cart/"
-                                                              _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ] ] ] ] ]
+                                                              _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ]               
+                                        div [_class "col-12 col-lg-8"][ initCheckoutInstance purchaseToken ]                        
+                                                              ] ] ] ]
                 subscribeSectionView
                 footerView ] ]
 
