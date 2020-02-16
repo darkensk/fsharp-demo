@@ -184,7 +184,8 @@ let detailTemplate (product:Product) =
                                                           "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid quae eveniet culpa officia quidem mollitia impedit iste asperiores nisi reprehenderit consequatur, autem, nostrum pariatur enim?" ] ]
                                             form
                                                 [ _class "cart clearfix"
-                                                  _method "post" ]
+                                                  _method "post"
+                                                  _action <| sprintf "/product/%i/add" product.Id ]
                                                 [ div [ _class "cart-btn d-flex mb-50" ]
                                                       [ p [] [ str "Qty" ]
                                                         div [ _class "quantity" ]
@@ -200,7 +201,7 @@ let detailTemplate (product:Product) =
                                                                     _id "qty"
                                                                     _step "1"
                                                                     _min "1"
-                                                                    _max "300"
+                                                                    _max "10"
                                                                     _name "quantity"
                                                                     _value "1" ]
                                                               span

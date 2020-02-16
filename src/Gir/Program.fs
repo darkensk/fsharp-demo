@@ -26,6 +26,10 @@ let webApp (root:CompositionRoot) =
 
                 route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
             ]
+        POST >=>
+            choose [
+                routef "/product/%i/add" (fun i -> redirectTo false (sprintf "/product/%i" i))
+            ]
         setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
