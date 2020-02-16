@@ -11,6 +11,13 @@ open Microsoft.Extensions.Hosting
 open Giraffe
 open Microsoft.Extensions.Configuration
 open CompositionRoot
+open FSharp.Control.Tasks
+open Domain
+
+let cartHandler (cartEvent: CartEvent) getProductById id next ctx =
+    task {
+        return! next ctx
+    }
 
 let webApp (root:CompositionRoot) =
     choose [
@@ -28,7 +35,7 @@ let webApp (root:CompositionRoot) =
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> redirectTo false (sprintf "/product/%i" i))
+                routef "/product/%i/add" (fun i -> cartHandler Add root.GetProductById i >=> redirectTo false (sprintf "/product/%i" i) )//(fun i -> redirectTo false (sprintf "/product/%i" i))
             ]
         setStatusCode 404 >=> text "Not Found" ]
 

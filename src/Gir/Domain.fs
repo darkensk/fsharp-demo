@@ -6,3 +6,8 @@ type Product = {
     Price : float
     Img : string 
 }
+
+type CartEvent =
+    | Add
+    | Remove
+    | Clear
