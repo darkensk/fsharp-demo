@@ -8,6 +8,6 @@ type Product = {
 }
 
 type CartEvent =
-    | Add
-    | Remove
+    | Add of productId : int
+    | Remove of productId : int
     | Clear

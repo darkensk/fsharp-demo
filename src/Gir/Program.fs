@@ -3,6 +3,7 @@ module Gir.App
 open System
 open System.IO
 open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Cors.Infrastructure
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Logging
@@ -11,13 +12,6 @@ open Microsoft.Extensions.Hosting
 open Giraffe
 open Microsoft.Extensions.Configuration
 open CompositionRoot
-open FSharp.Control.Tasks
-open Domain
-
-let cartHandler (cartEvent: CartEvent) getProductById id next ctx =
-    task {
-        return! next ctx
-    }
 
 let webApp (root:CompositionRoot) =
     choose [
@@ -35,7 +29,7 @@ let webApp (root:CompositionRoot) =
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> cartHandler Add root.GetProductById i >=> redirectTo false (sprintf "/product/%i" i) )//(fun i -> redirectTo false (sprintf "/product/%i" i))
+                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i (fun _ -> ()) >=> redirectTo false (sprintf "/product/%i" i) )
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
@@ -52,7 +46,11 @@ let errorHandler (ex : Exception) (logger : ILogger) =
 // ---------------------------------
 
 let configureCors (builder : CorsPolicyBuilder) =
-    builder.WithOrigins("http://localhost:8080")
+    builder.WithOrigins("http://localhost:5000")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           |> ignore
+    builder.WithOrigins("https://localhost:5001")
            .AllowAnyMethod()
            .AllowAnyHeader()
            |> ignore
@@ -63,6 +61,7 @@ let configureApp root (app : IApplicationBuilder) =
     | true  -> app.UseDeveloperExceptionPage()
     | false -> app.UseGiraffeErrorHandler errorHandler)
         //.UseHttpsRedirection()
+        // .UseSession()
         .UseCors(configureCors)
         .UseStaticFiles()
         .UseGiraffe(webApp root)
