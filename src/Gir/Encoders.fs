@@ -1,12 +1,58 @@
 module Gir.Encoders
 
-open Gir.Domain
 open Thoth.Json.Net
+open Gir.Domain
 
 
-let cartEncoder cartState =
-    let encodeCartItem cartItem =
+let productEncoder (product: Product) =
+    Encode.object
+        [ "productId", Encode.int product.ProductId
+          "name", Encode.string product.Name
+          "price", Encode.float product.Price
+          "img", Encode.string product.Img ]
+
+let cartItemEncoder (cartItem: CartItem) =
+    Encode.object
+        [ "id", Encode.int cartItem.Id
+          "qty", Encode.int cartItem.Qty
+          "product", productEncoder cartItem.ProductDetail ]
+
+let cartEncoder (cartState: CartState) =
+    Encode.object [ "items", Encode.list <| List.map (cartItemEncoder) cartState.Items ] |> Encode.toString 0
+
+let paymentItemEncoder (productDetail: Product) =
+    Encode.object
+        [ "description", Encode.string productDetail.Name
+          "notes", Encode.string "-"
+          "amount", Encode.float productDetail.Price
+          "taxCode", Encode.string "20%"
+          "taxAmount", Encode.float (productDetail.Price * 0.02) ]
+
+let paymentPayloadEncoder (items: CartItem list) =
+    if List.isEmpty items then
+        ""
+    else
+        let productsList =
+            List.fold (fun acc x ->
+                acc @ [ for i in 1 .. x.Qty do
+                            { ProductId = x.ProductDetail.ProductId
+                              Name = x.ProductDetail.Name
+                              Price = x.ProductDetail.Price
+                              Img = x.ProductDetail.Img } ]) [] items
+
         Encode.object
-            [ "id", Encode.int cartItem.Id
-              "qty", Encode.int cartItem.Qty ]
-    Encode.object [ "items", Encode.list <| List.map (encodeCartItem) cartState.Items ] |> Encode.toString 0
+            [ "language", Encode.string "English"
+              "items", Encode.list <| List.map (paymentItemEncoder) productsList
+              "orderReference", Encode.string "TEST-AVARDA-ORDER-X"
+              "displayItems", Encode.bool true
+              "differentDeliveryAddress", Encode.string "Checked"
+              "deliveryAddress",
+              Encode.object
+                  [ "address1", Encode.string "Smetanova"
+                    "address2", Encode.string ""
+                    "zip", Encode.string "30593"
+                    "city", Encode.string "Halmstad"
+                    "country", Encode.string "SE"
+                    "firstName", Encode.string "Rudolf"
+                    "lastName", Encode.string "Halmstad" ] ]
+        |> Encode.toString 0

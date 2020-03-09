@@ -5,10 +5,8 @@ open Gir.Layout
 open Gir.Domain
 
 let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
-    div
-        [ _id "checkout-form" ]
-        [ 
-          script [ _type "application/javascript" ] [ rawText <| sprintf """
+    div [ _id "checkout-form" ]
+        [ script [ _type "application/javascript" ] [ rawText <| sprintf """
               (function(e, t, n, a, s, c, o, i, r) {
                 e[a] =
                   e[a] ||
@@ -50,7 +48,42 @@ let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
               });
             """                                                   checkoutFrontendBundleUrl purchaseToken ] ]
 
-let template (cartState: CartState) checkoutFrontendBundleUrl (purchaseToken: string) =
+let cartItemView (cartItem: CartItem) =
+    tr []
+        [ td [ _class "cart_product_img" ]
+              [ a [ _href "#" ]
+                    [ img
+                        [ _src "/img/bg-img/cart1.jpg"
+                          _alt "Product" ] ] ]
+          td [ _class "cart_product_desc" ] [ h5 [] [ str "White Modern Chair" ] ]
+          td [ _class "price" ] [ span [] [ str "$130" ] ]
+          td [ _class "qty" ]
+              [ div [ _class "qty-btn d-flex" ]
+                    [ p [] [ str "Qty" ]
+                      div [ _class "quantity" ]
+                          [ span
+                              [ _class "qty-minus"
+                                _onclick "" ]
+                                [ i
+                                    [ _class "fa fa-minus"
+                                      _ariaHidden "true" ] [] ]
+                            input
+                                [ _type "number"
+                                  _class "qty-text"
+                                  _id "qty"
+                                  _step "1"
+                                  _min "1"
+                                  _max "300"
+                                  _name "quantity"
+                                  _value "1" ]
+                            span
+                                [ _class "qty-plus"
+                                  _onclick "" ]
+                                [ i
+                                    [ _class "fa fa-plus"
+                                      _ariaHidden "true" ] [] ] ] ] ] ]
+
+let template (cartState: CartState) (products: Product list) checkoutFrontendBundleUrl (purchaseToken: string) =
     div []
         [ div []
               [ div [ _class "search-wrapper section-padding-100" ]
@@ -99,118 +132,7 @@ let template (cartState: CartState) checkoutFrontendBundleUrl (purchaseToken: st
                                                                       th [] [ str "Name" ]
                                                                       th [] [ str "Price" ]
                                                                       th [] [ str "Quantity" ] ] ]
-                                                          tbody []
-                                                              [ tr []
-                                                                    [ td [ _class "cart_product_img" ]
-                                                                          [ a [ _href "#" ]
-                                                                                [ img
-                                                                                    [ _src "/img/bg-img/cart1.jpg"
-                                                                                      _alt "Product" ] ] ]
-                                                                      td [ _class "cart_product_desc" ]
-                                                                          [ h5 [] [ str "White Modern Chair" ] ]
-                                                                      td [ _class "price" ]
-                                                                          [ span [] [ str "$130" ] ]
-                                                                      td [ _class "qty" ]
-                                                                          [ div [ _class "qty-btn d-flex" ]
-                                                                                [ p [] [ str "Qty" ]
-                                                                                  div [ _class "quantity" ]
-                                                                                      [ span
-                                                                                          [ _class "qty-minus"
-                                                                                            _onclick "" ]
-                                                                                            [ i
-                                                                                                [ _class "fa fa-minus"
-                                                                                                  _ariaHidden "true" ]
-                                                                                                  [] ]
-                                                                                        input
-                                                                                            [ _type "number"
-                                                                                              _class "qty-text"
-                                                                                              _id "qty"
-                                                                                              _step "1"
-                                                                                              _min "1"
-                                                                                              _max "300"
-                                                                                              _name "quantity"
-                                                                                              _value "1" ]
-                                                                                        span
-                                                                                            [ _class "qty-plus"
-                                                                                              _onclick "" ]
-                                                                                            [ i
-                                                                                                [ _class "fa fa-plus"
-                                                                                                  _ariaHidden "true" ]
-                                                                                                  [] ] ] ] ] ]
-                                                                tr []
-                                                                    [ td [ _class "cart_product_img" ]
-                                                                          [ a [ _href "#" ]
-                                                                                [ img
-                                                                                    [ _src "/img/bg-img/cart2.jpg"
-                                                                                      _alt "Product" ] ] ]
-                                                                      td [ _class "cart_product_desc" ]
-                                                                          [ h5 [] [ str "Minimal Plant Pot" ] ]
-                                                                      td [ _class "price" ]
-                                                                          [ span [] [ str "$10" ] ]
-                                                                      td [ _class "qty" ]
-                                                                          [ div [ _class "qty-btn d-flex" ]
-                                                                                [ p [] [ str "Qty" ]
-                                                                                  div [ _class "quantity" ]
-                                                                                      [ span
-                                                                                          [ _class "qty-minus"
-                                                                                            _onclick "" ]
-                                                                                            [ i
-                                                                                                [ _class "fa fa-minus"
-                                                                                                  _ariaHidden "true" ]
-                                                                                                  [] ]
-                                                                                        input
-                                                                                            [ _type "number"
-                                                                                              _class "qty-text"
-                                                                                              _id "qty2"
-                                                                                              _step "1"
-                                                                                              _min "1"
-                                                                                              _max "300"
-                                                                                              _name "quantity"
-                                                                                              _value "1" ]
-                                                                                        span
-                                                                                            [ _class "qty-plus"
-                                                                                              _onclick "" ]
-                                                                                            [ i
-                                                                                                [ _class "fa fa-plus"
-                                                                                                  _ariaHidden "true" ]
-                                                                                                  [] ] ] ] ] ]
-                                                                tr []
-                                                                    [ td [ _class "cart_product_img" ]
-                                                                          [ a [ _href "#" ]
-                                                                                [ img
-                                                                                    [ _src "/img/bg-img/cart3.jpg"
-                                                                                      _alt "Product" ] ] ]
-                                                                      td [ _class "cart_product_desc" ]
-                                                                          [ h5 [] [ str "Minimal Plant Pot" ] ]
-                                                                      td [ _class "price" ]
-                                                                          [ span [] [ str "$10" ] ]
-                                                                      td [ _class "qty" ]
-                                                                          [ div [ _class "qty-btn d-flex" ]
-                                                                                [ p [] [ str "Qty" ]
-                                                                                  div [ _class "quantity" ]
-                                                                                      [ span
-                                                                                          [ _class "qty-minus"
-                                                                                            _onclick "" ]
-                                                                                            [ i
-                                                                                                [ _class "fa fa-minus"
-                                                                                                  _ariaHidden "true" ]
-                                                                                                  [] ]
-                                                                                        input
-                                                                                            [ _type "number"
-                                                                                              _class "qty-text"
-                                                                                              _id "qty3"
-                                                                                              _step "1"
-                                                                                              _min "1"
-                                                                                              _max "300"
-                                                                                              _name "quantity"
-                                                                                              _value "1" ]
-                                                                                        span
-                                                                                            [ _class "qty-plus"
-                                                                                              _onclick "" ]
-                                                                                            [ i
-                                                                                                [ _class "fa fa-plus"
-                                                                                                  _ariaHidden "true" ]
-                                                                                                  [] ] ] ] ] ] ] ] ] ]
+                                                          tbody [] (List.map (cartItemView) cartState.Items) ] ] ]
                                         div [ _class "col-12 col-lg-4" ]
                                             [ div [ _class "cart-summary" ]
                                                   [ h5 [] [ str "Cart Total" ]
@@ -226,11 +148,12 @@ let template (cartState: CartState) checkoutFrontendBundleUrl (purchaseToken: st
                                                                 span [] [ str "$140.00" ] ] ]
                                                     div [ _class "cart-btn mt-100" ]
                                                         [ a
-                                                            [ _href "/cart/"
-                                                              _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ]               
-                                        div [_class "col-12 col-lg-8"][ initCheckoutInstance checkoutFrontendBundleUrl purchaseToken ]                        
-                                                              ] ] ] ]
+                                                            [ _href "#checkout-form"
+                                                              _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ]
+                                        div [ _class "col-12 col-lg-8" ]
+                                            [ initCheckoutInstance checkoutFrontendBundleUrl purchaseToken ] ] ] ] ]
                 subscribeSectionView
                 footerView ] ]
 
-let cartView (cartState:CartState) checkoutFrontendBundleUrl (purchaseToken: string) = [ template cartState checkoutFrontendBundleUrl purchaseToken ] |> layout
+let cartView (cartState: CartState) checkoutFrontendBundleUrl (purchaseToken: string) (products: Product list) =
+    [ template cartState products checkoutFrontendBundleUrl purchaseToken ] |> layout

@@ -9,9 +9,7 @@ open Gir.Decoders
 open Gir.Encoders
 open Gir.Utils
 
-
-
-let cartEventHandler (ctx: HttpContext) cartEvent =
+let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
     let sessionCart = ctx.Session.GetString("cart")
 
     let currentCart =
@@ -33,12 +31,16 @@ let cartEventHandler (ctx: HttpContext) cartEvent =
             let newCart = { decodedCart with Items = newItems }
             ctx.Session.SetString("cart", cartEncoder newCart)
         | None ->
-            let newItem =
-                { Id = p
-                  Qty = 1 }
+            match List.tryFind (fun prod -> prod.ProductId = p) products with
+            | Some product ->
+                let newItem =
+                    { Id = p
+                      Qty = 1
+                      ProductDetail = product }
 
-            let newCart = { decodedCart with Items = currentItems @ [ newItem ] }
-            ctx.Session.SetString("cart", cartEncoder newCart)
+                let newCart = { decodedCart with Items = currentItems @ [ newItem ] }
+                ctx.Session.SetString("cart", cartEncoder newCart)
+            | None -> ctx.Session.SetString("cart", cartEncoder decodedCart)
 
     | Remove p ->
         let decodedCart = cartDecoder currentCart
@@ -58,32 +60,32 @@ let cartEventHandler (ctx: HttpContext) cartEvent =
     | Clear -> ctx.Session.SetString("cart", "{'items': []}")
 
 
-let cartHandler checkoutFrontendBundleUrl getPurchaseToken next ctx =
-    let token = getPurchaseToken()
+let cartHandler checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
+    let token = getPurchaseToken <| getCartState ctx
     let cartState = getCartState ctx
-    htmlView (cartView cartState checkoutFrontendBundleUrl token) next ctx
+    htmlView (cartView cartState checkoutFrontendBundleUrl token <| getProducts()) next ctx
 
-let addToCartHandler productId next (ctx: HttpContext) =
+let addToCartHandler productId getProducts next (ctx: HttpContext) =
     task {
         do productId
            |> CartEvent.Add
-           |> cartEventHandler ctx
+           |> cartEventHandler (getProducts()) ctx
 
         return! next ctx
     }
 
-let removeFromCartHandler productId next (ctx: HttpContext) =
+let removeFromCartHandler productId getProducts next (ctx: HttpContext) =
     task {
         do productId
            |> CartEvent.Remove
-           |> cartEventHandler ctx
+           |> cartEventHandler (getProducts()) ctx
 
         return! next ctx
     }
 
-let clearCartHandler next (ctx: HttpContext) =
+let clearCartHandler getProducts next (ctx: HttpContext) =
     task {
-        do CartEvent.Clear |> cartEventHandler ctx
+        do CartEvent.Clear |> cartEventHandler (getProducts()) ctx
 
         return! next ctx
     }

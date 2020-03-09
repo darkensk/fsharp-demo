@@ -1,7 +1,6 @@
 module Gir.Utils
 
 open Microsoft.AspNetCore.Http
-open Gir.Domain
 open Gir.Decoders
 
 

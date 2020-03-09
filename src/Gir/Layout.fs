@@ -22,6 +22,11 @@ let _dataSlideTo = attr "data-slide-to"
 let _dataRide = attr "data-ride"
 
 let headerView (cartState: CartState) =
+    let cartSize = 
+      List.fold (fun acc x -> acc + x.Qty) 0 cartState.Items
+    let cartSizeString =
+      "\"" + (string cartSize) + "\""
+      
     header [ _class "header-area clearfix" ]
         [ div [ _class "nav-close" ]
               [ i
@@ -53,8 +58,8 @@ let headerView (cartState: CartState) =
                     [ img
                         [ _src "/img/core-img/cart.png"
                           _alt "" ]
-                      str "Cart"
-                      span [] [ str "(0)" ] ]
+                      str "Cart "
+                      span [] [ str cartSizeString ] ]
                 a
                     [ _href "#"
                       _class "fav-nav" ]
@@ -190,4 +195,3 @@ let layout (content: XmlNode List) =
                            script [ _src "/js/bootstrap.min.js" ] []
                            script [ _src "/js/plugins.js" ] []
                            script [ _src "/js/active.js" ] [] ]) ]
-

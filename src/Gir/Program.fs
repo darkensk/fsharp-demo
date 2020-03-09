@@ -17,7 +17,7 @@ let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
                 subRoute "/product" (
                     choose [
 
@@ -29,7 +29,7 @@ let webApp (root:CompositionRoot) =
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i >=> redirectTo false (sprintf "/product/%i" i) )
+                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> redirectTo false (sprintf "/product/%i" i) )
             ]
         setStatusCode 404 >=> text "Not Found" ]
 

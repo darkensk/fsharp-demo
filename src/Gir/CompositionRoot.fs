@@ -6,14 +6,14 @@ open Gir.Domain
 type CompositionRoot = {
     CheckoutFrontendBundle : string
     GetMerchantToken : unit -> string
-    GetPurchaseToken : unit -> string
+    GetPurchaseToken : CartState -> string
     GetAllProducts : unit -> Product list
     GetProductById : int -> Product option
 }
 
 let dummyProducts =
     let createProduct id name price img =
-        { Id = id
+        { ProductId = id
           Name = name
           Price = price
           Img = img }
@@ -36,7 +36,7 @@ module CompositionRoot =
         {
             CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
             GetMerchantToken = getMerchantToken
-            GetPurchaseToken = getMerchantToken >> Cart.CheckoutIntegration.getPurchaseToken
+            GetPurchaseToken = (fun cartState -> Cart.CheckoutIntegration.getPurchaseToken cartState <| getMerchantToken() )
             GetAllProducts = fun _ -> dummyProducts
-            GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.Id = i)
+            GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i)
         }
