@@ -17,19 +17,19 @@ let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CartState root.CheckoutFrontendBundle root.GetPurchaseToken
                 subRoute "/product" (
                     choose [
 
-                        subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById)
+                        subRoutef "/%i" (Products.HttpHandlers.detailHandler root.CartState root.GetProductById)
                     ]
                 )
 
-                route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
+                route "/" >=> Products.HttpHandlers.listHandler root.CartState root.GetAllProducts
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i (fun _ -> ()) >=> redirectTo false (sprintf "/product/%i" i) )
+                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i >=> redirectTo false (sprintf "/product/%i" i) )
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
@@ -61,14 +61,20 @@ let configureApp root (app : IApplicationBuilder) =
     | true  -> app.UseDeveloperExceptionPage()
     | false -> app.UseGiraffeErrorHandler errorHandler)
         //.UseHttpsRedirection()
-        // .UseSession()
         .UseCors(configureCors)
         .UseStaticFiles()
+        .UseSession()
         .UseGiraffe(webApp root)
+
 
 let configureServices (services : IServiceCollection) =
     services.AddCors()    |> ignore
     services.AddGiraffe() |> ignore
+    services.AddAuthentication() |> ignore
+    services.AddDataProtection() |> ignore
+    services.AddSession() |> ignore
+    services.AddMvc() |> ignore
+
 
 let configureLogging (builder : ILoggingBuilder) =
     builder.AddFilter(fun l -> l.Equals LogLevel.Error)

@@ -2,7 +2,7 @@ module Gir.Cart.Views
 
 open Giraffe.GiraffeViewEngine
 open Gir.Layout
-
+open Gir.Domain
 
 let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
     div
@@ -50,7 +50,7 @@ let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
               });
             """                                                   checkoutFrontendBundleUrl purchaseToken ] ]
 
-let template checkoutFrontendBundleUrl (purchaseToken: string) =
+let template (cartState: CartState) checkoutFrontendBundleUrl (purchaseToken: string) =
     div []
         [ div []
               [ div [ _class "search-wrapper section-padding-100" ]
@@ -85,7 +85,7 @@ let template checkoutFrontendBundleUrl (purchaseToken: string) =
                                 [ span [] []
                                   span [] []
                                   span [] [] ] ]
-                      headerView
+                      headerView cartState
                       div [ _class "cart-table-area section-padding-100" ]
                           [ div [ _class "container-fluid" ]
                                 [ div [ _class "row" ]
@@ -233,4 +233,4 @@ let template checkoutFrontendBundleUrl (purchaseToken: string) =
                 subscribeSectionView
                 footerView ] ]
 
-let cartView checkoutFrontendBundleUrl (purchaseToken: string) = [ template checkoutFrontendBundleUrl purchaseToken ] |> layout
+let cartView (cartState:CartState) checkoutFrontendBundleUrl (purchaseToken: string) = [ template cartState checkoutFrontendBundleUrl purchaseToken ] |> layout

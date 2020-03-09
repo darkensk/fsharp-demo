@@ -2,6 +2,9 @@ module Gir.CompositionRoot
 
 open Microsoft.Extensions.Configuration
 open Gir.Domain
+open Gir.Decoders
+open Gir.Encoders
+open Microsoft.AspNetCore.Http
 
 type CompositionRoot = {
     CheckoutFrontendBundle : string
@@ -9,7 +12,17 @@ type CompositionRoot = {
     GetPurchaseToken : unit -> string
     GetAllProducts : unit -> Product list
     GetProductById : int -> Product option
+    CartState : CartState
 }
+
+let getCartState (ctx: HttpContext) =
+    let sessionCart = ctx.Session.GetString("cart")
+
+    let currentCart =
+        if isNull sessionCart then "{'items': []}" else sessionCart
+    
+    cartDecoder currentCart
+
 
 let dummyProducts =
     let createProduct id name price img =
@@ -39,5 +52,5 @@ module CompositionRoot =
             GetPurchaseToken = getMerchantToken >> Cart.CheckoutIntegration.getPurchaseToken
             GetAllProducts = fun _ -> dummyProducts
             GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.Id = i)
+            CartState = getCartState 
         }
-       

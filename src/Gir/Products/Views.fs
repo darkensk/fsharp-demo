@@ -16,7 +16,7 @@ let productDiv (product: Product) =
                       p [] [ str <| sprintf "$%.0f" product.Price ]
                       h4 [] [ str product.Name ] ] ] ]
 
-let listTemplate (productList: Product list) =
+let listTemplate (cartState: CartState) (productList: Product list) =
     let products = productList |> List.map productDiv
     div []
         [ div [ _class "search-wrapper section-padding-100" ]
@@ -51,16 +51,16 @@ let listTemplate (productList: Product list) =
                           [ span [] []
                             span [] []
                             span [] [] ] ]
-                headerView
+                headerView cartState
                 div [ _class "products-catagories-area clearfix" ]
                     [ div [ _class "amado-pro-catagory clearfix" ] products ] ]
           subscribeSectionView
           footerView ]
 
 
-let listView products = [ listTemplate products ] |> layout
+let listView (cartState: CartState) products = [ listTemplate cartState products ] |> layout
 
-let detailTemplate (product:Product) =
+let detailTemplate (cartState: CartState) (product:Product) =
     div [] 
         [ div [ _class "main-content-wrapper d-flex clearfix" ]
             [ div [ _class "mobile-nav" ]
@@ -73,7 +73,7 @@ let detailTemplate (product:Product) =
                         [ span [] []
                           span [] []
                           span [] [] ] ]
-              headerView
+              headerView cartState
               div [ _class "single-product-area section-padding-100 clearfix" ]
                   [ div [ _class "container-fluid" ]
                         [ div [ _class "row" ]
@@ -220,4 +220,4 @@ let detailTemplate (product:Product) =
                                                          ]
 
 
-let productDetailView p = [ detailTemplate p ] |> layout
+let productDetailView cartState p = [ detailTemplate cartState p ] |> layout

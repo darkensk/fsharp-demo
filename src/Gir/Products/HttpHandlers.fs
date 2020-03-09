@@ -3,13 +3,13 @@ module Gir.Products.HttpHandlers
 open Giraffe
 open Views
 
-let listHandler getProducts =
-    htmlView (listView <| getProducts())
+let listHandler cartState getProducts =
+    htmlView (listView cartState <| getProducts())
 
 
-let detailHandler getProductById id =
+let detailHandler cartState getProductById id =
     match getProductById id with
-    | Some p -> htmlView (productDetailView p)
+    | Some p -> htmlView (productDetailView cartState p)
     | None -> setStatusCode 404 >=> text "Not Found"
 
 

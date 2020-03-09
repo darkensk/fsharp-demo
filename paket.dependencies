@@ -6,6 +6,7 @@ nuget TaskBuilder.fs
 nuget Giraffe
 nuget Thoth.Json.Net
 nuget FSharp.Data
+nuget Microsoft.AspNetCore.Session
 
 group Build
     source https://api.nuget.org/v3/index.json

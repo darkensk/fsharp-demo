@@ -1,6 +1,7 @@
 module Gir.Layout
 
 open Giraffe.GiraffeViewEngine
+open Gir.Domain
 
 let _ariaHidden = attr "aria-hidden"
 
@@ -20,7 +21,7 @@ let _dataSlideTo = attr "data-slide-to"
 
 let _dataRide = attr "data-ride"
 
-let headerView =
+let headerView (cartState: CartState) =
     header [ _class "header-area clearfix" ]
         [ div [ _class "nav-close" ]
               [ i
