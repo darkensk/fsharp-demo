@@ -91,7 +91,7 @@ let detailTemplate (cartState: CartState) (product: Product) =
                                                             [ _class "active"
                                                               _dataTarget "#product_details_slider"
                                                               _dataSlideTo "0"
-                                                              _style "url(/img/product-img/pro-big-1.jpg)" ] []
+                                                              _style "background-image: url(/img/product-img/pro-big-1.jpg)" ] []
                                                           li
                                                               [ _dataTarget "#product_details_slider"
                                                                 _dataSlideTo "1"

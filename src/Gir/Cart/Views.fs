@@ -6,7 +6,9 @@ open Gir.Domain
 open Gir.Utils
 
 let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
-    div [ _id "checkout-form" ]
+    div
+        [ _id "checkout-form"
+          _style "padding-top: 50px;" ]
         (match purchaseToken with
          | "" -> []
          | _ ->
@@ -57,10 +59,10 @@ let cartItemView (cartItem: CartItem) =
         [ td [ _class "cart_product_img" ]
               [ a [ _href "#" ]
                     [ img
-                        [ _src "/img/bg-img/cart1.jpg"
+                        [ _src cartItem.ProductDetail.Img
                           _alt "Product" ] ] ]
-          td [ _class "cart_product_desc" ] [ h5 [] [ str "White Modern Chair" ] ]
-          td [ _class "price" ] [ span [] [ str "130 kr" ] ]
+          td [ _class "cart_product_desc" ] [ h5 [] [ str cartItem.ProductDetail.Name ] ]
+          td [ _class "price" ] [ span [] [ str (string cartItem.ProductDetail.Price + " kr") ] ]
           td [ _class "qty" ]
               [ div [ _class "qty-btn d-flex" ]
                     [ p [] [ str "Qty" ]
@@ -79,7 +81,7 @@ let cartItemView (cartItem: CartItem) =
                                   _min "1"
                                   _max "300"
                                   _name "quantity"
-                                  _value "1" ]
+                                  _value (string cartItem.Qty) ]
                             span
                                 [ _class "qty-plus"
                                   _onclick "" ]
@@ -96,18 +98,23 @@ let cartSummaryView (cartState: CartState) =
               [ h5 [] [ str "Cart Total" ]
                 ul [ _class "summary-table" ]
                     [ li []
-                          [ span [] [ str "subtotal:" ]
-                            span [] [ str subTotalString ] ]
+                          [ span [] [ str "Subtotal:" ]
+                            span [ _style "text-transform: none;" ] [ str subTotalString ] ]
                       li []
-                          [ span [] [ str "delivery:" ]
+                          [ span [] [ str "Delivery:" ]
                             span [] [ str "Free" ] ]
                       li []
-                          [ span [] [ str "total:" ]
-                            span [] [ str subTotalString ] ] ]
-                div [ _class "cart-btn mt-100" ]
+                          [ span [] [ str "Total:" ]
+                            span [ _style "text-transform: none;" ] [ str subTotalString ] ] ]
+                div
+                    [ _class "amado-btn-group mt-30 mb-0"
+                      _style "display: flex; flex-direction: column; justify-content: space-evenly;" ]
                     [ a
                         [ _href "#checkout-form"
-                          _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ]
+                          _class "btn amado-btn mb-15" ] [ str "Checkout" ]
+                      a
+                          [ _href "/cart/clear"
+                            _class "btn amado-btn active mb-15" ] [ str "Clear Cart" ] ] ] ]
 
 
 let template (cartState: CartState) (products: Product list) checkoutFrontendBundleUrl (purchaseToken: string) =
@@ -149,13 +156,14 @@ let template (cartState: CartState) (products: Product list) checkoutFrontendBun
                       headerView cartState
                       div [ _class "cart-table-area section-padding-100" ]
                           [ div [ _class "container-fluid" ]
-                                [ div [ _class "row"
-                                        _id "cart-product-list" ]
+                                [ div
+                                    [ _class "row"
+                                      _id "cart-product-list" ]
                                       (match purchaseToken with
                                        | "" ->
                                            [ div [ _class "col-12 col-lg-8" ]
                                                  [ div [ _class "cart-title mt-50" ]
-                                                       [ h2 [] [ str "Cart is empty - Try to add something!" ] ] ]    
+                                                       [ h2 [] [ str "Cart is empty - Try to add something!" ] ] ]
                                              div [ _class "col-12 col-lg-12 products-catagories-area clearfix" ]
                                                  [ div [ _class "amado-pro-catagory clearfix" ] products ] ]
                                        | _ ->

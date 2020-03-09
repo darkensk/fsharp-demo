@@ -141,7 +141,7 @@ let footerView =
                                                           li [ _class "nav-item" ]
                                                               [ a
                                                                   [ _class "nav-link"
-                                                                    _href "product-details.html" ] [ str "Product" ] ]
+                                                                    _href "#" ] [ str "Product" ] ]
                                                           li [ _class "nav-item" ]
                                                               [ a
                                                                   [ _class "nav-link"
@@ -166,8 +166,7 @@ let subscribeSectionView =
                             div [ _class "col-12 col-lg-6 col-xl-5" ]
                                 [ div [ _class "newsletter-form mb-100" ]
                                       [ form
-                                          [ _action "#"
-                                            _method "post" ]
+                                          [ ]
                                             [ input
                                                 [ _type "email"
                                                   _name "email"
