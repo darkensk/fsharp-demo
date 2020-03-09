@@ -7,6 +7,8 @@ open FSharp.Control.Tasks
 open Microsoft.AspNetCore.Http
 open Gir.Decoders
 open Gir.Encoders
+open Gir.Utils
+
 
 
 let cartEventHandler (ctx: HttpContext) cartEvent =
@@ -56,8 +58,9 @@ let cartEventHandler (ctx: HttpContext) cartEvent =
     | Clear -> ctx.Session.SetString("cart", "{'items': []}")
 
 
-let cartHandler (cartState:CartState) checkoutFrontendBundleUrl getPurchaseToken next ctx =
+let cartHandler checkoutFrontendBundleUrl getPurchaseToken next ctx =
     let token = getPurchaseToken()
+    let cartState = getCartState ctx
     htmlView (cartView cartState checkoutFrontendBundleUrl token) next ctx
 
 let addToCartHandler productId next (ctx: HttpContext) =

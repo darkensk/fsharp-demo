@@ -17,15 +17,15 @@ let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CartState root.CheckoutFrontendBundle root.GetPurchaseToken
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken
                 subRoute "/product" (
                     choose [
 
-                        subRoutef "/%i" (Products.HttpHandlers.detailHandler root.CartState root.GetProductById)
+                        subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById)
                     ]
                 )
 
-                route "/" >=> Products.HttpHandlers.listHandler root.CartState root.GetAllProducts
+                route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
             ]
         POST >=>
             choose [

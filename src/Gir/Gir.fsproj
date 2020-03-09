@@ -13,6 +13,7 @@
     <Compile Include="Domain.fs" />
     <Compile Include="Decoders.fs" />
     <Compile Include="Encoders.fs" />
+    <Compile Include="Utils.fs" />
     <Compile Include="Layout.fs" />
     <Compile Include="Products/Views.fs" />
     <Compile Include="Products/HttpHandlers.fs" />
