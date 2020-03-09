@@ -4,17 +4,7 @@ open Giraffe.GiraffeViewEngine
 
 open Gir.Layout
 open Gir.Domain
-
-let productDiv (product: Product) =
-    div [ _class "single-products-catagory clearfix" ]
-        [ a [ _href (sprintf "/product/%i" product.ProductId) ]
-              [ img
-                  [ _src product.Img
-                    _alt "" ]
-                div [ _class "hover-content" ]
-                    [ div [ _class "line" ] []
-                      p [] [ str <| sprintf "$%.0f" product.Price ]
-                      h4 [] [ str product.Name ] ] ] ]
+open Gir.Utils
 
 let listTemplate (cartState: CartState) (productList: Product list) =
     let products = productList |> List.map productDiv
@@ -158,7 +148,7 @@ let detailTemplate (cartState: CartState) (product: Product) =
                                             [ div [ _class "product-meta-data" ]
                                                   [ div [ _class "line" ] []
                                                     p [ _class "product-price" ]
-                                                        [ str <| sprintf "$%.0f" product.Price ]
+                                                        [ str <| sprintf "%.0f kr" product.Price ]
                                                     a [ _href "#" ] [ h6 [] [ str product.Name ] ]
                                                     div
                                                         [ _class

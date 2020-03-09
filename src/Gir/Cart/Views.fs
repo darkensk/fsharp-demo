@@ -3,50 +3,54 @@ module Gir.Cart.Views
 open Giraffe.GiraffeViewEngine
 open Gir.Layout
 open Gir.Domain
+open Gir.Utils
 
 let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
     div [ _id "checkout-form" ]
-        [ script [ _type "application/javascript" ] [ rawText <| sprintf """
-              (function(e, t, n, a, s, c, o, i, r) {
-                e[a] =
-                  e[a] ||
-                  function() {
-                    (e[a].q = e[a].q || []).push(arguments);
-                  };
-                e[a].i = s;
-                i = t.createElement(n);
-                i.async = 1;
-                i.src = o + "?v=" + c + "&ts=" + 1 * new Date();
-                r = t.getElementsByTagName(n)[0];
-                r.parentNode.insertBefore(i, r);
-              })(
-                window,
-                document,
-                "script",
-                "avardaCheckoutInit",
-                "avardaCheckout",
-                "1.0.0",
-                "%s"
-              );
-              var handleByMerchantCallback = function(avardaCheckoutInstance) {
-                console.log("Handle external payment here");
+        (match purchaseToken with
+         | "" -> []
+         | _ ->
+             [ script [ _type "application/javascript" ] [ rawText <| sprintf """
+                (function(e, t, n, a, s, c, o, i, r) {
+                  e[a] =
+                    e[a] ||
+                    function() {
+                      (e[a].q = e[a].q || []).push(arguments);
+                    };
+                  e[a].i = s;
+                  i = t.createElement(n);
+                  i.async = 1;
+                  i.src = o + "?v=" + c + "&ts=" + 1 * new Date();
+                  r = t.getElementsByTagName(n)[0];
+                  r.parentNode.insertBefore(i, r);
+                })(
+                  window,
+                  document,
+                  "script",
+                  "avardaCheckoutInit",
+                  "avardaCheckout",
+                  "1.0.0",
+                  "%s"
+                );
+                var handleByMerchantCallback = function(avardaCheckoutInstance) {
+                  console.log("Handle external payment here");
 
-                // Un-mount Checkout 3.0 frontend app from the page when external payment is handled
-                avardaCheckoutInstance.unmount();
-                // Display success message instead of Checkout 3.0 frontend application
-                document.getElementById("checkout-form").innerHTML =
-                  "<br><h2>External payment handled by partner!</h2><br>";
-              };
+                  // Un-mount Checkout 3.0 frontend app from the page when external payment is handled
+                  avardaCheckoutInstance.unmount();
+                  // Display success message instead of Checkout 3.0 frontend application
+                  document.getElementById("checkout-form").innerHTML =
+                    "<br><h2>External payment handled by partner!</h2><br>";
+                };
 
-              window.avardaCheckoutInit({
-                accessToken: "%s",
-                rootElementId: "checkout-form",
-                redirectUrl: "",
-                styles: {},
-                disableFocus: true,
-                handleByMerchantCallback: handleByMerchantCallback
-              });
-            """                                                   checkoutFrontendBundleUrl purchaseToken ] ]
+                window.avardaCheckoutInit({
+                  accessToken: "%s",
+                  rootElementId: "checkout-form",
+                  redirectUrl: "",
+                  styles: {},
+                  disableFocus: true,
+                  handleByMerchantCallback: handleByMerchantCallback
+                });
+              """                                                      checkoutFrontendBundleUrl purchaseToken ] ])
 
 let cartItemView (cartItem: CartItem) =
     tr []
@@ -56,7 +60,7 @@ let cartItemView (cartItem: CartItem) =
                         [ _src "/img/bg-img/cart1.jpg"
                           _alt "Product" ] ] ]
           td [ _class "cart_product_desc" ] [ h5 [] [ str "White Modern Chair" ] ]
-          td [ _class "price" ] [ span [] [ str "$130" ] ]
+          td [ _class "price" ] [ span [] [ str "130 kr" ] ]
           td [ _class "qty" ]
               [ div [ _class "qty-btn d-flex" ]
                     [ p [] [ str "Qty" ]
@@ -83,7 +87,31 @@ let cartItemView (cartItem: CartItem) =
                                     [ _class "fa fa-plus"
                                       _ariaHidden "true" ] [] ] ] ] ] ]
 
+
+let cartSummaryView (cartState: CartState) =
+    let subTotal = List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
+    let subTotalString = "\"" + string subTotal + " kr\""
+    div [ _class "col-12 col-lg-4" ]
+        [ div [ _class "cart-summary" ]
+              [ h5 [] [ str "Cart Total" ]
+                ul [ _class "summary-table" ]
+                    [ li []
+                          [ span [] [ str "subtotal:" ]
+                            span [] [ str subTotalString ] ]
+                      li []
+                          [ span [] [ str "delivery:" ]
+                            span [] [ str "Free" ] ]
+                      li []
+                          [ span [] [ str "total:" ]
+                            span [] [ str subTotalString ] ] ]
+                div [ _class "cart-btn mt-100" ]
+                    [ a
+                        [ _href "#checkout-form"
+                          _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ]
+
+
 let template (cartState: CartState) (products: Product list) checkoutFrontendBundleUrl (purchaseToken: string) =
+    let products = products |> List.map productDiv
     div []
         [ div []
               [ div [ _class "search-wrapper section-padding-100" ]
@@ -121,37 +149,31 @@ let template (cartState: CartState) (products: Product list) checkoutFrontendBun
                       headerView cartState
                       div [ _class "cart-table-area section-padding-100" ]
                           [ div [ _class "container-fluid" ]
-                                [ div [ _class "row" ]
-                                      [ div [ _class "col-12 col-lg-8" ]
-                                            [ div [ _class "cart-title mt-50" ] [ h2 [] [ str "Shopping Cart" ] ]
-                                              div [ _class "cart-table clearfix" ]
-                                                  [ table [ _class "table table-responsive" ]
-                                                        [ thead []
-                                                              [ tr []
-                                                                    [ th [] []
-                                                                      th [] [ str "Name" ]
-                                                                      th [] [ str "Price" ]
-                                                                      th [] [ str "Quantity" ] ] ]
-                                                          tbody [] (List.map (cartItemView) cartState.Items) ] ] ]
-                                        div [ _class "col-12 col-lg-4" ]
-                                            [ div [ _class "cart-summary" ]
-                                                  [ h5 [] [ str "Cart Total" ]
-                                                    ul [ _class "summary-table" ]
-                                                        [ li []
-                                                              [ span [] [ str "subtotal:" ]
-                                                                span [] [ str "$140.00" ] ]
-                                                          li []
-                                                              [ span [] [ str "delivery:" ]
-                                                                span [] [ str "Free" ] ]
-                                                          li []
-                                                              [ span [] [ str "total:" ]
-                                                                span [] [ str "$140.00" ] ] ]
-                                                    div [ _class "cart-btn mt-100" ]
-                                                        [ a
-                                                            [ _href "#checkout-form"
-                                                              _class "btn amado-btn w-100" ] [ str "Checkout" ] ] ] ]
-                                        div [ _class "col-12 col-lg-8" ]
-                                            [ initCheckoutInstance checkoutFrontendBundleUrl purchaseToken ] ] ] ] ]
+                                [ div [ _class "row"
+                                        _id "cart-product-list" ]
+                                      (match purchaseToken with
+                                       | "" ->
+                                           [ div [ _class "col-12 col-lg-8" ]
+                                                 [ div [ _class "cart-title mt-50" ]
+                                                       [ h2 [] [ str "Cart is empty - Try to add something!" ] ] ]    
+                                             div [ _class "col-12 col-lg-12 products-catagories-area clearfix" ]
+                                                 [ div [ _class "amado-pro-catagory clearfix" ] products ] ]
+                                       | _ ->
+                                           [ div [ _class "col-12 col-lg-8" ]
+                                                 [ div [ _class "cart-title mt-50" ]
+                                                       [ h2 [] [ str "Shopping Cart" ] ]
+                                                   div [ _class "cart-table clearfix" ]
+                                                       [ table [ _class "table table-responsive" ]
+                                                             [ thead []
+                                                                   [ tr []
+                                                                         [ th [] []
+                                                                           th [] [ str "Name" ]
+                                                                           th [] [ str "Price" ]
+                                                                           th [] [ str "Quantity" ] ] ]
+                                                               tbody [] (List.map (cartItemView) cartState.Items) ] ] ]
+                                             cartSummaryView cartState
+                                             div [ _class "col-12 col-lg-8" ]
+                                                 [ initCheckoutInstance checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
                 subscribeSectionView
                 footerView ] ]
 

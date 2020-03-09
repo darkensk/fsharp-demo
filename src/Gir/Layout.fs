@@ -188,7 +188,7 @@ let layout (content: XmlNode List) =
                 link
                     [ _rel "stylesheet"
                       _type "text/css"
-                      _href "/src/main.css" ] ]
+                      _href "/css/main.css" ] ]
           body []
               (content @ [ script [ _src "/js/jquery/jquery-2.2.4.min.js" ] []
                            script [ _src "/js/popper.min.js" ] []
