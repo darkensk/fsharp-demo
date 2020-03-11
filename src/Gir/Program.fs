@@ -22,9 +22,9 @@ let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutBackendApiUrl root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
                 route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectHandler
-                route "/cart/tbd" >=> Cart.HttpHandlers.reclaimHandler root.CheckoutFrontendBundle root.GetPartnerAccessToken
+                route "/cart/tbd" >=> Cart.HttpHandlers.reclaimHandler root.CheckoutBackendApiUrl root.CheckoutFrontendBundle root.GetPartnerAccessToken
                 subRoute "/product" (
                     choose [
 
@@ -36,8 +36,8 @@ let webApp (root:CompositionRoot) =
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.GetPartnerAccessToken >=> redirectHandler )
-                routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.GetPartnerAccessToken >=> redirectHandler )
+                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
+                routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
@@ -92,7 +92,8 @@ let main _ =
     let cfg = 
         (ConfigurationBuilder())
             .AddJsonFile("local.settings.json", true)
-            .AddEnvironmentVariables().Build()
+            .AddEnvironmentVariables()
+            .Build()
 
     let root = CompositionRoot.compose cfg
 
