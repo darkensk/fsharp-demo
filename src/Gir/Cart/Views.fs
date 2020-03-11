@@ -45,10 +45,12 @@ let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
                     "<br><h2>External payment handled by partner!</h2><br>";
                 };
 
+                const redirectUrlCallback = () => window.location.href + "tbd#checkout-form";
+
                 window.avardaCheckoutInit({
                   accessToken: "%s",
                   rootElementId: "checkout-form",
-                  redirectUrl: "http://localhost:5000/cart/tbd#checkout-form",
+                  redirectUrl: redirectUrlCallback,
                   styles: {},
                   disableFocus: true,
                   handleByMerchantCallback: handleByMerchantCallback
