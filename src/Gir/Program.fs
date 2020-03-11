@@ -22,7 +22,7 @@ let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutBackendApiUrl root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
                 route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectHandler
                 route "/cart/tbd" >=> Cart.HttpHandlers.reclaimHandler root.CheckoutBackendApiUrl root.CheckoutFrontendBundle root.GetPartnerAccessToken
                 subRoute "/product" (

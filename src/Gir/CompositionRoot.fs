@@ -1,6 +1,7 @@
 module Gir.CompositionRoot
 
 open Microsoft.Extensions.Configuration
+open Microsoft.AspNetCore.Http
 open Gir.Domain
 
 
@@ -8,7 +9,7 @@ type CompositionRoot =
     { CheckoutFrontendBundle: string
       CheckoutBackendApiUrl: string
       GetPartnerAccessToken: unit -> string
-      GetPurchaseToken: CartState -> string
+      GetPurchaseToken: CartState -> HttpContext -> string
       GetAllProducts: unit -> Product list
       GetProductById: int -> Product option }
 
@@ -39,8 +40,8 @@ module CompositionRoot =
           CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
           GetPartnerAccessToken = getPartnerAccessToken
           GetPurchaseToken =
-              (fun cartState ->
+              (fun cartState ctx ->
                   Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] cartState
-                  <| getPartnerAccessToken())
+                      (getPartnerAccessToken()) ctx)
           GetAllProducts = fun _ -> dummyProducts
           GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i) }

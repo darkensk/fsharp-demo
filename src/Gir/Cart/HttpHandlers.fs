@@ -56,13 +56,18 @@ let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
                 else currentItem
 
             let newItems = List.map (decrementQty i) currentItems
-            let newCart = { decodedCart with Items = newItems }
+
+            let newItemsWithoutZeroQ =
+                List.fold (fun acc x ->
+                    if x.Qty = 0 then acc else acc @ [ x ]) [] newItems
+
+            let newCart = { decodedCart with Items = newItemsWithoutZeroQ }
             ctx.Session.SetString("cart", cartEncoder newCart)
         | None -> ctx.Session.SetString("cart", cartEncoder decodedCart)
     | Clear -> ctx.Session.SetString("cart", "{'items': []}")
 
-let cartHandler backendUrl checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
-    let purchaseToken = getPurchaseToken <| getCartState ctx
+let cartHandler checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
+    let purchaseToken = getPurchaseToken (getCartState ctx) ctx
     let cartState = getCartState ctx
     htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken <| getProducts()) next ctx
 
@@ -86,20 +91,20 @@ let removeFromCartHandler productId getProducts next (ctx: HttpContext) =
 
 let clearCartHandler getProducts next (ctx: HttpContext) =
     task {
-        purchaseIdCache <- None
+        ctx.Session.Remove("purchaseId")
         do CartEvent.Clear |> cartEventHandler (getProducts()) ctx
 
         return! next ctx
     }
 
 let reclaimHandler backendUrl (checkoutFrontendBundleUrl: string) merchantToken next (ctx: HttpContext) =
-    let purchaseToken = reclaimPurchaseToken backendUrl (merchantToken())
+    let purchaseToken = reclaimPurchaseToken backendUrl (merchantToken()) ctx
     let cartState = getCartState ctx
     htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken []) next ctx
 
 let updateItemsHandler backendUrl merchantToken (next: HttpFunc) (ctx: HttpContext) =
     task {
         let cartState = getCartState ctx
-        do updateItems backendUrl cartState <| merchantToken() |> ignore
+        do updateItems backendUrl cartState (merchantToken()) ctx |> ignore
         return! next ctx
     }
