@@ -22,8 +22,8 @@ let decodePartnerAccessToken =
 let getPartnerAccessToken url clientId clientSecret =
     let getPartnerAccessTokenPayload = getPartnerTokenPayloadEncoder clientId clientSecret
     Http.RequestString
-        (url, headers = [ ("Content-Type", "application/json") ], body = TextRequest getPartnerAccessTokenPayload)
-    |> decodePartnerAccessToken
+        (url, headers = [ ("Content-Type", "application/json") ], body = TextRequest getPartnerAccessTokenPayload,
+         httpMethod = "POST") |> decodePartnerAccessToken
 
 let createValidationParameters =
     let validationParameters = TokenValidationParameters()
@@ -56,25 +56,11 @@ let initPaymentPayloadDecoder =
 
 let initPaymentDecoder s =
     match Decode.fromString initPaymentPayloadDecoder s with
-    | Ok v -> 
+    | Ok v ->
         purchaseIdCache <- Some v.PurchaseId
         v.Jwt
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
 
-
-let getPurchaseToken (cartState: CartState) partnerToken =
-    if (List.isEmpty cartState.Items) then
-        ""
-    else
-        let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
-
-        let bearerString = "Bearer " + partnerToken
-        Http.RequestString
-            ("https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/payments",
-             headers =
-                 [ ("Content-Type", "application/json")
-                   ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload)
-        |> initPaymentDecoder
 
 let reclaimPurchaseToken partnerToken =
     let purchaseId =
@@ -89,5 +75,43 @@ let reclaimPurchaseToken partnerToken =
         (url,
          headers =
              [ ("Content-Type", "application/json")
-               ("Authorization", bearerString) ])
+               ("Authorization", bearerString) ], httpMethod = "GET")
     |> decodePurchaseToken
+
+let getPurchaseToken (cartState: CartState) partnerToken =
+    if (List.isEmpty cartState.Items) then
+        ""
+    else
+        match purchaseIdCache with
+        | Some _ -> reclaimPurchaseToken partnerToken
+        | None ->
+            let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
+
+            let bearerString = "Bearer " + partnerToken
+            Http.RequestString
+                ("https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/payments",
+                 headers =
+                     [ ("Content-Type", "application/json")
+                       ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "POST")
+            |> initPaymentDecoder
+
+
+
+let updateItems cartState partnerToken =
+    if (List.isEmpty cartState.Items) then
+        purchaseIdCache <- None
+        ""
+    else
+        match purchaseIdCache with
+        | Some purchaseId ->
+            let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
+            let bearerString = "Bearer " + partnerToken
+            let url =
+                sprintf "https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/payments/%s/items"
+                    purchaseId
+            Http.RequestString
+                (url,
+                 headers =
+                     [ ("Content-Type", "application/json")
+                       ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "PUT")
+        | None -> getPurchaseToken cartState partnerToken

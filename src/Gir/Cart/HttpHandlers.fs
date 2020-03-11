@@ -96,3 +96,10 @@ let reclaimHandler (checkoutFrontendBundleUrl: string) merchantToken next (ctx: 
     let purchaseToken = reclaimPurchaseToken (merchantToken())
     let cartState = getCartState ctx
     htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken []) next ctx
+
+let updateItemsHandler merchantToken (next:HttpFunc) (ctx: HttpContext) =
+    task {
+        let cartState = getCartState ctx
+        do updateItems cartState <| merchantToken() |> ignore
+        return! next ctx
+    }
