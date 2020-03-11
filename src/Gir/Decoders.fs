@@ -3,6 +3,10 @@ module Gir.Decoders
 open Thoth.Json.Net
 open Gir.Domain
 
+let partnerAccessTokenDecoder = Decode.field "token" Decode.string |> Decode.fromString
+
+let purchaseTokenDecoder = Decode.field "jwt" Decode.string |> Decode.fromString
+
 
 let productDecoder =
     Decode.object (fun get ->
@@ -24,4 +28,4 @@ let cartDecoder s =
             { Items = get.Optional.Field "items" (Decode.list cartItemDecoder) |> Option.defaultValue [] })
     match Decode.fromString decoder s with
     | Ok i -> i
-    | Error e -> failwithf "Cannot parse cart, error = %A" e
+    | Error e -> failwithf "Cannot decode cart, error = %A" e

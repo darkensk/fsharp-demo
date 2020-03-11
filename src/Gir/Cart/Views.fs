@@ -47,7 +47,7 @@ let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
                 window.avardaCheckoutInit({
                   accessToken: "%s",
                   rootElementId: "checkout-form",
-                  redirectUrl: "",
+                  redirectUrl: "http://localhost:5000/cart/tbd#checkout-form",
                   styles: {},
                   disableFocus: true,
                   handleByMerchantCallback: handleByMerchantCallback

@@ -18,3 +18,7 @@ type CartItem =
 
 type CartState =
     { Items: CartItem list }
+
+type InitializePaymentResponse =
+    { PurchaseId: string
+      Jwt: string }

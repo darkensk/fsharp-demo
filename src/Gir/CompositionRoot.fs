@@ -3,13 +3,12 @@ module Gir.CompositionRoot
 open Microsoft.Extensions.Configuration
 open Gir.Domain
 
-type CompositionRoot = {
-    CheckoutFrontendBundle : string
-    GetMerchantToken : unit -> string
-    GetPurchaseToken : CartState -> string
-    GetAllProducts : unit -> Product list
-    GetProductById : int -> Product option
-}
+type CompositionRoot =
+    { CheckoutFrontendBundle: string
+      GetPartnerAccessToken: unit -> string
+      GetPurchaseToken: CartState -> string
+      GetAllProducts: unit -> Product list
+      GetProductById: int -> Product option }
 
 let dummyProducts =
     let createProduct id name price img =
@@ -29,14 +28,13 @@ let dummyProducts =
       createProduct 10 "Home Deco" 250. "/img/bg-img/9.jpg" ]
 
 module CompositionRoot =
-    let compose (cfg:IConfigurationRoot) : CompositionRoot =
+    let compose (cfg: IConfigurationRoot): CompositionRoot =
         let url = cfg.["checkoutBackendApiUrl"] + "/api/partner/tokens"
-        let getMerchantToken () = Cart.CheckoutIntegration.getCachedToken url cfg.["clientId"] cfg.["clientSecret"]
-        
-        {
-            CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
-            GetMerchantToken = getMerchantToken
-            GetPurchaseToken = (fun cartState -> Cart.CheckoutIntegration.getPurchaseToken cartState <| getMerchantToken() )
-            GetAllProducts = fun _ -> dummyProducts
-            GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i)
-        }
+        let getPartnerAccessToken() = Cart.CheckoutIntegration.getCachedToken url cfg.["clientId"] cfg.["clientSecret"]
+
+        { CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
+          GetPartnerAccessToken = getPartnerAccessToken
+          GetPurchaseToken =
+              (fun cartState -> Cart.CheckoutIntegration.getPurchaseToken cartState <| getPartnerAccessToken())
+          GetAllProducts = fun _ -> dummyProducts
+          GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i) }

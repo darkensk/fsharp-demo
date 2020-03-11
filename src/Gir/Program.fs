@@ -13,12 +13,18 @@ open Giraffe
 open Microsoft.Extensions.Configuration
 open CompositionRoot
 
+let redirectHandler next (ctx:HttpContext) =
+    let reffererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
+    redirectTo false reffererUrl next ctx
+
+
 let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
                 route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
-                route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectTo false "/cart/"
+                route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectHandler
+                route "/cart/tbd" >=> Cart.HttpHandlers.reclaimHandler root.CheckoutFrontendBundle root.GetPartnerAccessToken
                 subRoute "/product" (
                     choose [
 
@@ -30,8 +36,8 @@ let webApp (root:CompositionRoot) =
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> redirectTo false (sprintf "/product/%i" i) )
-                routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> redirectTo false "/cart/" )
+                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> redirectHandler )
+                routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> redirectHandler )
             ]
         setStatusCode 404 >=> text "Not Found" ]
 

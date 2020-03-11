@@ -8,6 +8,7 @@ open Microsoft.AspNetCore.Http
 open Gir.Decoders
 open Gir.Encoders
 open Gir.Utils
+open Gir.Cart.CheckoutIntegration
 
 let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
     let sessionCart = ctx.Session.GetString("cart")
@@ -61,9 +62,9 @@ let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
 
 
 let cartHandler checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
-    let token = getPurchaseToken <| getCartState ctx
+    let purchaseToken = getPurchaseToken <| getCartState ctx
     let cartState = getCartState ctx
-    htmlView (cartView cartState checkoutFrontendBundleUrl token <| getProducts()) next ctx
+    htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken <| getProducts()) next ctx
 
 let addToCartHandler productId getProducts next (ctx: HttpContext) =
     task {
@@ -89,3 +90,9 @@ let clearCartHandler getProducts next (ctx: HttpContext) =
 
         return! next ctx
     }
+
+
+let reclaimHandler (checkoutFrontendBundleUrl: string) merchantToken next (ctx: HttpContext) =
+    let purchaseToken = reclaimPurchaseToken (merchantToken())
+    let cartState = getCartState ctx
+    htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken []) next ctx

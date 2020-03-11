@@ -166,7 +166,8 @@ let subscribeSectionView =
                             div [ _class "col-12 col-lg-6 col-xl-5" ]
                                 [ div [ _class "newsletter-form mb-100" ]
                                       [ form
-                                          [ ]
+                                          [ _action "/product/2/add"
+                                            _method "POST" ]
                                             [ input
                                                 [ _type "email"
                                                   _name "email"

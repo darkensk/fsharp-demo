@@ -18,8 +18,8 @@
     <Compile Include="Products/Views.fs" />
     <Compile Include="Products/HttpHandlers.fs" />
     <Compile Include="Cart/Views.fs" />
-    <Compile Include="Cart/HttpHandlers.fs" />
     <Compile Include="Cart/CheckoutIntegration.fs" />
+    <Compile Include="Cart/HttpHandlers.fs" />
     <Compile Include="CompositionRoot.fs" />
     <Compile Include="Program.fs" />
 
@@ -35,7 +35,9 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReferance Include="Microsoft.IdentityModel.JsonWebTokens" Version="5.6.0"/>
+  </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 
 </Project>
