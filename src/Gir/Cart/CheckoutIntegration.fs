@@ -69,7 +69,7 @@ let reclaimPurchaseToken partnerToken =
 
     let bearerString = "Bearer " + partnerToken
     let url =
-        sprintf "https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/payments/%s/token" purchaseId
+        sprintf "https://avdonl-s-checkout.westeurope.cloudapp.azure.com/api/partner/payments/%s/token" purchaseId
     Http.RequestString
         (url,
          headers =
@@ -88,7 +88,7 @@ let getPurchaseToken (cartState: CartState) partnerToken =
 
             let bearerString = "Bearer " + partnerToken
             Http.RequestString
-                ("https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/payments",
+                ("https://avdonl-s-checkout.westeurope.cloudapp.azure.com/api/partner/payments",
                  headers =
                      [ ("Content-Type", "application/json")
                        ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "POST")
@@ -104,7 +104,7 @@ let updateItems cartState partnerToken =
             let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
             let bearerString = "Bearer " + partnerToken
             let url =
-                sprintf "https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/payments/%s/items"
+                sprintf "https://avdonl-s-checkout.westeurope.cloudapp.azure.com/api/partner/payments/%s/items"
                     purchaseId
             Http.RequestString
                 (url,
