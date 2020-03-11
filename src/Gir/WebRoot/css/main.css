@@ -1,0 +1,7 @@
+#cart-product-list .products-catagories-area {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 100%;
+}

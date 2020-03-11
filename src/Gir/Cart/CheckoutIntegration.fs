@@ -1,74 +1,114 @@
 module Gir.Cart.CheckoutIntegration
-open Thoth.Json.Net
+
 open FSharp.Data
+open Microsoft.IdentityModel.JsonWebTokens
+open Microsoft.IdentityModel.Tokens
+open Thoth.Json.Net
+open Gir.Domain
+open Gir.Encoders
+open Gir.Decoders
 
-let mutable tokenCache: string option = None
 
-let parseToken (s: string) =
-    s
-    |> Decode.fromString (Decode.field "token" Decode.string)
-    |> function
+let mutable partnerAccessTokenCache: string option = None
+
+let mutable purchaseIdCache: string option = None
+
+let decodePartnerAccessToken =
+    partnerAccessTokenDecoder
+    >> function
     | Ok v -> v
-    | Error e -> failwithf "Cannot parse token, error = %A" e
+    | Error e -> failwithf "Cannot decode partner access token, error = %A" e
 
-let getMerchantToken url clientId clientSecret =
-    let merchantAccessString =
-        Encode.object
-            [ "clientId", Encode.string clientId
-              "clientSecret", Encode.string clientSecret ]
-        |> Encode.toString 0
+let getPartnerAccessToken url clientId clientSecret =
+    let getPartnerAccessTokenPayload = getPartnerTokenPayloadEncoder clientId clientSecret
     Http.RequestString
-        (url,
-         headers = [ ("Content-Type", "application/json") ], body = TextRequest merchantAccessString) |> parseToken
+        (url, headers = [ ("Content-Type", "application/json") ], body = TextRequest getPartnerAccessTokenPayload,
+         httpMethod = "POST") |> decodePartnerAccessToken
+
+let createValidationParameters =
+    let validationParameters = TokenValidationParameters()
+    validationParameters.ValidateLifetime <- true
+    validationParameters
 
 let isValid t =
-    if true then (Some t) else None
+    let handler = JsonWebTokenHandler()
+    let validationResult = handler.ValidateToken(t, createValidationParameters)
+    if validationResult.IsValid then (Some t) else None
 
 let getCachedToken url clientId clientSecret =
-    tokenCache
+    partnerAccessTokenCache
     |> Option.bind isValid
     |> Option.defaultWith (fun _ ->
-        let token = getMerchantToken url clientId clientSecret
-        tokenCache <- Some token
+        let token = getPartnerAccessToken url clientId clientSecret
+        partnerAccessTokenCache <- Some token
         token)
 
-let parsePurchaseToken (s: string) =
-    s
-    |> Decode.fromString (Decode.field "jwt" Decode.string)
-    |> function
+let decodePurchaseToken =
+    purchaseTokenDecoder
+    >> function
     | Ok v -> v
-    | Error e -> failwithf "Cannot parse purchase token, error = %A" e
+    | Error e -> failwithf "Cannot decode purchase token, error = %A" e
 
-let getPurchaseToken merchantToken =
-    let newPaymentPayload =
-        Encode.object
-            [ "language", Encode.string "English"
-              "items",
-              Encode.list <| List.singleton
-                                 (Encode.object
-                                     [ "description", Encode.string "Test Item 1"
-                                       "notes", Encode.string "Test Note 1"
-                                       "amount", Encode.float 100.
-                                       "taxCode", Encode.string "20%"
-                                       "taxAmount", Encode.float 20. ])
-              "orderReference", Encode.string "TEST-AVARDA-ORDER-X"
-              "displayItems", Encode.bool true
-              "differentDeliveryAddress", Encode.string "Checked"
-              "deliveryAddress",
-              Encode.object
-                  [ "address1", Encode.string "Smetanova"
-                    "address2", Encode.string ""
-                    "zip", Encode.string "30593"
-                    "city", Encode.string "Halmstad"
-                    "country", Encode.string "SE"
-                    "firstName", Encode.string "Rudolf"
-                    "lastName", Encode.string "Halmstad" ] ]
-        |> Encode.toString 0
+let initPaymentPayloadDecoder =
+    Decode.object (fun get ->
+        { PurchaseId = get.Required.Field "purchaseId" Decode.string
+          Jwt = get.Required.Field "jwt" Decode.string })
 
-    let bearerString = "Bearer " + merchantToken
+let initPaymentDecoder s =
+    match Decode.fromString initPaymentPayloadDecoder s with
+    | Ok v ->
+        purchaseIdCache <- Some v.PurchaseId
+        v.Jwt
+    | Error e -> failwithf "Cannot decode init payment, error = %A" e
+
+let reclaimPurchaseToken partnerToken =
+    let purchaseId =
+        match purchaseIdCache with
+        | Some purchaseId -> purchaseId
+        | None -> failwith "Cannot reclaim token, purchase not initialized"
+
+    let bearerString = "Bearer " + partnerToken
+    let url =
+        sprintf "https://avdonl-s-checkout.westeurope.cloudapp.azure.com/api/partner/payments/%s/token" purchaseId
     Http.RequestString
-        ("https://avdonl-t-checkout.westeurope.cloudapp.azure.com/api/partner/payments",
+        (url,
          headers =
              [ ("Content-Type", "application/json")
-               ("Authorization", bearerString) ], body = TextRequest newPaymentPayload)
-    |> parsePurchaseToken
+               ("Authorization", bearerString) ], httpMethod = "GET")
+    |> decodePurchaseToken
+
+let getPurchaseToken (cartState: CartState) partnerToken =
+    if (List.isEmpty cartState.Items) then
+        ""
+    else
+        match purchaseIdCache with
+        | Some _ -> reclaimPurchaseToken partnerToken
+        | None ->
+            let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
+
+            let bearerString = "Bearer " + partnerToken
+            Http.RequestString
+                ("https://avdonl-s-checkout.westeurope.cloudapp.azure.com/api/partner/payments",
+                 headers =
+                     [ ("Content-Type", "application/json")
+                       ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "POST")
+            |> initPaymentDecoder
+
+let updateItems cartState partnerToken =
+    if (List.isEmpty cartState.Items) then
+        purchaseIdCache <- None
+        ""
+    else
+        match purchaseIdCache with
+        | Some purchaseId ->
+            let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
+            let bearerString = "Bearer " + partnerToken
+            let url =
+                sprintf "https://avdonl-s-checkout.westeurope.cloudapp.azure.com/api/partner/payments/%s/items"
+                    purchaseId
+            Http.RequestString
+                (url,
+                 headers =
+                     [ ("Content-Type", "application/json")
+                       ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "PUT")
+        | None -> getPurchaseToken cartState partnerToken

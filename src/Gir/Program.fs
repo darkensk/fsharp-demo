@@ -1,7 +1,7 @@
 module Gir.App
 
-open System
-open System.IO
+open CompositionRoot
+open Giraffe
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Cors.Infrastructure
@@ -9,15 +9,22 @@ open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
-open Giraffe
 open Microsoft.Extensions.Configuration
-open CompositionRoot
+open System
+open System.IO
+
+
+let redirectHandler next (ctx:HttpContext) =
+    let reffererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
+    redirectTo false reffererUrl next ctx
 
 let webApp (root:CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
+                route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectHandler
+                route "/cart/tbd" >=> Cart.HttpHandlers.reclaimHandler root.CheckoutFrontendBundle root.GetPartnerAccessToken
                 subRoute "/product" (
                     choose [
 
@@ -29,7 +36,8 @@ let webApp (root:CompositionRoot) =
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i (fun _ -> ()) >=> redirectTo false (sprintf "/product/%i" i) )
+                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.GetPartnerAccessToken >=> redirectHandler )
+                routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.GetPartnerAccessToken >=> redirectHandler )
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
@@ -61,14 +69,18 @@ let configureApp root (app : IApplicationBuilder) =
     | true  -> app.UseDeveloperExceptionPage()
     | false -> app.UseGiraffeErrorHandler errorHandler)
         //.UseHttpsRedirection()
-        // .UseSession()
         .UseCors(configureCors)
         .UseStaticFiles()
+        .UseSession()
         .UseGiraffe(webApp root)
 
 let configureServices (services : IServiceCollection) =
     services.AddCors()    |> ignore
     services.AddGiraffe() |> ignore
+    services.AddAuthentication() |> ignore
+    services.AddDataProtection() |> ignore
+    services.AddSession() |> ignore
+    services.AddMvc() |> ignore
 
 let configureLogging (builder : ILoggingBuilder) =
     builder.AddFilter(fun l -> l.Equals LogLevel.Error)
