@@ -86,6 +86,7 @@ let removeFromCartHandler productId getProducts next (ctx: HttpContext) =
 
 let clearCartHandler getProducts next (ctx: HttpContext) =
     task {
+        purchaseIdCache <- None
         do CartEvent.Clear |> cartEventHandler (getProducts()) ctx
 
         return! next ctx
@@ -97,7 +98,7 @@ let reclaimHandler (checkoutFrontendBundleUrl: string) merchantToken next (ctx: 
     let cartState = getCartState ctx
     htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken []) next ctx
 
-let updateItemsHandler merchantToken (next:HttpFunc) (ctx: HttpContext) =
+let updateItemsHandler merchantToken (next: HttpFunc) (ctx: HttpContext) =
     task {
         let cartState = getCartState ctx
         do updateItems cartState <| merchantToken() |> ignore
