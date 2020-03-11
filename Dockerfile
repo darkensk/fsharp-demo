@@ -5,6 +5,8 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
 COPY . .
+RUN dotnet tool restore
+RUN dotnet paket install
 RUN dotnet restore ./src/Gir/
 RUN dotnet build ./src/Gir/
 
