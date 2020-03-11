@@ -61,7 +61,7 @@ let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
         | None -> ctx.Session.SetString("cart", cartEncoder decodedCart)
     | Clear -> ctx.Session.SetString("cart", "{'items': []}")
 
-let cartHandler checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
+let cartHandler backendUrl checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
     let purchaseToken = getPurchaseToken <| getCartState ctx
     let cartState = getCartState ctx
     htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken <| getProducts()) next ctx
@@ -92,14 +92,14 @@ let clearCartHandler getProducts next (ctx: HttpContext) =
         return! next ctx
     }
 
-let reclaimHandler (checkoutFrontendBundleUrl: string) merchantToken next (ctx: HttpContext) =
-    let purchaseToken = reclaimPurchaseToken (merchantToken())
+let reclaimHandler backendUrl (checkoutFrontendBundleUrl: string) merchantToken next (ctx: HttpContext) =
+    let purchaseToken = reclaimPurchaseToken backendUrl (merchantToken())
     let cartState = getCartState ctx
     htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken []) next ctx
 
-let updateItemsHandler merchantToken (next: HttpFunc) (ctx: HttpContext) =
+let updateItemsHandler backendUrl merchantToken (next: HttpFunc) (ctx: HttpContext) =
     task {
         let cartState = getCartState ctx
-        do updateItems cartState <| merchantToken() |> ignore
+        do updateItems backendUrl cartState <| merchantToken() |> ignore
         return! next ctx
     }

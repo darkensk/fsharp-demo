@@ -6,6 +6,7 @@ open Gir.Domain
 
 type CompositionRoot =
     { CheckoutFrontendBundle: string
+      CheckoutBackendApiUrl: string
       GetPartnerAccessToken: unit -> string
       GetPurchaseToken: CartState -> string
       GetAllProducts: unit -> Product list
@@ -31,11 +32,15 @@ let dummyProducts =
 module CompositionRoot =
     let compose (cfg: IConfigurationRoot): CompositionRoot =
         let url = cfg.["checkoutBackendApiUrl"] + "/api/partner/tokens"
-        let getPartnerAccessToken() = Cart.CheckoutIntegration.getCachedToken url cfg.["clientId"] cfg.["clientSecret"]
+        let getPartnerAccessToken() =
+            Cart.CheckoutIntegration.getCachedToken url cfg.["clientId"] cfg.["clientSecret"]
 
         { CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
+          CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
           GetPartnerAccessToken = getPartnerAccessToken
           GetPurchaseToken =
-              (fun cartState -> Cart.CheckoutIntegration.getPurchaseToken cartState <| getPartnerAccessToken())
+              (fun cartState ->
+                  Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] cartState
+                  <| getPartnerAccessToken())
           GetAllProducts = fun _ -> dummyProducts
           GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i) }
