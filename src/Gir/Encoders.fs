@@ -50,15 +50,5 @@ let paymentPayloadEncoder (items: CartItem list) =
             [ "language", Encode.string "English"
               "items", Encode.list <| List.map (paymentItemEncoder) productsList
               "orderReference", Encode.string "TEST-AVARDA-ORDER-X"
-              "displayItems", Encode.bool true
-              "differentDeliveryAddress", Encode.string "Checked"
-              "deliveryAddress",
-              Encode.object
-                  [ "address1", Encode.string "Smetanova"
-                    "address2", Encode.string ""
-                    "zip", Encode.string "30593"
-                    "city", Encode.string "Halmstad"
-                    "country", Encode.string "SE"
-                    "firstName", Encode.string "Rudolf"
-                    "lastName", Encode.string "Halmstad" ] ]
+              "displayItems", Encode.bool true ]
         |> Encode.toString 0
