@@ -164,8 +164,7 @@ let subscribeSectionView =
                                           "Nulla ac convallis lorem, eget euismod nisl. Donec in libero sit amet mi vulputate consectetur. Donec auctor interdum purus, ac finibus massa bibendum nec." ] ] ]
                       div [ _class "col-12 col-lg-6 col-xl-5" ]
                           [ div [ _class "newsletter-form mb-100" ]
-                                [ form
-                                    [ ]
+                                [ form []
                                       [ input
                                           [ _type "email"
                                             _name "email"
@@ -178,7 +177,17 @@ let subscribeSectionView =
 let layout (content: XmlNode List) =
     html []
         [ head []
-              [ title [] [ encodedText "GirShop" ]
+              [ meta [ _charset "UTF-8" ]
+                meta
+                    [ _name "description"
+                      _content "" ]
+                meta
+                    [ _httpEquiv "X-UA-Compatible"
+                      _content "IE=edge" ]
+                meta
+                    [ _name "viewport"
+                      _content "width=device-width, initial-scale=1, shrink-to-fit=no" ]
+                title [] [ str "GirShop" ]
                 link
                     [ _rel "stylesheet"
                       _type "text/css"
