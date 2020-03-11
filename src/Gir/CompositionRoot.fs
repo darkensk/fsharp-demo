@@ -3,6 +3,7 @@ module Gir.CompositionRoot
 open Microsoft.Extensions.Configuration
 open Gir.Domain
 
+
 type CompositionRoot =
     { CheckoutFrontendBundle: string
       GetPartnerAccessToken: unit -> string

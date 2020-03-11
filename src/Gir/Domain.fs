@@ -1,5 +1,6 @@
 module Gir.Domain
 
+
 type Product =
     { ProductId: int
       Name: string

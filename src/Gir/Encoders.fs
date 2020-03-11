@@ -3,12 +3,12 @@ module Gir.Encoders
 open Thoth.Json.Net
 open Gir.Domain
 
+
 let getPartnerTokenPayloadEncoder clientId clientSecret =
     Encode.object
         [ "clientId", Encode.string clientId
           "clientSecret", Encode.string clientSecret ]
     |> Encode.toString 0
-
 
 let productEncoder (product: Product) =
     Encode.object

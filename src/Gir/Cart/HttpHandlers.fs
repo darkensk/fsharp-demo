@@ -1,14 +1,15 @@
 module Gir.Cart.HttpHandlers
 
-open Giraffe
-open Gir.Cart.Views
-open Gir.Domain
 open FSharp.Control.Tasks
+open Giraffe
 open Microsoft.AspNetCore.Http
+open Gir.Domain
 open Gir.Decoders
 open Gir.Encoders
 open Gir.Utils
-open Gir.Cart.CheckoutIntegration
+open CheckoutIntegration
+open Views
+
 
 let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
     let sessionCart = ctx.Session.GetString("cart")
@@ -60,7 +61,6 @@ let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
         | None -> ctx.Session.SetString("cart", cartEncoder decodedCart)
     | Clear -> ctx.Session.SetString("cart", "{'items': []}")
 
-
 let cartHandler checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
     let purchaseToken = getPurchaseToken <| getCartState ctx
     let cartState = getCartState ctx
@@ -91,7 +91,6 @@ let clearCartHandler getProducts next (ctx: HttpContext) =
 
         return! next ctx
     }
-
 
 let reclaimHandler (checkoutFrontendBundleUrl: string) merchantToken next (ctx: HttpContext) =
     let purchaseToken = reclaimPurchaseToken (merchantToken())

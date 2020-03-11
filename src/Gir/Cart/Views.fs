@@ -5,6 +5,7 @@ open Gir.Layout
 open Gir.Domain
 open Gir.Utils
 
+
 let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
     div
         [ _id "checkout-form"
@@ -89,7 +90,6 @@ let cartItemView (cartItem: CartItem) =
                                     [ _class "fa fa-plus"
                                       _ariaHidden "true" ] [] ] ] ] ] ]
 
-
 let cartSummaryView (cartState: CartState) =
     let subTotal = List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
     let subTotalString = "\"" + string subTotal + " kr\""
@@ -115,7 +115,6 @@ let cartSummaryView (cartState: CartState) =
                       a
                           [ _href "/cart/clear"
                             _class "btn amado-btn active mb-15" ] [ str "Clear Cart" ] ] ] ]
-
 
 let template (cartState: CartState) (products: Product list) checkoutFrontendBundleUrl (purchaseToken: string) =
     let products = products |> List.map productDiv

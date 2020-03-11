@@ -1,13 +1,13 @@
 module Gir.Cart.CheckoutIntegration
 
+open FSharp.Data
 open Microsoft.IdentityModel.JsonWebTokens
 open Microsoft.IdentityModel.Tokens
 open Thoth.Json.Net
-open FSharp.Data
 open Gir.Domain
 open Gir.Encoders
 open Gir.Decoders
-open Gir.Encoders
+
 
 let mutable partnerAccessTokenCache: string option = None
 
@@ -61,7 +61,6 @@ let initPaymentDecoder s =
         v.Jwt
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
 
-
 let reclaimPurchaseToken partnerToken =
     let purchaseId =
         match purchaseIdCache with
@@ -94,8 +93,6 @@ let getPurchaseToken (cartState: CartState) partnerToken =
                      [ ("Content-Type", "application/json")
                        ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "POST")
             |> initPaymentDecoder
-
-
 
 let updateItems cartState partnerToken =
     if (List.isEmpty cartState.Items) then

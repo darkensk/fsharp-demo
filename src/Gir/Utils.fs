@@ -14,7 +14,6 @@ let getCartState (ctx: HttpContext) =
 
     cartDecoder currentCart
 
-
 let productDiv (product: Product) =
     div [ _class "single-products-catagory clearfix" ]
         [ a [ _href (sprintf "/product/%i" product.ProductId) ]

@@ -1,10 +1,10 @@
 module Gir.Products.Views
 
 open Giraffe.GiraffeViewEngine
-
 open Gir.Layout
 open Gir.Domain
 open Gir.Utils
+
 
 let listTemplate (cartState: CartState) (productList: Product list) =
     let products = productList |> List.map productDiv
@@ -46,7 +46,6 @@ let listTemplate (cartState: CartState) (productList: Product list) =
                     [ div [ _class "amado-pro-catagory clearfix" ] products ] ]
           subscribeSectionView
           footerView ]
-
 
 let listView (cartState: CartState) products = [ listTemplate cartState products ] |> layout
 
@@ -213,6 +212,5 @@ let detailTemplate (cartState: CartState) (product: Product) =
                                                           _class "btn amado-btn" ] [ str "Add to cart" ] ] ] ] ] ] ] ]
           subscribeSectionView
           footerView ]
-
 
 let productDetailView cartState p = [ detailTemplate cartState p ] |> layout

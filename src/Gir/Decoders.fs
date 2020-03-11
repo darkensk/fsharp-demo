@@ -3,10 +3,10 @@ module Gir.Decoders
 open Thoth.Json.Net
 open Gir.Domain
 
+
 let partnerAccessTokenDecoder = Decode.field "token" Decode.string |> Decode.fromString
 
 let purchaseTokenDecoder = Decode.field "jwt" Decode.string |> Decode.fromString
-
 
 let productDecoder =
     Decode.object (fun get ->
@@ -14,7 +14,6 @@ let productDecoder =
           Name = get.Required.Field "name" Decode.string
           Price = get.Required.Field "price" Decode.float
           Img = get.Required.Field "img" Decode.string })
-
 
 let cartItemDecoder =
     Decode.object (fun get ->

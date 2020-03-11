@@ -1,7 +1,7 @@
 module Gir.App
 
-open System
-open System.IO
+open CompositionRoot
+open Giraffe
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Cors.Infrastructure
@@ -9,14 +9,14 @@ open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
-open Giraffe
 open Microsoft.Extensions.Configuration
-open CompositionRoot
+open System
+open System.IO
+
 
 let redirectHandler next (ctx:HttpContext) =
     let reffererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
     redirectTo false reffererUrl next ctx
-
 
 let webApp (root:CompositionRoot) =
     choose [
@@ -74,7 +74,6 @@ let configureApp root (app : IApplicationBuilder) =
         .UseSession()
         .UseGiraffe(webApp root)
 
-
 let configureServices (services : IServiceCollection) =
     services.AddCors()    |> ignore
     services.AddGiraffe() |> ignore
@@ -82,7 +81,6 @@ let configureServices (services : IServiceCollection) =
     services.AddDataProtection() |> ignore
     services.AddSession() |> ignore
     services.AddMvc() |> ignore
-
 
 let configureLogging (builder : ILoggingBuilder) =
     builder.AddFilter(fun l -> l.Equals LogLevel.Error)

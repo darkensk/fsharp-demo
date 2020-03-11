@@ -1,13 +1,13 @@
 module Gir.Products.HttpHandlers
 
 open Giraffe
-open Views
 open Gir.Utils
+open Views
+
 
 let listHandler getProducts next ctx =
     let cartState = getCartState ctx
     htmlView (listView cartState <| getProducts()) next ctx
-
 
 let detailHandler getProductById id next ctx =
     let cartState = getCartState ctx
