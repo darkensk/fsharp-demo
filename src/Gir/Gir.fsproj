@@ -20,6 +20,8 @@
     <Compile Include="Cart/Views.fs" />
     <Compile Include="Cart/CheckoutIntegration.fs" />
     <Compile Include="Cart/HttpHandlers.fs" />
+    <Compile Include="Test/Views.fs" />
+    <Compile Include="Test/HttpHandlers.fs" />
     <Compile Include="CompositionRoot.fs" />
     <Compile Include="Program.fs" />
 

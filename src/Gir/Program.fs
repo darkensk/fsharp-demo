@@ -28,12 +28,15 @@ let webApp (root:CompositionRoot) =
                 route "/cart/completed" >=> Cart.HttpHandlers.completedHandler >=> text "OK - CompletedCallback Successfull"
                 subRoute "/product" (
                     choose [
-
                         subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById)
                     ]
                 )
-
                 route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
+                subRoute "/test" (
+                    choose [
+                        subRoutef "/%s" (fun purchaseToken -> Test.HttpHandlers.testCheckoutHandler root.CheckoutFrontendBundle purchaseToken)
+                    ]
+                )
             ]
         POST >=>
             choose [
