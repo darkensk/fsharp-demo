@@ -108,3 +108,11 @@ let updateItemsHandler backendUrl merchantToken (next: HttpFunc) (ctx: HttpConte
         do updateItems backendUrl cartState (merchantToken()) ctx |> ignore
         return! next ctx
     }
+
+
+let completedHandler next (ctx: HttpContext) =
+    task {
+        do ctx.Session.Remove("cart") |> ignore
+        ctx.Session.Remove("purchaseId") |> ignore
+        return! next ctx
+    }
