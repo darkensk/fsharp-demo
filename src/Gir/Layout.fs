@@ -164,10 +164,12 @@ let subscribeSectionView =
                                           "Nulla ac convallis lorem, eget euismod nisl. Donec in libero sit amet mi vulputate consectetur. Donec auctor interdum purus, ac finibus massa bibendum nec." ] ] ]
                       div [ _class "col-12 col-lg-6 col-xl-5" ]
                           [ div [ _class "newsletter-form mb-100" ]
-                                [ form []
+                                [ form
+                                    [ _action "/test/"
+                                      _method "POST" ]
                                       [ input
-                                          [ _type "email"
-                                            _name "email"
+                                          [ _type "text"
+                                            _name "purchaseJwt"
                                             _class "nl-email"
                                             _placeholder "Your E-mail" ]
                                         input
