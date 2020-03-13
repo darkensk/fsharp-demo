@@ -42,6 +42,7 @@ let webApp (root:CompositionRoot) =
             choose [
                 routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
                 routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
+                route "/test/" >=> Test.HttpHandlers.easterEggHandler root.CheckoutFrontendBundle
             ]
         setStatusCode 404 >=> text "Not Found" ]
 

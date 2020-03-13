@@ -1460,7 +1460,7 @@ img {
   position: relative;
   z-index: 1;
 }
-.newsletter-area .newsletter-form form input[type="email"] {
+.newsletter-area .newsletter-form form input[type="text"] {
   width: 100%;
   height: 50px;
   background-color: #fff;
