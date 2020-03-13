@@ -25,6 +25,7 @@ let webApp (root:CompositionRoot) =
                 route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts
                 route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectTo false "/cart/"
                 route "/cart/tbd" >=> Cart.HttpHandlers.reclaimHandler root.CheckoutBackendApiUrl root.CheckoutFrontendBundle root.GetPartnerAccessToken
+                route "/cart/completed" >=> Cart.HttpHandlers.completedHandler >=> text "OK - CompletedCallback Successfull"
                 subRoute "/product" (
                     choose [
 
