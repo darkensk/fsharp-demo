@@ -5,3 +5,27 @@
   width: 100%;
   max-width: 100%;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  text-align: center;
+}
+
+.qtyButtons {
+  border: 0;
+  padding: 10px;
+  font-size: 100%;
+  font-family: inherit;
+}
+
+#quantityForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

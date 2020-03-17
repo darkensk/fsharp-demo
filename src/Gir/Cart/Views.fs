@@ -86,30 +86,33 @@ let cartItemView (cartItem: CartItem) =
           td [ _class "cart_product_desc" ] [ h5 [] [ str cartItem.ProductDetail.Name ] ]
           td [ _class "price" ] [ span [] [ str (string cartItem.ProductDetail.Price + " kr") ] ]
           td [ _class "qty" ]
-              [ div [ _class "qty-btn d-flex" ]
-                    [ p [] [ str "Qty" ]
-                      div [ _class "quantity" ]
-                          [ span
-                              [ _class "qty-minus"
-                                _onclick "" ]
-                                [ i
-                                    [ _class "fa fa-minus"
-                                      _ariaHidden "true" ] [] ]
-                            input
-                                [ _type "number"
-                                  _class "qty-text"
-                                  _id "qty"
-                                  _step "1"
-                                  _min "1"
-                                  _max "300"
-                                  _name "quantity"
-                                  _value (string cartItem.Qty) ]
-                            span
-                                [ _class "qty-plus"
-                                  _onclick "" ]
-                                [ i
-                                    [ _class "fa fa-plus"
-                                      _ariaHidden "true" ] [] ] ] ] ] ]
+              [ div []
+                    [ div
+                        [ _class "quantity"
+                          _style "display: flex;" ]
+                          [ form
+                              [ _id "quantityForm"
+                                _method "POST"
+                                _action (sprintf "/product/%s/add" <| string cartItem.ProductDetail.ProductId) ]
+                                [ button
+                                    [ _class "qty-minus qtyButtons"
+                                      _type "submit"
+                                      _formaction
+                                          (sprintf "/product/%s/remove" <| string cartItem.ProductDetail.ProductId) ]
+                                      [ i [ _class "fa fa-minus" ] [] ]
+                                  input
+                                      [ _type "number"
+                                        _class "qty-text"
+                                        _id "qty"
+                                        _step "1"
+                                        _min "1"
+                                        _max "300"
+                                        _name "quantity"
+                                        _value (string cartItem.Qty)
+                                        _disabled ]
+                                  button
+                                      [ _class "qty-plus qtyButtons"
+                                        _type "submit" ] [ i [ _class "fa fa-plus" ] [] ] ] ] ] ] ]
 
 let cartSummaryView (cartState: CartState) =
     let subTotal = List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
