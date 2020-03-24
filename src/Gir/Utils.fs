@@ -24,3 +24,37 @@ let productDiv (product: Product) =
                     [ div [ _class "line" ] []
                       p [] [ str <| sprintf "%.0f kr" product.Price ]
                       h4 [] [ str product.Name ] ] ] ]
+
+[<RequireQualifiedAccess>]
+module Task =
+    open FSharp.Control.Tasks
+    open System.Threading.Tasks
+
+    let map (fn: 'a -> 'b) (v: Task<'a>) =
+        task {
+            let! value = v
+            return fn value }
+
+[<RequireQualifiedAccess>]
+module Session =
+    let private cartKey = "cart"
+    let private purchaseKey = "purchaseId"
+
+    let getCartState (ctx: HttpContext) =
+        let currentCart =
+            match ctx.Session.GetString(cartKey) with
+            | null -> "{'items': []}"
+            | v -> v
+
+        cartDecoder currentCart
+
+    let deleteCartState (ctx: HttpContext) = ctx.Session.Remove(cartKey)
+
+    let tryGetPurchaseId (ctx: HttpContext) =
+        match ctx.Session.GetString(purchaseKey) with
+        | null -> None
+        | v -> Some v
+
+    let setPurchaseId (ctx: HttpContext) purchaseId = ctx.Session.SetString(purchaseKey, purchaseId)
+
+    let deletePurchaseId (ctx: HttpContext) = ctx.Session.Remove(purchaseKey)

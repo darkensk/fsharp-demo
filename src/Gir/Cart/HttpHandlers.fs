@@ -9,7 +9,7 @@ open Gir.Encoders
 open Gir.Utils
 open CheckoutIntegration
 open Views
-
+open System.Threading.Tasks
 
 let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
     let sessionCart = ctx.Session.GetString("cart")
@@ -66,10 +66,26 @@ let cartEventHandler (products: Product list) (ctx: HttpContext) cartEvent =
         | None -> ctx.Session.SetString("cart", cartEncoder decodedCart)
     | Clear -> ctx.Session.SetString("cart", "{'items': []}")
 
-let cartHandler checkoutFrontendBundleUrl getPurchaseToken getProducts next ctx =
-    let purchaseToken = getPurchaseToken (getCartState ctx) ctx
-    let cartState = getCartState ctx
-    htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken <| getProducts()) next ctx
+let cartHandler
+    checkoutFrontendBundleUrl
+    (getPurchaseToken: CartState -> string -> Task<InitializePaymentResponse>)
+    getProducts
+    (getPartnerAccessToken: unit -> Task<string>)
+    next
+    ctx
+    =
+    task {
+        let cartState = Session.getCartState ctx
+        if List.isEmpty cartState.Items then
+            return! htmlView (cartView cartState checkoutFrontendBundleUrl "" <| getProducts()) next ctx
+        else
+            let! partnerToken = getPartnerAccessToken()
+            let! initPurchaseResponse = getPurchaseToken cartState partnerToken
+            do Session.setPurchaseId ctx initPurchaseResponse.PurchaseId |> ignore
+            return! htmlView
+                        (cartView cartState checkoutFrontendBundleUrl initPurchaseResponse.Jwt <| getProducts()) next
+                        ctx
+    }
 
 let addToCartHandler productId getProducts next (ctx: HttpContext) =
     task {
@@ -91,28 +107,54 @@ let removeFromCartHandler productId getProducts next (ctx: HttpContext) =
 
 let clearCartHandler getProducts next (ctx: HttpContext) =
     task {
-        ctx.Session.Remove("purchaseId")
+        Session.deletePurchaseId |> ignore
         do CartEvent.Clear |> cartEventHandler (getProducts()) ctx
 
         return! next ctx
     }
 
-let reclaimHandler backendUrl (checkoutFrontendBundleUrl: string) merchantToken next (ctx: HttpContext) =
-    let purchaseToken = reclaimPurchaseToken backendUrl (merchantToken()) ctx
-    let cartState = getCartState ctx
-    htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken []) next ctx
-
-let updateItemsHandler backendUrl merchantToken (next: HttpFunc) (ctx: HttpContext) =
+let reclaimHandler
+    backendUrl
+    (checkoutFrontendBundleUrl: string)
+    (getPartnerAccessToken: unit -> Task<string>)
+    next
+    (ctx: HttpContext)
+    =
+    // Zoberem si partner token
+    // Vytiahnem si z CTX purchase ID
+    // Spravim reclaim na zaklade ulozeneho purchaseId
+    // vytiahnem si cart state aby som vedel zobrazit view
+    // Poslem reclaimnuty purchase do view
+    // Vidim Checkout3 v completed stepe
     task {
+        let! partnerToken = getPartnerAccessToken()
+        let maybePurchaseId = Session.tryGetPurchaseId ctx
         let cartState = getCartState ctx
-        do updateItems backendUrl cartState (merchantToken()) ctx |> ignore
+
+        match maybePurchaseId with
+        | Some v ->
+            let! purchaseToken = reclaimPurchaseToken backendUrl partnerToken v
+            return! htmlView (cartView cartState checkoutFrontendBundleUrl purchaseToken []) next ctx
+        | None -> return! htmlView (cartView cartState checkoutFrontendBundleUrl "" []) next ctx
+    }
+
+let updateItemsHandler backendUrl (getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
+    task {
+        let! partnerToken = getPartnerAccessToken()
+        let cartState = Session.getCartState ctx
+        let sessionPurchaseId = Session.tryGetPurchaseId ctx
+        match sessionPurchaseId with
+        | Some v -> do! updateItems backendUrl cartState partnerToken v
+        | None ->
+            let! initPaymentResponse = getPurchaseToken backendUrl cartState partnerToken
+            do Session.setPurchaseId ctx initPaymentResponse.PurchaseId |> ignore
+
         return! next ctx
     }
 
-
 let completedHandler next (ctx: HttpContext) =
     task {
-        do ctx.Session.Remove("cart") |> ignore
-        ctx.Session.Remove("purchaseId") |> ignore
+        Session.deleteCartState |> ignore
+        Session.deletePurchaseId |> ignore
         return! next ctx
     }
