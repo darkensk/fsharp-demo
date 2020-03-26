@@ -1,110 +1,82 @@
 module Gir.Cart.CheckoutIntegration
 
 open FSharp.Data
-open Microsoft.AspNetCore.Http
+open FSharp.Control.Tasks
 open Microsoft.IdentityModel.JsonWebTokens
-open Microsoft.IdentityModel.Tokens
-open Thoth.Json.Net
 open Gir.Domain
 open Gir.Encoders
 open Gir.Decoders
+open Gir.Utils
 
 
 let mutable partnerAccessTokenCache: string option = None
 
-let decodePartnerAccessToken =
-    partnerAccessTokenDecoder
-    >> function
-    | Ok v -> v
-    | Error e -> failwithf "Cannot decode partner access token, error = %A" e
+let getRequestPartnerAccessToken url clientId clientSecret =
+    task {
+        let getPartnerAccessTokenPayload = getPartnerTokenPayloadEncoder clientId clientSecret
+        return! Http.AsyncRequestString
+                    (url, headers = [ ("Content-Type", "application/json") ],
+                     body = TextRequest getPartnerAccessTokenPayload, httpMethod = "POST")
+                |> Async.StartAsTask
+                |> Task.map decodePartnerAccessToken
+    }
 
-let getPartnerAccessToken url clientId clientSecret =
-    let getPartnerAccessTokenPayload = getPartnerTokenPayloadEncoder clientId clientSecret
-    Http.RequestString
-        (url, headers = [ ("Content-Type", "application/json") ], body = TextRequest getPartnerAccessTokenPayload,
-         httpMethod = "POST") |> decodePartnerAccessToken
-
-let createValidationParameters =
-    let validationParameters = TokenValidationParameters()
-    validationParameters.ValidateLifetime <- true
-    validationParameters
-
-let isValid t =
+let isValid (t: string) =
     let handler = JsonWebTokenHandler()
-    let validationResult = handler.ValidateToken(t, createValidationParameters)
-    if validationResult.IsValid then (Some t) else None
+    let jwt = handler.ReadJsonWebToken(t)
+    if jwt.ValidTo > System.DateTime.UtcNow then (Some t) else None
 
 let getCachedToken url clientId clientSecret =
-    partnerAccessTokenCache
-    |> Option.bind isValid
-    |> Option.defaultWith (fun _ ->
-        let token = getPartnerAccessToken url clientId clientSecret
-        partnerAccessTokenCache <- Some token
-        token)
+    task {
+        let validToken = partnerAccessTokenCache |> Option.bind isValid
+        match validToken with
+        | Some v -> return v
+        | None ->
+            let! token = getRequestPartnerAccessToken url clientId clientSecret
+            partnerAccessTokenCache <- Some token
+            return token
+    }
 
-let decodePurchaseToken =
-    purchaseTokenDecoder
-    >> function
-    | Ok v -> v
-    | Error e -> failwithf "Cannot decode purchase token, error = %A" e
-
-let initPaymentPayloadDecoder =
-    Decode.object (fun get ->
-        { PurchaseId = get.Required.Field "purchaseId" Decode.string
-          Jwt = get.Required.Field "jwt" Decode.string })
-
-let initPaymentDecoder (ctx: HttpContext) s =
-    match Decode.fromString initPaymentPayloadDecoder s with
-    | Ok v ->
-        ctx.Session.SetString("purchaseId", v.PurchaseId)
-        v.Jwt
-    | Error e -> failwithf "Cannot decode init payment, error = %A" e
-
-let reclaimPurchaseToken backendUrl partnerToken (ctx: HttpContext) =
-    let sessionPurchaseId = ctx.Session.GetString("purchaseId")
-
-    if isNull sessionPurchaseId then
-        failwith "Cannot reclaim token, purchase not initialized"
-    else
+let reclaimPurchaseToken backendUrl partnerToken sessionPurchaseId =
+    task {
         let bearerString = "Bearer " + partnerToken
         let url = sprintf "%s/api/partner/payments/%s/token" backendUrl sessionPurchaseId
-        Http.RequestString
-            (url,
-             headers =
-                 [ ("Content-Type", "application/json")
-                   ("Authorization", bearerString) ], httpMethod = "GET")
-        |> decodePurchaseToken
+        return! Http.AsyncRequestString
+                    (url,
+                     headers =
+                         [ ("Content-Type", "application/json")
+                           ("Authorization", bearerString) ], httpMethod = "GET")
+                |> Async.StartAsTask
+                |> Task.map decodePurchaseToken
+    }
 
-let getPurchaseToken backendUrl (cartState: CartState) partnerToken (ctx: HttpContext) =
-    let sessionPurchaseId = ctx.Session.GetString("purchaseId")
-
-    if (List.isEmpty cartState.Items) then
-        ""
-    else if isNull sessionPurchaseId then
+let getPurchaseToken backendUrl (cartState: CartState) partnerToken =
+    task {
         let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
 
         let bearerString = "Bearer " + partnerToken
-        Http.RequestString
-            (sprintf "%s/api/partner/payments" backendUrl,
-             headers =
-                 [ ("Content-Type", "application/json")
-                   ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "POST")
-        |> initPaymentDecoder ctx
-    else
-        reclaimPurchaseToken backendUrl partnerToken ctx
 
-let updateItems backendUrl cartState partnerToken (ctx: HttpContext) =
-    let sessionPurchaseId = ctx.Session.GetString("purchaseId")
-    if (List.isEmpty cartState.Items) then
-        ""
-    else if isNull sessionPurchaseId then
-        getPurchaseToken backendUrl cartState partnerToken ctx
-    else
+        return! Http.AsyncRequestString
+                    (sprintf "%s/api/partner/payments" backendUrl,
+                     headers =
+                         [ ("Content-Type", "application/json")
+                           ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload,
+                     httpMethod = "POST")
+                |> Async.StartAsTask
+                |> Task.map initPaymentDecoder
+    }
+
+let updateItems backendUrl cartState partnerToken sessionPurchaseId =
+    task {
         let encodedPaymentPayload = paymentPayloadEncoder cartState.Items
         let bearerString = "Bearer " + partnerToken
         let url = sprintf "%s/api/partner/payments/%s/items" backendUrl sessionPurchaseId
-        Http.RequestString
-            (url,
-             headers =
-                 [ ("Content-Type", "application/json")
-                   ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload, httpMethod = "PUT")
+        return! Http.AsyncRequestString
+                    (url,
+                     headers =
+                         [ ("Content-Type", "application/json")
+                           ("Authorization", bearerString) ], body = TextRequest encodedPaymentPayload,
+                     httpMethod = "PUT")
+                |> Async.StartAsTask
+                |> Task.map ignore
+    }

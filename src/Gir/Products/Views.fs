@@ -47,7 +47,7 @@ let listTemplate (cartState: CartState) (productList: Product list) =
           subscribeSectionView
           footerView ]
 
-let listView (cartState: CartState) products = [ listTemplate cartState products ] |> layout
+let listView (cartState: CartState) (products: Product list) = [ listTemplate cartState products ] |> layout
 
 let detailTemplate (cartState: CartState) (product: Product) =
     div []
@@ -90,7 +90,9 @@ let detailTemplate (cartState: CartState) (product: Product) =
                                                             [ _class "active"
                                                               _dataTarget "#product_details_slider"
                                                               _dataSlideTo "0"
-                                                              _style "background-image: url(/img/product-img/pro-big-1.jpg)" ] []
+                                                              _style
+                                                                  "background-image: url(/img/product-img/pro-big-1.jpg)" ]
+                                                              []
                                                           li
                                                               [ _dataTarget "#product_details_slider"
                                                                 _dataSlideTo "1"
@@ -213,4 +215,4 @@ let detailTemplate (cartState: CartState) (product: Product) =
           subscribeSectionView
           footerView ]
 
-let productDetailView cartState p = [ detailTemplate cartState p ] |> layout
+let productDetailView (cartState: CartState) (p: Product) = [ detailTemplate cartState p ] |> layout

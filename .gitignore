@@ -1,5 +1,5 @@
 .fable/
-.fake/
+.fake
 .vs/
 obj/
 bin/
@@ -11,7 +11,7 @@ release.sh
 .idea/
 *.DotSettings.user
 deploy
-/.ionide
+.ionide
 config.development.json
 local.settings.json
 .paket/

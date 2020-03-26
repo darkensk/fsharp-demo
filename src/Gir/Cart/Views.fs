@@ -6,7 +6,7 @@ open Gir.Domain
 open Gir.Utils
 
 
-let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
+let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     div
         [ _id "checkout-form"
           _style "padding-top: 50px;" ]
@@ -63,7 +63,7 @@ let initCheckoutInstance checkoutFrontendBundleUrl (purchaseToken: string) =
               };
 
               const redirectUrlCallback = () =>
-                window.location.origin + "/cart/tbd#checkout-form";
+                window.location.origin + "/cart/#checkout-form";
 
               window.avardaCheckoutInit({
                 accessToken: "%s",
@@ -140,7 +140,7 @@ let cartSummaryView (cartState: CartState) =
                           [ _href "/cart/clear"
                             _class "btn amado-btn active mb-15" ] [ str "Clear Cart" ] ] ] ]
 
-let template (cartState: CartState) (products: Product list) checkoutFrontendBundleUrl (purchaseToken: string) =
+let template (cartState: CartState) (products: Product list) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     let products = products |> List.map productDiv
     div []
         [ div []
@@ -208,5 +208,5 @@ let template (cartState: CartState) (products: Product list) checkoutFrontendBun
                 subscribeSectionView
                 footerView ] ]
 
-let cartView (cartState: CartState) checkoutFrontendBundleUrl (purchaseToken: string) (products: Product list) =
+let cartView (cartState: CartState) (checkoutFrontendBundleUrl: string) (purchaseToken: string) (products: Product list) =
     [ template cartState products checkoutFrontendBundleUrl purchaseToken ] |> layout
