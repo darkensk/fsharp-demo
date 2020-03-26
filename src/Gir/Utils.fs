@@ -6,14 +6,6 @@ open Gir.Decoders
 open Gir.Domain
 
 
-let getCartState (ctx: HttpContext) =
-    let sessionCart = ctx.Session.GetString("cart")
-
-    let currentCart =
-        if isNull sessionCart then "{'items': []}" else sessionCart
-
-    cartDecoder currentCart
-
 let productDiv (product: Product) =
     div [ _class "single-products-catagory clearfix" ]
         [ a [ _href (sprintf "/product/%i" product.ProductId) ]
@@ -47,6 +39,8 @@ module Session =
             | v -> v
 
         cartDecoder currentCart
+
+    let setCartState (ctx: HttpContext) cartState = ctx.Session.SetString(cartKey, cartState)
 
     let deleteCartState (ctx: HttpContext) = ctx.Session.Remove(cartKey)
 

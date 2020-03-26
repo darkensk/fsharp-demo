@@ -4,9 +4,10 @@ open Giraffe.GiraffeViewEngine
 open Gir.Layout
 
 
-let template checkoutFrontendBundleUrl purchaseToken =
-    div [ _id "checkout-form"
-          _style "padding: 20px;"]
+let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
+    div
+        [ _id "checkout-form"
+          _style "padding: 20px;" ]
         [ script [ _type "application/javascript" ] [ rawText <| sprintf """
               (function(e, t, n, a, s, c, o, i, r) {
                 e[a] =
@@ -53,5 +54,5 @@ let template checkoutFrontendBundleUrl purchaseToken =
               });
               """                                                 checkoutFrontendBundleUrl purchaseToken ] ]
 
-let testCheckoutView checkoutFrontendBundleUrl purchaseToken =
+let testCheckoutView (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     [ template checkoutFrontendBundleUrl purchaseToken ] |> layout

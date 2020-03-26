@@ -4,7 +4,7 @@ open Thoth.Json.Net
 open Gir.Domain
 
 
-let getPartnerTokenPayloadEncoder clientId clientSecret =
+let getPartnerTokenPayloadEncoder (clientId: string) (clientSecret: string) =
     Encode.object
         [ "clientId", Encode.string clientId
           "clientSecret", Encode.string clientSecret ]

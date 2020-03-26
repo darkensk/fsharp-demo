@@ -14,17 +14,16 @@ open System
 open System.IO
 
 
-let redirectHandler next (ctx:HttpContext) =
+let redirectHandler next (ctx: HttpContext) =
     let reffererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
     redirectTo false reffererUrl next ctx
 
-let webApp (root:CompositionRoot) =
+let webApp (root: CompositionRoot) =
     choose [
         GET >=>
             choose [
-                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts root.GetPartnerAccessToken
+                route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts root.GetPartnerAccessToken root.ReclaimPurchaseToken
                 route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectTo false "/cart/"
-                route "/cart/tbd" >=> Cart.HttpHandlers.reclaimHandler root.CheckoutBackendApiUrl root.CheckoutFrontendBundle root.GetPartnerAccessToken
                 route "/cart/completed" >=> Cart.HttpHandlers.completedHandler >=> text "OK - CompletedCallback Successfull"
                 subRoute "/product" (
                     choose [
@@ -50,7 +49,7 @@ let webApp (root:CompositionRoot) =
 // Error handler
 // ---------------------------------
 
-let errorHandler (ex : Exception) (logger : ILogger) =
+let errorHandler (ex: Exception) (logger: ILogger) =
     logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
     clearResponse >=> setStatusCode 500 >=> text ex.Message
 
@@ -58,7 +57,7 @@ let errorHandler (ex : Exception) (logger : ILogger) =
 // Config and Main
 // ---------------------------------
 
-let configureCors (builder : CorsPolicyBuilder) =
+let configureCors (builder: CorsPolicyBuilder) =
     builder.WithOrigins("http://localhost:5000")
            .AllowAnyMethod()
            .AllowAnyHeader()
@@ -68,7 +67,7 @@ let configureCors (builder : CorsPolicyBuilder) =
            .AllowAnyHeader()
            |> ignore
 
-let configureApp root (app : IApplicationBuilder) =
+let configureApp (root: CompositionRoot) (app: IApplicationBuilder) =
     let env = app.ApplicationServices.GetService<IWebHostEnvironment>()
     (match env.IsDevelopment() with
     | true  -> app.UseDeveloperExceptionPage()
@@ -79,7 +78,7 @@ let configureApp root (app : IApplicationBuilder) =
         .UseSession()
         .UseGiraffe(webApp root)
 
-let configureServices (services : IServiceCollection) =
+let configureServices (services: IServiceCollection) =
     services.AddCors()    |> ignore
     services.AddGiraffe() |> ignore
     services.AddAuthentication() |> ignore
@@ -87,7 +86,7 @@ let configureServices (services : IServiceCollection) =
     services.AddSession() |> ignore
     services.AddMvc() |> ignore
 
-let configureLogging (builder : ILoggingBuilder) =
+let configureLogging (builder: ILoggingBuilder) =
     builder.AddFilter(fun l -> l.Equals LogLevel.Error)
            .AddConsole()
            .AddDebug() |> ignore

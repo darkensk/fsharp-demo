@@ -1,7 +1,6 @@
 module Gir.CompositionRoot
 
 open Microsoft.Extensions.Configuration
-open Microsoft.AspNetCore.Http
 open System.Threading.Tasks
 open Gir.Domain
 
@@ -12,7 +11,8 @@ type CompositionRoot =
       GetPartnerAccessToken: unit -> Task<string>
       GetPurchaseToken: CartState -> string -> Task<InitializePaymentResponse>
       GetAllProducts: unit -> Product list
-      GetProductById: int -> Product option }
+      GetProductById: int -> Product option
+      ReclaimPurchaseToken: string -> string -> Task<string> }
 
 let dummyProducts =
     let createProduct id name price img =
@@ -42,4 +42,5 @@ module CompositionRoot =
           GetPartnerAccessToken = getPartnerAccessToken
           GetPurchaseToken = Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"]
           GetAllProducts = fun _ -> dummyProducts
-          GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i) }
+          GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i)
+          ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"] }

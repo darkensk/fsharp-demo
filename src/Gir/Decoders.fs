@@ -28,3 +28,27 @@ let cartDecoder s =
     match Decode.fromString decoder s with
     | Ok i -> i
     | Error e -> failwithf "Cannot decode cart, error = %A" e
+
+let decodePartnerAccessToken =
+    partnerAccessTokenDecoder
+    >> function
+    | Ok v -> v
+    | Error e -> failwithf "Cannot decode partner access token, error = %A" e
+
+let decodePurchaseToken =
+    purchaseTokenDecoder
+    >> function
+    | Ok v -> v
+    | Error e -> failwithf "Cannot decode purchase token, error = %A" e
+
+let initPaymentPayloadDecoder =
+    Decode.object (fun get ->
+        { PurchaseId = get.Required.Field "purchaseId" Decode.string
+          Jwt = get.Required.Field "jwt" Decode.string })
+
+let initPaymentDecoder s =
+    match Decode.fromString initPaymentPayloadDecoder s with
+    | Ok v ->
+        { PurchaseId = v.PurchaseId
+          Jwt = v.Jwt }
+    | Error e -> failwithf "Cannot decode init payment, error = %A" e
