@@ -66,7 +66,7 @@ let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: str
                 window.location.origin + "/cart/#checkout-form";
 
               window.avardaCheckoutInit({
-                accessToken: "%s",
+                purchaseJwt: "%s",
                 rootElementId: "checkout-form",
                 redirectUrl: redirectUrlCallback,
                 styles: {},

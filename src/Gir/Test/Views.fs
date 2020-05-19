@@ -45,7 +45,7 @@ let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
                 window.location.origin;
 
               window.avardaCheckoutInit({
-                accessToken: "%s",
+                purchaseJwt: "%s",
                 rootElementId: "checkout-form",
                 redirectUrl: redirectUrlCallback,
                 styles: {},
