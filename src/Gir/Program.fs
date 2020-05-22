@@ -96,7 +96,6 @@ let configureLogging (builder: ILoggingBuilder) =
 let main _ =
     let cfg = 
         (ConfigurationBuilder())
-            .AddJsonFile("local.settings.json", true)
             .AddEnvironmentVariables()
             .Build()
 
