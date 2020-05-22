@@ -25,6 +25,7 @@ let webApp (root: CompositionRoot) =
                 route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts root.GetPartnerAccessToken root.ReclaimPurchaseToken
                 route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectTo false "/cart/"
                 route "/cart/completed" >=> Cart.HttpHandlers.completedHandler >=> text "OK - CompletedCallback Successfull"
+                route "/cart/sessionExpired" >=> Cart.HttpHandlers.sessionExpiredHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> text "OK - Session Timed Out Callback Successfull"
                 subRoute "/product" (
                     choose [
                         subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById)

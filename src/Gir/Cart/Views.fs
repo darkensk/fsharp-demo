@@ -13,7 +13,9 @@ let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: str
         (match purchaseToken with
          | "" -> []
          | _ ->
-             [ script [ _type "application/javascript" ] [ rawText <| sprintf """
+             [ script [ _type "application/javascript" ]
+                   [ rawText
+                     <| sprintf """
               (function(e, t, n, a, s, c, o, i, r) {
                 e[a] =
                   e[a] ||
@@ -37,6 +39,7 @@ let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: str
               );
 
               const completedUrl = window.location.origin + "/cart/completed";
+              const sessionExpiredUrl = window.location.origin + "/cart/sessionExpired";
               const cartUrl = window.location.origin + "/cart/";
 
               const completedCallback = () => {
@@ -62,19 +65,40 @@ let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: str
                 completedCallback();
               };
 
+              const sessionExpired = () => {
+                fetch(sessionExpiredUrl)
+                  .then(response => {
+                    return response.text();
+                  })
+                  .then(data => {
+                    console.log(data);
+                  });
+                window.location.replace(cartUrl);
+              };
+
+              var sessionTimedOutCallback = function(avardaCheckoutInstance) {
+                  console.log("Session Timed Out - Handle here!");
+
+                  // Un-mount Checkout 3.0 frontend app from the page
+                  avardaCheckoutInstance.unmount();
+                  // Start Session Expired handling process
+                  sessionExpired();
+              };
+
               const redirectUrlCallback = () =>
                 window.location.origin + "/cart/#checkout-form";
 
               window.avardaCheckoutInit({
-                purchaseJwt: "%s",
-                rootElementId: "checkout-form",
-                redirectUrl: redirectUrlCallback,
-                styles: {},
-                disableFocus: true,
-                handleByMerchantCallback: handleByMerchantCallback,
-                completedPurchaseCallback: completedCallback
+                "purchaseJwt": "%s",
+                "rootElementId": "checkout-form",
+                "redirectUrl": redirectUrlCallback,
+                "styles": {},
+                "disableFocus": true,
+                "handleByMerchantCallback": handleByMerchantCallback,
+                "completedPurchaseCallback": completedCallback,
+                "sessionTimedOutCallback": sessionTimedOutCallback,
               });
-              """                                                      checkoutFrontendBundleUrl purchaseToken ] ])
+              """        checkoutFrontendBundleUrl purchaseToken ] ])
 
 let cartItemView (cartItem: CartItem) =
     tr []
@@ -93,12 +117,15 @@ let cartItemView (cartItem: CartItem) =
                           [ form
                               [ _id "quantityForm"
                                 _method "POST"
-                                _action (sprintf "/product/%s/add" <| string cartItem.ProductDetail.ProductId) ]
+                                _action
+                                    (sprintf "/product/%s/add"
+                                     <| string cartItem.ProductDetail.ProductId) ]
                                 [ button
                                     [ _class "qty-minus qtyButtons"
                                       _type "submit"
                                       _formaction
-                                          (sprintf "/product/%s/remove" <| string cartItem.ProductDetail.ProductId) ]
+                                          (sprintf "/product/%s/remove"
+                                           <| string cartItem.ProductDetail.ProductId) ]
                                       [ i [ _class "fa fa-minus" ] [] ]
                                   input
                                       [ _type "number"
@@ -115,7 +142,9 @@ let cartItemView (cartItem: CartItem) =
                                         _type "submit" ] [ i [ _class "fa fa-plus" ] [] ] ] ] ] ] ]
 
 let cartSummaryView (cartState: CartState) =
-    let subTotal = List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
+    let subTotal =
+        List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
+
     let subTotalString = "\"" + string subTotal + " kr\""
     div [ _class "col-12 col-lg-4" ]
         [ div [ _class "cart-summary" ]
@@ -153,9 +182,7 @@ let template (cartState: CartState) (products: Product list) (checkoutFrontendBu
                           [ div [ _class "row" ]
                                 [ div [ _class "col-12" ]
                                       [ div [ _class "search-content" ]
-                                            [ form
-                                                [ _action "#"
-                                                  _method "get" ]
+                                            [ form [ _action "#"; _method "get" ]
                                                   [ input
                                                       [ _type "search"
                                                         _name "search"
@@ -172,10 +199,7 @@ let template (cartState: CartState) (products: Product list) (checkoutFrontendBu
                                       [ img
                                           [ _src "/img/core-img/logo.png"
                                             _alt "" ] ] ]
-                            div [ _class "amado-navbar-toggler" ]
-                                [ span [] []
-                                  span [] []
-                                  span [] [] ] ]
+                            div [ _class "amado-navbar-toggler" ] [ span [] []; span [] []; span [] [] ] ]
                       headerView cartState
                       div [ _class "cart-table-area section-padding-100" ]
                           [ div [ _class "container-fluid" ]
@@ -191,8 +215,7 @@ let template (cartState: CartState) (products: Product list) (checkoutFrontendBu
                                                  [ div [ _class "amado-pro-catagory clearfix" ] products ] ]
                                        | _ ->
                                            [ div [ _class "col-12 col-lg-8" ]
-                                                 [ div [ _class "cart-title mt-50" ]
-                                                       [ h2 [] [ str "Shopping Cart" ] ]
+                                                 [ div [ _class "cart-title mt-50" ] [ h2 [] [ str "Shopping Cart" ] ]
                                                    div [ _class "cart-table clearfix" ]
                                                        [ table [ _class "table table-responsive" ]
                                                              [ thead []
@@ -209,4 +232,5 @@ let template (cartState: CartState) (products: Product list) (checkoutFrontendBu
                 footerView ] ]
 
 let cartView (cartState: CartState) (checkoutFrontendBundleUrl: string) (purchaseToken: string) (products: Product list) =
-    [ template cartState products checkoutFrontendBundleUrl purchaseToken ] |> layout
+    [ template cartState products checkoutFrontendBundleUrl purchaseToken ]
+    |> layout

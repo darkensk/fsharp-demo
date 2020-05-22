@@ -8,7 +8,9 @@ let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     div
         [ _id "checkout-form"
           _style "padding: 20px;" ]
-        [ script [ _type "application/javascript" ] [ rawText <| sprintf """
+        [ script [ _type "application/javascript" ]
+              [ rawText
+                <| sprintf """
               (function(e, t, n, a, s, c, o, i, r) {
                 e[a] =
                   e[a] ||
@@ -41,18 +43,39 @@ let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
                   "<br><h2>External payment handled by partner!</h2><br>";
               };
 
+              var completedPurchaseCallback = function(avardaCheckoutInstance) {
+                  console.log("Purchase Completed Successfully - Handle here!");
+
+                  // Un-mount Checkout 3.0 frontend app from the page
+                  avardaCheckoutInstance.unmount();
+                  // Display success message instead of Checkout 3.0 frontend application
+                  document.getElementById("checkout-form").innerHTML = "<br><h2>Purchase Completed Successfully!</h2><br>";
+              };
+
+              var sessionTimedOutCallback = function(avardaCheckoutInstance) {
+                  console.log("Session Timed Out - Handle here!");
+
+                  // Un-mount Checkout 3.0 frontend app from the page
+                  avardaCheckoutInstance.unmount();
+                  // Display success message instead of Checkout 3.0 frontend application
+                  document.getElementById("checkout-form").innerHTML = "<br><h2>Session Timed Out - handled by partner!</h2><br>";
+              };
+
               const redirectUrlCallback = () =>
                 window.location.origin;
 
               window.avardaCheckoutInit({
-                purchaseJwt: "%s",
-                rootElementId: "checkout-form",
-                redirectUrl: redirectUrlCallback,
-                styles: {},
-                disableFocus: true,
-                handleByMerchantCallback: handleByMerchantCallback
+                "purchaseJwt": "%s",
+                "rootElementId": "checkout-form",
+                "redirectUrl": redirectUrlCallback,
+                "styles": {},
+                "disableFocus": true,
+                "handleByMerchantCallback": handleByMerchantCallback,
+                "completedPurchaseCallback": completedPurchaseCallback,
+                "sessionTimedOutCallback": sessionTimedOutCallback,
               });
-              """                                                 checkoutFrontendBundleUrl purchaseToken ] ]
+              """   checkoutFrontendBundleUrl purchaseToken ] ]
 
 let testCheckoutView (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
-    [ template checkoutFrontendBundleUrl purchaseToken ] |> layout
+    [ template checkoutFrontendBundleUrl purchaseToken ]
+    |> layout
