@@ -140,3 +140,16 @@ let completedHandler next (ctx: HttpContext) =
         Session.deletePurchaseId ctx
         return! next ctx
     }
+
+let sessionExpiredHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
+    task {
+        // Re-use cart and initialize a new purchase
+        let cartState = Session.getCartState ctx
+        if List.isEmpty cartState.Items then
+            return! next ctx
+        else
+            let! partnerToken = getPartnerAccessToken()
+            let! initPaymentResponse = getPurchaseToken backendUrl cartState partnerToken
+            Session.setPurchaseId ctx initPaymentResponse.PurchaseId
+            return! next ctx
+    }
