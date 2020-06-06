@@ -2,5 +2,7 @@ module Gir.Settings.HttpHandlers
 
 open Giraffe
 open Views
+open Gir.Domain
 
-let settingsHandler next ctx = (htmlView <| settingsView) next ctx
+let settingsHandler (settings: Settings) next ctx =
+    (htmlView <| settingsView settings) next ctx

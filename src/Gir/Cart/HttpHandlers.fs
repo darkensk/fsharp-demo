@@ -118,7 +118,7 @@ let clearCartHandler (getProducts: unit -> Product list) next (ctx: HttpContext)
         return! next ctx
     }
 
-let updateItemsHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
+let updateItemsHandler (backendUrl: string) (settings:Settings )(getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
     task {
         let cartState = Session.getCartState ctx
         if List.isEmpty cartState.Items then
@@ -127,9 +127,9 @@ let updateItemsHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task
             let! partnerToken = getPartnerAccessToken()
             let sessionPurchaseId = Session.tryGetPurchaseId ctx
             match sessionPurchaseId with
-            | Some v -> do! updateItems backendUrl cartState partnerToken v
+            | Some v -> do! updateItems backendUrl settings cartState partnerToken v
             | None ->
-                let! initPaymentResponse = getPurchaseToken backendUrl cartState partnerToken
+                let! initPaymentResponse = getPurchaseToken backendUrl settings cartState partnerToken
                 Session.setPurchaseId ctx initPaymentResponse.PurchaseId
             return! next ctx
     }
@@ -141,7 +141,7 @@ let completedHandler next (ctx: HttpContext) =
         return! next ctx
     }
 
-let sessionExpiredHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
+let sessionExpiredHandler (backendUrl: string) (settings:Settings) (getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
     task {
         // Re-use cart and initialize a new purchase
         let cartState = Session.getCartState ctx
@@ -149,7 +149,7 @@ let sessionExpiredHandler (backendUrl: string) (getPartnerAccessToken: unit -> T
             return! next ctx
         else
             let! partnerToken = getPartnerAccessToken()
-            let! initPaymentResponse = getPurchaseToken backendUrl cartState partnerToken
+            let! initPaymentResponse = getPurchaseToken backendUrl settings cartState partnerToken
             Session.setPurchaseId ctx initPaymentResponse.PurchaseId
             return! next ctx
     }

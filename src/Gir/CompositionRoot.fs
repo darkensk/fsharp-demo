@@ -12,7 +12,8 @@ type CompositionRoot =
       GetPurchaseToken: CartState -> string -> Task<InitializePaymentResponse>
       GetAllProducts: unit -> Product list
       GetProductById: int -> Product option
-      ReclaimPurchaseToken: string -> string -> Task<string> }
+      ReclaimPurchaseToken: string -> string -> Task<string>
+      Settings: Settings }
 
 let dummyProducts =
     let createProduct id name price img =
@@ -20,6 +21,7 @@ let dummyProducts =
           Name = name
           Price = price
           Img = img }
+
     [ createProduct 1 "Modern Chair" 180. "/img/bg-img/1.jpg"
       createProduct 2 "Minimalistic Plant Pot" 50. "/img/bg-img/2.jpg"
       createProduct 3 "Night Stand" 250. "/img/bg-img/4.jpg"
@@ -33,14 +35,21 @@ let dummyProducts =
 
 module CompositionRoot =
     let compose (cfg: IConfigurationRoot): CompositionRoot =
-        let url = cfg.["checkoutBackendApiUrl"] + "/api/partner/tokens"
-        let getPartnerAccessToken() =
+        let url =
+            cfg.["checkoutBackendApiUrl"]
+            + "/api/partner/tokens"
+
+        let getPartnerAccessToken () =
             Cart.CheckoutIntegration.getCachedToken url cfg.["clientId"] cfg.["clientSecret"]
 
         { CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
           CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
           GetPartnerAccessToken = getPartnerAccessToken
-          GetPurchaseToken = Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"]
+          GetPurchaseToken = Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] defaultSettings
           GetAllProducts = fun _ -> dummyProducts
-          GetProductById = fun i -> dummyProducts |> List.tryFind (fun x -> x.ProductId = i)
-          ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"] }
+          GetProductById =
+              fun i ->
+                  dummyProducts
+                  |> List.tryFind (fun x -> x.ProductId = i)
+          ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"]
+          Settings = defaultSettings }
