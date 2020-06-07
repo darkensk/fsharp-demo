@@ -140,6 +140,11 @@ type CustomStyles =
     | Set of customStyles: string
     | NotSet
 
+let customStylesToBool cs =
+    match cs with
+    | Set _ -> true
+    | NotSet -> false
+
 type ExtraCheckoutFlags =
     { DisableFocus: bool
       BeforeSubmitCallbackEnabled: bool
@@ -165,7 +170,7 @@ let defaultExtraInitSettings =
       RecurringPayments = Hidden
       SmsNewsletterSubscription = Hidden
       EmailNewsletterSubscription = Hidden
-      EmailInvoice = Hidden }
+      EmailInvoice = Unchecked }
 
 let defaultSettings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags

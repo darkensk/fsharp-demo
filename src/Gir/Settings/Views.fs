@@ -14,14 +14,17 @@ let columnStyles =
     _style "display: flex; flex-direction: column; padding: 20px 0px; width: 500px;"
 
 
-let inputView (inputId: string) (inputLabel: string) =
+let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) =
+    let checkedAttribute = if isChecked then [ _checked ] else []
     div [ rowStyles ]
         [ label [ _for inputId ] [ str inputLabel ]
           input
-              [ _type "checkbox"
-                _id inputId
-                _name inputId
-                _value "true" ] ]
+              ([ _style "width: 30px; height: 30px;"
+                 _type "checkbox"
+                 _id inputId
+                 _name inputId
+                 _value "true" ]
+               @ checkedAttribute) ]
 
 let textareaView (areaId: string) (areaLabel: string) =
     div [ rowStyles ]
@@ -32,14 +35,20 @@ let textareaView (areaId: string) (areaLabel: string) =
                 _value ""
                 _form "settings" ] [] ]
 
-let selectView (selectId: string) selectLabel (selectOptions) =
+let selectView (selectId: string) (selectLabel: string) (selectOptions: string list) (selectedOption: string) =
+    let selectedOptionAttribute option =
+        if option = selectedOption then [ _selected ] else []
+
     div [ rowStyles ]
         [ label [ _for selectId ] [ str selectLabel ]
-          select [ _name selectId; _id selectId ] (List.map (fun o -> option [ _value o ] [ str o ]) selectOptions) ]
+          select [ _name selectId; _id selectId ]
+              (List.map (fun o -> option ([ _value o ] @ selectedOptionAttribute o) [ str o ]) selectOptions) ]
 
 
 let template (settings: Settings) =
     let checkboxStateOptions = [ "Hidden"; "Checked"; "Unchecked" ]
+
+    let { ExtraInitSettings = initSettings; ExtraCheckoutFlags = checkoutFlags } = settings
 
     div [ columnStyles ]
         [ form [ _id "settings" ]
@@ -50,19 +59,26 @@ let template (settings: Settings) =
                       "Finnish"
                       "Norwegian"
                       "Estonian"
-                      "Danish" ]
-                selectView "mode" "Mode" [ "b2c"; "b2b" ]
+                      "Danish" ] (languageToString initSettings.Language)
+                selectView "mode" "Mode" [ "b2c"; "b2b" ] "b2c"
                 selectView "differentDeliveryAddress" "Different Delivery Address" checkboxStateOptions
-                inputView "displayItems" "Display Items"
+                    (checkboxStateToString initSettings.DifferentDeliveryAddress)
+                checkboxView "displayItems" "Display Items" initSettings.DisplayItems
                 selectView "recurringPayments" "Recurring Payments" checkboxStateOptions
+                    (checkboxStateToString initSettings.RecurringPayments)
                 selectView "smsNewsletterSubscription" "SMS Newsletter Subscription" checkboxStateOptions
+                    (checkboxStateToString initSettings.SmsNewsletterSubscription)
                 selectView "emailNewsletterSubscription" "Email Newsletter Subscription" checkboxStateOptions
+                    (checkboxStateToString initSettings.EmailNewsletterSubscription)
                 selectView "emailInvoice" "Email Invoice" checkboxStateOptions
+                    (checkboxStateToString initSettings.EmailInvoice)
                 div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
-                inputView "disableFocus" "Disable Focus"
-                inputView "beforeSubmitCallbackEnabled" "Before Submit Callback Enabled"
-                inputView "deliveryAddressChangedCallbackEnabled" "Delivery Address Changed Callback Enabled"
-                textareaView "customStyles" "Custom Styles"
+                checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus
+                checkboxView "beforeSubmitCallbackEnabled" "Before Submit Callback Enabled"
+                    checkoutFlags.BeforeSubmitCallbackEnabled
+                checkboxView "deliveryAddressChangedCallbackEnabled" "Delivery Address Changed Callback Enabled"
+                    checkoutFlags.DeliveryAddressChangedCallbackEnabled
+                checkboxView "customStyles" "Use Custom Styles" (customStylesToBool checkoutFlags.CustomStyles)
                 div
                     [ _style
                         "display: flex; flex-direction: row; align-items: center; justify-content: flex-end; padding: 20px 50px;" ]
