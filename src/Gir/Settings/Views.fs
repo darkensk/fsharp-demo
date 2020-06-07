@@ -18,6 +18,11 @@ let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) =
     let checkedAttribute = if isChecked then [ _checked ] else []
     div [ rowStyles ]
         [ label [ _for inputId ] [ str inputLabel ]
+          //   input
+          //       [ _type "hidden"
+          //         _id inputId
+          //         _name inputId
+          //         _value "false" ]
           input
               ([ _style "width: 30px; height: 30px;"
                  _type "checkbox"
@@ -51,7 +56,10 @@ let template (settings: Settings) =
     let { ExtraInitSettings = initSettings; ExtraCheckoutFlags = checkoutFlags } = settings
 
     div [ columnStyles ]
-        [ form [ _id "settings" ]
+        [ form
+            [ _id "settings"
+              _action "/settings/save"
+              _method "POST" ]
               [ div [] [ h3 [] [ str "Extra Init Options" ] ]
                 selectView "language" "Language"
                     [ "English"
