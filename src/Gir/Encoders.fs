@@ -70,25 +70,26 @@ let checkboxStateEncoder = checkboxStateToString >> Encode.string
 
 let selectedPaymentMethodEncoder selectedPaymentMethod =
     match selectedPaymentMethod with
-    | Selected pm -> [ "selectedPaymentMethod", pm |> paymentMethodsToString |> Encode.string ]
-    | NotSelected -> []
+    | Selected pm -> pm |> paymentMethodsToString |> Encode.string
+    | NotSelected -> "" |> Encode.string
 
 let customStylesEncoder customStyles =
     match customStyles with
     | Set cs -> Encode.string cs
-    | NotSet -> Encode.object []
+    | NotSet -> Encode.string "{}"
 
 let extraInitSettingsEncoder initSettings =
     Encode.object
-        ([ "language", languageEncoder initSettings.Language
-           "mode", modeEncoder initSettings.Mode
-           "differentDeliveryAddress", checkboxStateEncoder initSettings.DifferentDeliveryAddress
-           "displayItems", Encode.bool initSettings.DisplayItems
-           "recurringPayments", checkboxStateEncoder initSettings.RecurringPayments
-           "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
-           "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
-           "emailInvoice", checkboxStateEncoder initSettings.EmailInvoice ]
-         @ (selectedPaymentMethodEncoder initSettings.SelectedPaymentMethod))
+        [ "language", languageEncoder initSettings.Language
+          "mode", modeEncoder initSettings.Mode
+          "differentDeliveryAddress", checkboxStateEncoder initSettings.DifferentDeliveryAddress
+          "selectedPaymentMethod", selectedPaymentMethodEncoder initSettings.SelectedPaymentMethod
+          "displayItems", Encode.bool initSettings.DisplayItems
+          "recurringPayments", checkboxStateEncoder initSettings.RecurringPayments
+          "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
+          "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
+          "emailInvoice", checkboxStateEncoder initSettings.EmailInvoice ]
+
 
 let extraCheckoutFlagsEncoder checkoutFlags =
     Encode.object

@@ -63,6 +63,9 @@ let initPaymentDecoder s =
 
 let boolToCustomStyles b = if b then Set "{}" else NotSet
 
+let stringToCustomStyles s =
+    match s with
+    | _ -> NotSet
 
 let extraCheckoutFlagsDecoder =
     Decode.object (fun get ->
@@ -70,8 +73,8 @@ let extraCheckoutFlagsDecoder =
           BeforeSubmitCallbackEnabled = get.Required.Field "beforeSubmitCallbackEnabled" Decode.bool
           DeliveryAddressChangedCallbackEnabled = get.Required.Field "deliveryAddressChangedCallbackEnabled" Decode.bool
           CustomStyles =
-              (get.Required.Field "customStyles" Decode.bool)
-              |> boolToCustomStyles })
+              (get.Required.Field "customStyles" Decode.string)
+              |> stringToCustomStyles })
 
 let extraInitSettingsDecoder =
     Decode.object (fun get ->

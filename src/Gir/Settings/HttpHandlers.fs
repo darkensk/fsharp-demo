@@ -56,6 +56,6 @@ let saveSettingsHandler next (ctx: HttpContext) =
                         |> stringToCheckboxState
                     EmailInvoice = getValue "emailInvoice" |> stringToCheckboxState } }
 
-        printf "%A" formData
+        Session.setSettings ctx formData
         return! next ctx
     }

@@ -14,22 +14,19 @@ let columnStyles =
     _style "display: flex; flex-direction: column; padding: 20px 0px; width: 500px;"
 
 
-let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) =
+let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) (isEnabled: bool) =
     let checkedAttribute = if isChecked then [ _checked ] else []
+    let disabledAttribute = if isEnabled then [] else [ _disabled ]
     div [ rowStyles ]
         [ label [ _for inputId ] [ str inputLabel ]
-          //   input
-          //       [ _type "hidden"
-          //         _id inputId
-          //         _name inputId
-          //         _value "false" ]
           input
               ([ _style "width: 30px; height: 30px;"
                  _type "checkbox"
                  _id inputId
                  _name inputId
                  _value "true" ]
-               @ checkedAttribute) ]
+               @ checkedAttribute
+               @ disabledAttribute) ]
 
 let textareaView (areaId: string) (areaLabel: string) =
     div [ rowStyles ]
@@ -71,7 +68,7 @@ let template (settings: Settings) =
                 selectView "mode" "Mode" [ "b2c"; "b2b" ] "b2c"
                 selectView "differentDeliveryAddress" "Different Delivery Address" checkboxStateOptions
                     (checkboxStateToString initSettings.DifferentDeliveryAddress)
-                checkboxView "displayItems" "Display Items" initSettings.DisplayItems
+                checkboxView "displayItems" "Display Items" initSettings.DisplayItems true
                 selectView "recurringPayments" "Recurring Payments" checkboxStateOptions
                     (checkboxStateToString initSettings.RecurringPayments)
                 selectView "smsNewsletterSubscription" "SMS Newsletter Subscription" checkboxStateOptions
@@ -81,12 +78,12 @@ let template (settings: Settings) =
                 selectView "emailInvoice" "Email Invoice" checkboxStateOptions
                     (checkboxStateToString initSettings.EmailInvoice)
                 div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
-                checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus
+                checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus true
                 checkboxView "beforeSubmitCallbackEnabled" "Before Submit Callback Enabled"
-                    checkoutFlags.BeforeSubmitCallbackEnabled
+                    checkoutFlags.BeforeSubmitCallbackEnabled true
                 checkboxView "deliveryAddressChangedCallbackEnabled" "Delivery Address Changed Callback Enabled"
-                    checkoutFlags.DeliveryAddressChangedCallbackEnabled
-                checkboxView "customStyles" "Use Custom Styles" (customStylesToBool checkoutFlags.CustomStyles)
+                    checkoutFlags.DeliveryAddressChangedCallbackEnabled true
+                checkboxView "customStyles" "Use Custom Styles" (customStylesToBool checkoutFlags.CustomStyles) false
                 div
                     [ _style
                         "display: flex; flex-direction: row; align-items: center; justify-content: flex-end; padding: 20px 50px;" ]

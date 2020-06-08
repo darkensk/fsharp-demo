@@ -87,6 +87,7 @@ let cartHandler
     task {
         let cartState = Session.getCartState ctx
         let settings = Session.getSettings ctx
+
         if List.isEmpty cartState.Items then
             return! htmlView
                         (cartView cartState checkoutFrontendBundleUrl ""
@@ -144,6 +145,7 @@ let updateItemsHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task
     task {
         let cartState = Session.getCartState ctx
         let settings = Session.getSettings ctx
+
         if List.isEmpty cartState.Items then
             return! next ctx
         else
