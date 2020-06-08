@@ -4,9 +4,13 @@ open Thoth.Json.Net
 open Gir.Domain
 
 
-let partnerAccessTokenDecoder = Decode.field "token" Decode.string |> Decode.fromString
+let partnerAccessTokenDecoder =
+    Decode.field "token" Decode.string
+    |> Decode.fromString
 
-let purchaseTokenDecoder = Decode.field "jwt" Decode.string |> Decode.fromString
+let purchaseTokenDecoder =
+    Decode.field "jwt" Decode.string
+    |> Decode.fromString
 
 let productDecoder =
     Decode.object (fun get ->
@@ -24,7 +28,10 @@ let cartItemDecoder =
 let cartDecoder s =
     let decoder =
         Decode.object (fun get ->
-            { Items = get.Optional.Field "items" (Decode.list cartItemDecoder) |> Option.defaultValue [] })
+            { Items =
+                  get.Optional.Field "items" (Decode.list cartItemDecoder)
+                  |> Option.defaultValue [] })
+
     match Decode.fromString decoder s with
     | Ok i -> i
     | Error e -> failwithf "Cannot decode cart, error = %A" e
@@ -52,3 +59,57 @@ let initPaymentDecoder s =
         { PurchaseId = v.PurchaseId
           Jwt = v.Jwt }
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
+
+
+let boolToCustomStyles b = if b then Set "{}" else NotSet
+
+
+let extraCheckoutFlagsDecoder =
+    Decode.object (fun get ->
+        { DisableFocus = get.Required.Field "disableFocus" Decode.bool
+          BeforeSubmitCallbackEnabled = get.Required.Field "beforeSubmitCallbackEnabled" Decode.bool
+          DeliveryAddressChangedCallbackEnabled = get.Required.Field "deliveryAddressChangedCallbackEnabled" Decode.bool
+          CustomStyles =
+              (get.Required.Field "customStyles" Decode.bool)
+              |> boolToCustomStyles })
+
+let extraInitSettingsDecoder =
+    Decode.object (fun get ->
+        { Language =
+              (get.Required.Field "language" Decode.string)
+              |> stringToLanguage
+          Mode =
+              (get.Required.Field "mode" Decode.string)
+              |> stringToCheckoutMode
+          DifferentDeliveryAddress =
+              (get.Required.Field "differentDeliveryAddress" Decode.string)
+              |> stringToCheckboxState
+          SelectedPaymentMethod =
+              (get.Required.Field "selectedPaymentMethod" Decode.string)
+              |> stringToSelectedPaymentMethod
+          DisplayItems = get.Required.Field "displayItems" Decode.bool
+          RecurringPayments =
+              (get.Required.Field "recurringPayments" Decode.string)
+              |> stringToCheckboxState
+          SmsNewsletterSubscription =
+              (get.Required.Field "smsNewsletterSubscription" Decode.string)
+              |> stringToCheckboxState
+          EmailNewsletterSubscription =
+              (get.Required.Field "emailNewsletterSubscription" Decode.string)
+              |> stringToCheckboxState
+          EmailInvoice =
+              (get.Required.Field "emailInvoice" Decode.string)
+              |> stringToCheckboxState })
+
+
+let decodeSettings =
+    Decode.object (fun get ->
+        { ExtraCheckoutFlags = get.Required.Field "extraCheckoutFlags" extraCheckoutFlagsDecoder
+          ExtraInitSettings = get.Required.Field "extraInitSettings" extraInitSettingsDecoder })
+
+let settingsDecoder s =
+    match Decode.fromString decodeSettings s with
+    | Ok v ->
+        { ExtraCheckoutFlags = v.ExtraCheckoutFlags
+          ExtraInitSettings = v.ExtraInitSettings }
+    | Error e -> failwithf "Cannot decode settings, error = %A" e

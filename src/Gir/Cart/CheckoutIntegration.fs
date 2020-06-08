@@ -43,7 +43,7 @@ let getCachedToken url clientId clientSecret =
             return token
     }
 
-let reclaimPurchaseToken (backendUrl:string) (partnerToken:string) (sessionPurchaseId:string) =
+let reclaimPurchaseToken (backendUrl: string) (partnerToken: string) (sessionPurchaseId: string) =
     task {
         let bearerString = "Bearer " + partnerToken
 
@@ -60,7 +60,7 @@ let reclaimPurchaseToken (backendUrl:string) (partnerToken:string) (sessionPurch
                 |> Task.map decodePurchaseToken
     }
 
-let getPurchaseToken (backendUrl: string) (settings: Settings) (cartState: CartState) (partnerToken: string) =
+let getPurchaseToken (backendUrl: string) (cartState: CartState) (partnerToken: string) (settings: Settings) =
     task {
         let encodedPaymentPayload =
             paymentPayloadEncoder settings cartState.Items

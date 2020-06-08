@@ -3,15 +3,14 @@ module Gir.Utils
 open Giraffe.GiraffeViewEngine
 open Microsoft.AspNetCore.Http
 open Gir.Decoders
+open Gir.Encoders
 open Gir.Domain
 
 
 let productDiv (product: Product) =
     div [ _class "single-products-catagory clearfix" ]
         [ a [ _href (sprintf "/product/%i" product.ProductId) ]
-              [ img
-                  [ _src product.Img
-                    _alt "" ]
+              [ img [ _src product.Img; _alt "" ]
                 div [ _class "hover-content" ]
                     [ div [ _class "line" ] []
                       p [] [ str <| sprintf "%.0f kr" product.Price ]
@@ -25,12 +24,14 @@ module Task =
     let map (fn: 'a -> 'b) (v: Task<'a>) =
         task {
             let! value = v
-            return fn value }
+            return fn value
+        }
 
 [<RequireQualifiedAccess>]
 module Session =
     let private cartKey = "cart"
     let private purchaseKey = "purchaseId"
+    let private settingsKey = "settings"
 
     let getCartState (ctx: HttpContext) =
         let currentCart =
@@ -40,7 +41,8 @@ module Session =
 
         cartDecoder currentCart
 
-    let setCartState (ctx: HttpContext) cartState = ctx.Session.SetString(cartKey, cartState)
+    let setCartState (ctx: HttpContext) cartState =
+        ctx.Session.SetString(cartKey, cartState)
 
     let deleteCartState (ctx: HttpContext) = ctx.Session.Remove(cartKey)
 
@@ -49,6 +51,16 @@ module Session =
         | null -> None
         | v -> Some v
 
-    let setPurchaseId (ctx: HttpContext) purchaseId = ctx.Session.SetString(purchaseKey, purchaseId)
+    let setPurchaseId (ctx: HttpContext) purchaseId =
+        ctx.Session.SetString(purchaseKey, purchaseId)
 
     let deletePurchaseId (ctx: HttpContext) = ctx.Session.Remove(purchaseKey)
+
+    let getSettings (ctx: HttpContext) =
+        match ctx.Session.GetString(settingsKey) with
+        | null -> defaultSettings
+        | v -> settingsDecoder v
+
+    let setSettings (ctx: HttpContext) settings =
+        let encodedSettings = settingsEncoder settings
+        ctx.Session.SetString(settingsKey, encodedSettings)

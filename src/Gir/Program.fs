@@ -25,8 +25,8 @@ let webApp (root: CompositionRoot) =
                 route "/cart/" >=> Cart.HttpHandlers.cartHandler root.CheckoutFrontendBundle root.GetPurchaseToken root.GetAllProducts root.GetPartnerAccessToken root.ReclaimPurchaseToken
                 route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectTo false "/cart/"
                 route "/cart/completed" >=> Cart.HttpHandlers.completedHandler >=> text "OK - CompletedCallback Successfull"
-                route "/cart/sessionExpired" >=> Cart.HttpHandlers.sessionExpiredHandler root.CheckoutBackendApiUrl root.Settings root.GetPartnerAccessToken >=> text "OK - Session Timed Out Callback Successfull"
-                route "/settings/" >=> Settings.HttpHandlers.settingsHandler root.Settings
+                route "/cart/sessionExpired" >=> Cart.HttpHandlers.sessionExpiredHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> text "OK - Session Timed Out Callback Successfull"
+                route "/settings/" >=> Settings.HttpHandlers.settingsHandler
                 subRoute "/product" (
                     choose [
                         subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById)
@@ -41,8 +41,8 @@ let webApp (root: CompositionRoot) =
             ]
         POST >=>
             choose [
-                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.Settings root.GetPartnerAccessToken >=> redirectHandler )
-                routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.Settings root.GetPartnerAccessToken >=> redirectHandler )
+                routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
+                routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
                 route "/test/" >=> Test.HttpHandlers.easterEggHandler root.CheckoutFrontendBundle
                 route "/settings/save" >=> Settings.HttpHandlers.saveSettingsHandler >=> redirectTo false "/settings/"
             ]

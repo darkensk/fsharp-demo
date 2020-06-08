@@ -6,8 +6,10 @@ open Microsoft.AspNetCore.Http
 open Gir.Domain
 open System.Threading.Tasks
 open FSharp.Control.Tasks
+open Gir.Utils
 
-let settingsHandler (settings: Settings) next ctx =
+let settingsHandler next (ctx: HttpContext) =
+    let settings = Session.getSettings ctx
     (htmlView <| settingsView settings) next ctx
 
 let saveSettingsHandler next (ctx: HttpContext) =
