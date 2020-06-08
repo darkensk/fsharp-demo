@@ -6,7 +6,7 @@ open Gir.Domain
 open Gir.Utils
 
 
-let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
+let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     div
         [ _id "checkout-form"
           _style "padding-top: 50px;" ]
@@ -93,12 +93,12 @@ let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: str
                 "rootElementId": "checkout-form",
                 "redirectUrl": redirectUrlCallback,
                 "styles": {},
-                "disableFocus": true,
+                "disableFocus": %b,
                 "handleByMerchantCallback": handleByMerchantCallback,
                 "completedPurchaseCallback": completedCallback,
                 "sessionTimedOutCallback": sessionTimedOutCallback,
               });
-              """        checkoutFrontendBundleUrl purchaseToken ] ])
+              """        checkoutFrontendBundleUrl purchaseToken settings.ExtraCheckoutFlags.DisableFocus ] ])
 
 let cartItemView (cartItem: CartItem) =
     tr []
@@ -169,7 +169,13 @@ let cartSummaryView (cartState: CartState) =
                           [ _href "/cart/clear"
                             _class "btn amado-btn active mb-15" ] [ str "Clear Cart" ] ] ] ]
 
-let template (cartState: CartState) (products: Product list) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
+let template
+    (settings: Settings)
+    (cartState: CartState)
+    (products: Product list)
+    (checkoutFrontendBundleUrl: string)
+    (purchaseToken: string)
+    =
     let products = products |> List.map productDiv
     div []
         [ div []
@@ -227,10 +233,16 @@ let template (cartState: CartState) (products: Product list) (checkoutFrontendBu
                                                                tbody [] (List.map (cartItemView) cartState.Items) ] ] ]
                                              cartSummaryView cartState
                                              div [ _class "col-12 col-lg-8" ]
-                                                 [ initCheckoutInstance checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
+                                                 [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
                 subscribeSectionView
                 footerView ] ]
 
-let cartView (cartState: CartState) (checkoutFrontendBundleUrl: string) (purchaseToken: string) (products: Product list) =
-    [ template cartState products checkoutFrontendBundleUrl purchaseToken ]
+let cartView
+    (settings: Settings)
+    (cartState: CartState)
+    (checkoutFrontendBundleUrl: string)
+    (purchaseToken: string)
+    (products: Product list)
+    =
+    [ template settings cartState products checkoutFrontendBundleUrl purchaseToken ]
     |> layout

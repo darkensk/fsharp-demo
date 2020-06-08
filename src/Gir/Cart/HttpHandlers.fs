@@ -90,7 +90,7 @@ let cartHandler
 
         if List.isEmpty cartState.Items then
             return! htmlView
-                        (cartView cartState checkoutFrontendBundleUrl ""
+                        (cartView settings cartState checkoutFrontendBundleUrl ""
                          <| getProducts ()) next ctx
         else
             let! partnerToken = getPartnerAccessToken ()
@@ -98,14 +98,14 @@ let cartHandler
             | Some v ->
                 let! purchaseToken = getReclaimToken partnerToken v
                 return! htmlView
-                            (cartView cartState checkoutFrontendBundleUrl purchaseToken
+                            (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
                              <| getProducts ()) next ctx
             | None ->
                 let! initPurchaseResponse = getPurchaseToken cartState partnerToken settings
                 let purchaseToken = initPurchaseResponse.Jwt
                 Session.setPurchaseId ctx initPurchaseResponse.PurchaseId
                 return! htmlView
-                            (cartView cartState checkoutFrontendBundleUrl purchaseToken
+                            (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
                              <| getProducts ()) next ctx
     }
 
