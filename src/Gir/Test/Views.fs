@@ -62,7 +62,7 @@ let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
               };
 
               const redirectUrlCallback = () =>
-                window.location.origin;
+                window.location.href;
 
               window.avardaCheckoutInit({
                 "purchaseJwt": "%s",
