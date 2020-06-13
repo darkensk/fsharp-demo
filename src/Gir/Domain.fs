@@ -33,8 +33,6 @@ type CheckoutMode =
     | B2C
     | B2B
 
-
-
 type CheckboxState =
     | Hidden
     | Checked
@@ -84,7 +82,7 @@ type Settings =
       ExtraInitSettings: ExtraInitSettings
       Market: Market }
 
-let languageToString language =
+let languageToString (language: Language) =
     match language with
     | English -> "English"
     | Swedish -> "Swedish"
@@ -93,7 +91,7 @@ let languageToString language =
     | Estonian -> "Estonian"
     | Danish -> "Danish"
 
-let stringToLanguage s =
+let stringToLanguage (s: string) =
     match s with
     | "English" -> English
     | "Swedish" -> Swedish
@@ -103,31 +101,31 @@ let stringToLanguage s =
     | "Danish" -> Danish
     | _ -> English
 
-let checkoutModeToString mode =
+let checkoutModeToString (mode: CheckoutMode) =
     match mode with
     | B2C -> "b2c"
     | B2B -> "b2b"
 
-let stringToCheckoutMode s =
+let stringToCheckoutMode (s: string) =
     match s with
     | "b2c" -> B2C
     | "b2b" -> B2B
     | _ -> B2C
 
-let checkboxStateToString checkboxState =
+let checkboxStateToString (checkboxState: CheckboxState) =
     match checkboxState with
     | Hidden -> "Hidden"
     | Checked -> "Checked"
     | Unchecked -> "Unchecked"
 
-let stringToCheckboxState s =
+let stringToCheckboxState (s: string) =
     match s with
     | "Hidden" -> Hidden
     | "Checked" -> Checked
     | "Unchecked" -> Unchecked
     | _ -> Hidden
 
-let paymentMethodsToString pm =
+let paymentMethodsToString (pm: PaymentMethod) =
     match pm with
     | Loan -> "Loan"
     | Invoice -> "Invoice"
@@ -138,12 +136,12 @@ let paymentMethodsToString pm =
     | PartPayment -> "PartPayment"
     | PayOnDelivery -> "PayOnDelivery"
 
-let selectedPaymentMethodToString selectedPaymentMethod =
-    match selectedPaymentMethod with
+let selectedPaymentMethodToString (spm: SelectedPaymentMethod) =
+    match spm with
     | Selected selectedPaymentMethod -> paymentMethodsToString selectedPaymentMethod
     | NotSelected -> ""
 
-let stringToSelectedPaymentMethod s =
+let stringToSelectedPaymentMethod (s: string) =
     match s with
     | "Loan" -> Selected Loan
     | "Invoice" -> Selected Invoice
@@ -155,17 +153,17 @@ let stringToSelectedPaymentMethod s =
     | "PayOnDelivery" -> Selected PayOnDelivery
     | _ -> NotSelected
 
-let customStylesToBool cs =
+let customStylesToBool (cs: CustomStyles) =
     match cs with
     | Set _ -> true
     | NotSet -> false
 
-let marketToString m =
+let marketToString (m: Market) =
     match m with
     | Sweden -> "Sweden"
     | Finland -> "Finland"
 
-let stringToMarket s =
+let stringToMarket (s: string) =
     match s with
     | "Sweden" -> Sweden
     | "Finland" -> Finland

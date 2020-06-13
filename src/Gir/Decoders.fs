@@ -1,7 +1,7 @@
 module Gir.Decoders
 
 open Thoth.Json.Net
-open Gir.Domain
+open Domain
 
 
 let partnerAccessTokenDecoder =
@@ -25,7 +25,7 @@ let cartItemDecoder =
           Qty = get.Required.Field "qty" Decode.int
           ProductDetail = get.Required.Field "product" productDecoder })
 
-let cartDecoder s =
+let cartDecoder (s: string) =
     let decoder =
         Decode.object (fun get ->
             { Items =
@@ -53,16 +53,16 @@ let initPaymentPayloadDecoder =
         { PurchaseId = get.Required.Field "purchaseId" Decode.string
           Jwt = get.Required.Field "jwt" Decode.string })
 
-let initPaymentDecoder s =
+let initPaymentDecoder (s: string) =
     match Decode.fromString initPaymentPayloadDecoder s with
     | Ok v ->
         { PurchaseId = v.PurchaseId
           Jwt = v.Jwt }
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
 
-let boolToCustomStyles b = if b then Set "{}" else NotSet
+let boolToCustomStyles (b: bool) = if b then Set "{}" else NotSet
 
-let stringToCustomStyles s =
+let stringToCustomStyles (s: string) =
     match s with
     | _ -> NotSet
 
@@ -111,7 +111,7 @@ let decodeSettings =
               get.Required.Field "market" Decode.string
               |> stringToMarket })
 
-let settingsDecoder s =
+let settingsDecoder (s: string) =
     match Decode.fromString decodeSettings s with
     | Ok v ->
         { ExtraCheckoutFlags = v.ExtraCheckoutFlags

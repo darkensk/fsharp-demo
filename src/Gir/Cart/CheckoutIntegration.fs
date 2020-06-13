@@ -12,7 +12,7 @@ open Gir.Utils
 let mutable partnerAccessTokenCache: string option = None
 let mutable marketCache: string option = None
 
-let getRequestPartnerAccessToken url clientId clientSecret =
+let getRequestPartnerAccessToken (url: string) (clientId: string) (clientSecret: string) =
     task {
         let getPartnerAccessTokenPayload =
             getPartnerTokenPayloadEncoder clientId clientSecret

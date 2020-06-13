@@ -1,7 +1,7 @@
 module Gir.Encoders
 
 open Thoth.Json.Net
-open Gir.Domain
+open Domain
 
 
 let getPartnerTokenPayloadEncoder (clientId: string) (clientSecret: string) =
@@ -66,17 +66,17 @@ let modeEncoder = checkoutModeToString >> Encode.string
 
 let checkboxStateEncoder = checkboxStateToString >> Encode.string
 
-let selectedPaymentMethodEncoder selectedPaymentMethod =
-    match selectedPaymentMethod with
+let selectedPaymentMethodEncoder (spm: SelectedPaymentMethod) =
+    match spm with
     | Selected pm -> pm |> paymentMethodsToString |> Encode.string
     | NotSelected -> "" |> Encode.string
 
-let customStylesEncoder customStyles =
-    match customStyles with
-    | Set cs -> Encode.string cs
+let customStylesEncoder (cs: CustomStyles) =
+    match cs with
+    | Set customStyles -> Encode.string customStyles
     | NotSet -> Encode.string "{}"
 
-let extraInitSettingsEncoder initSettings =
+let extraInitSettingsEncoder (initSettings: ExtraInitSettings) =
     Encode.object
         [ "language", languageEncoder initSettings.Language
           "mode", modeEncoder initSettings.Mode
@@ -88,14 +88,14 @@ let extraInitSettingsEncoder initSettings =
           "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
           "emailInvoice", checkboxStateEncoder initSettings.EmailInvoice ]
 
-let extraCheckoutFlagsEncoder checkoutFlags =
+let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
     Encode.object
         [ "disableFocus", Encode.bool checkoutFlags.DisableFocus
           "beforeSubmitCallbackEnabled", Encode.bool checkoutFlags.BeforeSubmitCallbackEnabled
           "deliveryAddressChangedCallbackEnabled", Encode.bool checkoutFlags.DeliveryAddressChangedCallbackEnabled
           "customStyles", customStylesEncoder checkoutFlags.CustomStyles ]
 
-let settingsEncoder settings =
+let settingsEncoder (settings: Settings) =
     Encode.object
         [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
           "extraInitSettings", extraInitSettingsEncoder settings.ExtraInitSettings

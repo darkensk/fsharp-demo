@@ -9,8 +9,9 @@ let testCheckoutHandler (checkoutFrontendBundleUrl: string) (purchaseToken: stri
     htmlView
     <| testCheckoutView checkoutFrontendBundleUrl purchaseToken
 
-let easterEggHandler (checkoutFrontendBundleUrl: string) next (ctx: HttpContext) =
+let easterEggHandler (next: HttpFunc) (ctx: HttpContext) =
     let purchaseToken =
         ctx.Request.Form.Item("purchaseJwt").ToString()
 
-    htmlView (testCheckoutView checkoutFrontendBundleUrl purchaseToken) next ctx
+    (redirectTo false
+     <| sprintf "/test/%s" purchaseToken) next ctx

@@ -1,6 +1,5 @@
 module Gir.App
 
-open CompositionRoot
 open Giraffe
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
@@ -12,6 +11,7 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Configuration
 open System
 open System.IO
+open CompositionRoot
 
 
 let redirectHandler next (ctx: HttpContext) =
@@ -43,7 +43,7 @@ let webApp (root: CompositionRoot) =
             choose [
                 routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
                 routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
-                route "/test/" >=> Test.HttpHandlers.easterEggHandler root.CheckoutFrontendBundle
+                route "/test/" >=> Test.HttpHandlers.easterEggHandler
                 route "/settings/save" >=> Settings.HttpHandlers.saveSettingsHandler >=> redirectTo false "/settings/"
             ]
         setStatusCode 404 >=> text "Not Found" ]

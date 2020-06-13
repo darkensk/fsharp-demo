@@ -2,9 +2,9 @@ module Gir.Utils
 
 open Giraffe.GiraffeViewEngine
 open Microsoft.AspNetCore.Http
-open Gir.Decoders
-open Gir.Encoders
-open Gir.Domain
+open Decoders
+open Encoders
+open Domain
 
 
 let marketToCurrency (market: Market) =
@@ -48,7 +48,7 @@ module Session =
 
         cartDecoder currentCart
 
-    let setCartState (ctx: HttpContext) cartState =
+    let setCartState (ctx: HttpContext) (cartState: string) =
         ctx.Session.SetString(cartKey, cartState)
 
     let deleteCartState (ctx: HttpContext) = ctx.Session.Remove(cartKey)
@@ -58,7 +58,7 @@ module Session =
         | null -> None
         | v -> Some v
 
-    let setPurchaseId (ctx: HttpContext) purchaseId =
+    let setPurchaseId (ctx: HttpContext) (purchaseId: string) =
         ctx.Session.SetString(purchaseKey, purchaseId)
 
     let deletePurchaseId (ctx: HttpContext) = ctx.Session.Remove(purchaseKey)
@@ -68,6 +68,6 @@ module Session =
         | null -> defaultSettings
         | v -> settingsDecoder v
 
-    let setSettings (ctx: HttpContext) settings =
+    let setSettings (ctx: HttpContext) (settings: Settings) =
         let encodedSettings = settingsEncoder settings
         ctx.Session.SetString(settingsKey, encodedSettings)

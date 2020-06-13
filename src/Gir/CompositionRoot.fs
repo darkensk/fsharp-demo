@@ -2,7 +2,7 @@ module Gir.CompositionRoot
 
 open Microsoft.Extensions.Configuration
 open System.Threading.Tasks
-open Gir.Domain
+open Domain
 
 type CompositionRoot =
     { CheckoutFrontendBundle: string

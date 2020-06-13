@@ -1,7 +1,7 @@
 module Gir.Layout
 
 open Giraffe.GiraffeViewEngine
-open Gir.Domain
+open Domain
 
 
 let _ariaHidden = attr "aria-hidden"

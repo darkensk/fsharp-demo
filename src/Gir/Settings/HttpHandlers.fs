@@ -1,19 +1,18 @@
 module Gir.Settings.HttpHandlers
 
+open FSharp.Control.Tasks
 open Giraffe
-open Views
 open Microsoft.AspNetCore.Http
 open Gir.Domain
-open System.Threading.Tasks
-open FSharp.Control.Tasks
 open Gir.Utils
+open Views
 
 
-let settingsHandler next (ctx: HttpContext) =
+let settingsHandler (next: HttpFunc) (ctx: HttpContext) =
     let settings = Session.getSettings ctx
     (htmlView <| settingsView settings) next ctx
 
-let saveSettingsHandler next (ctx: HttpContext) =
+let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
     task {
         let tryGetValue s = ctx.Request.Form.TryGetValue(s)
 
