@@ -11,7 +11,7 @@ let testCheckoutHandler (checkoutFrontendBundleUrl: string) (purchaseToken: stri
 
 let easterEggHandler (next: HttpFunc) (ctx: HttpContext) =
     let purchaseToken =
-        ctx.Request.Form.Item("purchaseJwt").ToString()
+        ctx.Request.Form.Item("purchaseJwt").ToString().Replace("\"", "")
 
     (redirectTo false
      <| sprintf "/test/%s" purchaseToken) next ctx

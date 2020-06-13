@@ -162,7 +162,8 @@ let subscribeSectionView =
                                           [ _type "text"
                                             _name "purchaseJwt"
                                             _class "nl-email"
-                                            _placeholder "Your E-mail" ]
+                                            _placeholder "Your E-mail" 
+                                            _required ]
                                         input [ _type "submit"; _value "Subscribe" ] ] ] ] ] ] ]
 
 let layout (content: XmlNode List) =
