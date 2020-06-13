@@ -162,7 +162,7 @@ let subscribeSectionView =
                                           [ _type "text"
                                             _name "purchaseJwt"
                                             _class "nl-email"
-                                            _placeholder "Your E-mail" 
+                                            _placeholder "Your E-mail"
                                             _required ]
                                         input [ _type "submit"; _value "Subscribe" ] ] ] ] ] ] ]
 
@@ -177,7 +177,7 @@ let layout (content: XmlNode List) =
                 meta
                     [ _name "viewport"
                       _content "width=device-width, initial-scale=1, shrink-to-fit=no" ]
-                title [] [ str "GirShop" ]
+                title [] [ str "Avarda - GirShop" ]
                 link
                     [ _rel "stylesheet"
                       _type "text/css"
@@ -185,7 +185,26 @@ let layout (content: XmlNode List) =
                 link
                     [ _rel "stylesheet"
                       _type "text/css"
-                      _href "/css/main.css" ] ]
+                      _href "/css/main.css" ]
+                link
+                    [ _rel "apple-touch-icon"
+                      _sizes "180x180"
+                      _href "/favicon/apple-touch-icon.png" ]
+                link
+                    [ _rel "icon"
+                      _type "image/png"
+                      _sizes "32x32"
+                      _href "/favicon/favicon-32x32.png" ]
+                link
+                    [ _rel "icon"
+                      _type "image/png"
+                      _sizes "16x16"
+                      _href "/favicon/favicon-16x16.png" ]
+                link
+                    [ _rel "manifest"
+                      _crossorigin "use-credentials"
+                      _href "/manifest.json" ] ]
+
           body []
               (content
                @ [ script [ _src "/js/jquery/jquery-2.2.4.min.js" ] []
