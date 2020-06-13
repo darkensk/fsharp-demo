@@ -36,7 +36,7 @@ let paymentItemEncoder (productDetail: Product) =
           "notes", Encode.string "-"
           "amount", Encode.float productDetail.Price
           "taxCode", Encode.string "20%"
-          "taxAmount", Encode.float (productDetail.Price * 0.02) ]
+          "taxAmount", Encode.float (productDetail.Price * 0.2) ]
 
 let languageEncoder = languageToString >> Encode.string
 
