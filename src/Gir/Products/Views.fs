@@ -6,8 +6,8 @@ open Gir.Domain
 open Gir.Utils
 
 
-let listTemplate (cartState: CartState) (productList: Product list) =
-    let products = productList |> List.map productDiv
+let listTemplate (settings: Settings) (cartState: CartState) (productList: Product list) =
+    let products = productList |> List.map (productDiv settings)
     div []
         [ div [ _class "search-wrapper section-padding-100" ]
               [ div [ _class "search-close" ]
@@ -47,9 +47,9 @@ let listTemplate (cartState: CartState) (productList: Product list) =
           subscribeSectionView
           footerView ]
 
-let listView (cartState: CartState) (products: Product list) = [ listTemplate cartState products ] |> layout
+let listView (settings:Settings) (cartState: CartState) (products: Product list) = [ listTemplate settings cartState products ] |> layout
 
-let detailTemplate (cartState: CartState) (product: Product) =
+let detailTemplate (settings:Settings) (cartState: CartState) (product: Product) =
     div []
         [ div [ _class "main-content-wrapper d-flex clearfix" ]
               [ div [ _class "mobile-nav" ]
@@ -149,7 +149,7 @@ let detailTemplate (cartState: CartState) (product: Product) =
                                             [ div [ _class "product-meta-data" ]
                                                   [ div [ _class "line" ] []
                                                     p [ _class "product-price" ]
-                                                        [ str <| sprintf "%.0f kr" product.Price ]
+                                                        [ str <| sprintf "%.0f %s" product.Price (marketToCurrency settings.Market)]
                                                     a [ _href "#" ] [ h6 [] [ str product.Name ] ]
                                                     div
                                                         [ _class
@@ -215,4 +215,4 @@ let detailTemplate (cartState: CartState) (product: Product) =
           subscribeSectionView
           footerView ]
 
-let productDetailView (cartState: CartState) (p: Product) = [ detailTemplate cartState p ] |> layout
+let productDetailView (settings:Settings) (cartState: CartState) (p: Product) = [ detailTemplate settings cartState p ] |> layout

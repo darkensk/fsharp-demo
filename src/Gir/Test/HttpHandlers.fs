@@ -6,8 +6,11 @@ open Views
 
 
 let testCheckoutHandler (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
-    htmlView <| testCheckoutView checkoutFrontendBundleUrl purchaseToken
+    htmlView
+    <| testCheckoutView checkoutFrontendBundleUrl purchaseToken
 
 let easterEggHandler (checkoutFrontendBundleUrl: string) next (ctx: HttpContext) =
-    let purchaseToken = ctx.Request.Form.Item("purchaseJwt").ToString()
+    let purchaseToken =
+        ctx.Request.Form.Item("purchaseJwt").ToString()
+
     htmlView (testCheckoutView checkoutFrontendBundleUrl purchaseToken) next ctx

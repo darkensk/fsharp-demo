@@ -10,6 +10,7 @@ open Gir.Utils
 
 
 let mutable partnerAccessTokenCache: string option = None
+let mutable marketCache: string option = None
 
 let getRequestPartnerAccessToken url clientId clientSecret =
     task {
@@ -30,16 +31,30 @@ let isValid (t: string) =
     let jwt = handler.ReadJsonWebToken(t)
     if jwt.ValidTo > System.DateTime.UtcNow then (Some t) else None
 
-let getCachedToken url clientId clientSecret =
+let getCachedToken (url: string) (market: Market) (clientId: string) (clientSecret: string) =
     task {
-        let validToken =
-            partnerAccessTokenCache |> Option.bind isValid
+        let marketString = marketToString market
 
-        match validToken with
-        | Some v -> return v
-        | None ->
+        let isCorrectMarket =
+            match marketCache with
+            | Some cachedMarket -> marketString = cachedMarket
+            | None -> false
+
+        if isCorrectMarket then
+            let validToken =
+                partnerAccessTokenCache |> Option.bind isValid
+
+            match validToken with
+            | Some v -> return v
+            | None ->
+                let! token = getRequestPartnerAccessToken url clientId clientSecret
+                partnerAccessTokenCache <- Some token
+                marketCache <- Some marketString
+                return token
+        else
             let! token = getRequestPartnerAccessToken url clientId clientSecret
             partnerAccessTokenCache <- Some token
+            marketCache <- Some marketString
             return token
     }
 

@@ -29,6 +29,61 @@ type Language =
     | Estonian
     | Danish
 
+type CheckoutMode =
+    | B2C
+    | B2B
+
+
+
+type CheckboxState =
+    | Hidden
+    | Checked
+    | Unchecked
+
+type PaymentMethod =
+    | Loan
+    | Invoice
+    | Card
+    | Direct
+    | PayPal
+    | Swish
+    | PartPayment
+    | PayOnDelivery
+
+type SelectedPaymentMethod =
+    | Selected of selectedPaymentMethod: PaymentMethod
+    | NotSelected
+
+type ExtraInitSettings =
+    { Language: Language
+      Mode: CheckoutMode
+      DifferentDeliveryAddress: CheckboxState
+      SelectedPaymentMethod: SelectedPaymentMethod
+      DisplayItems: bool
+      RecurringPayments: CheckboxState
+      SmsNewsletterSubscription: CheckboxState
+      EmailNewsletterSubscription: CheckboxState
+      EmailInvoice: CheckboxState }
+
+type CustomStyles =
+    | Set of customStyles: string
+    | NotSet
+
+type ExtraCheckoutFlags =
+    { DisableFocus: bool
+      BeforeSubmitCallbackEnabled: bool
+      DeliveryAddressChangedCallbackEnabled: bool
+      CustomStyles: CustomStyles }
+
+type Market =
+    | Sweden
+    | Finland
+
+type Settings =
+    { ExtraCheckoutFlags: ExtraCheckoutFlags
+      ExtraInitSettings: ExtraInitSettings
+      Market: Market }
+
 let languageToString language =
     match language with
     | English -> "English"
@@ -48,10 +103,6 @@ let stringToLanguage s =
     | "Danish" -> Danish
     | _ -> English
 
-type CheckoutMode =
-    | B2C
-    | B2B
-
 let checkoutModeToString mode =
     match mode with
     | B2C -> "b2c"
@@ -62,11 +113,6 @@ let stringToCheckoutMode s =
     | "b2c" -> B2C
     | "b2b" -> B2B
     | _ -> B2C
-
-type CheckboxState =
-    | Hidden
-    | Checked
-    | Unchecked
 
 let checkboxStateToString checkboxState =
     match checkboxState with
@@ -80,20 +126,6 @@ let stringToCheckboxState s =
     | "Checked" -> Checked
     | "Unchecked" -> Unchecked
     | _ -> Hidden
-
-type PaymentMethod =
-    | Loan
-    | Invoice
-    | Card
-    | Direct
-    | PayPal
-    | Swish
-    | PartPayment
-    | PayOnDelivery
-
-type SelectedPaymentMethod =
-    | Selected of selectedPaymentMethod: PaymentMethod
-    | NotSelected
 
 let paymentMethodsToString pm =
     match pm with
@@ -111,7 +143,6 @@ let selectedPaymentMethodToString selectedPaymentMethod =
     | Selected selectedPaymentMethod -> paymentMethodsToString selectedPaymentMethod
     | NotSelected -> ""
 
-
 let stringToSelectedPaymentMethod s =
     match s with
     | "Loan" -> Selected Loan
@@ -124,36 +155,21 @@ let stringToSelectedPaymentMethod s =
     | "PayOnDelivery" -> Selected PayOnDelivery
     | _ -> NotSelected
 
-
-type ExtraInitSettings =
-    { Language: Language
-      Mode: CheckoutMode
-      DifferentDeliveryAddress: CheckboxState
-      SelectedPaymentMethod: SelectedPaymentMethod
-      DisplayItems: bool
-      RecurringPayments: CheckboxState
-      SmsNewsletterSubscription: CheckboxState
-      EmailNewsletterSubscription: CheckboxState
-      EmailInvoice: CheckboxState }
-
-type CustomStyles =
-    | Set of customStyles: string
-    | NotSet
-
 let customStylesToBool cs =
     match cs with
     | Set _ -> true
     | NotSet -> false
 
-type ExtraCheckoutFlags =
-    { DisableFocus: bool
-      BeforeSubmitCallbackEnabled: bool
-      DeliveryAddressChangedCallbackEnabled: bool
-      CustomStyles: CustomStyles }
+let marketToString m =
+    match m with
+    | Sweden -> "Sweden"
+    | Finland -> "Finland"
 
-type Settings =
-    { ExtraCheckoutFlags: ExtraCheckoutFlags
-      ExtraInitSettings: ExtraInitSettings }
+let stringToMarket s =
+    match s with
+    | "Sweden" -> Sweden
+    | "Finland" -> Finland
+    | _ -> Sweden
 
 let defaultExtraCheckoutFlags =
     { DisableFocus = true
@@ -174,4 +190,5 @@ let defaultExtraInitSettings =
 
 let defaultSettings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
-      ExtraInitSettings = defaultExtraInitSettings }
+      ExtraInitSettings = defaultExtraInitSettings
+      Market = Sweden }

@@ -62,8 +62,6 @@ let paymentPayloadEncoder (settings: Settings) (items: CartItem list) =
               "displayItems", Encode.bool true ]
         |> Encode.toString 0
 
-
-
 let modeEncoder = checkoutModeToString >> Encode.string
 
 let checkboxStateEncoder = checkboxStateToString >> Encode.string
@@ -90,7 +88,6 @@ let extraInitSettingsEncoder initSettings =
           "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
           "emailInvoice", checkboxStateEncoder initSettings.EmailInvoice ]
 
-
 let extraCheckoutFlagsEncoder checkoutFlags =
     Encode.object
         [ "disableFocus", Encode.bool checkoutFlags.DisableFocus
@@ -101,5 +98,6 @@ let extraCheckoutFlagsEncoder checkoutFlags =
 let settingsEncoder settings =
     Encode.object
         [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
-          "extraInitSettings", extraInitSettingsEncoder settings.ExtraInitSettings ]
+          "extraInitSettings", extraInitSettingsEncoder settings.ExtraInitSettings
+          "market", settings.Market |> marketToString |> Encode.string ]
     |> Encode.toString 0

@@ -2,7 +2,6 @@ module Gir.Settings.Views
 
 open Giraffe.GiraffeViewEngine
 open Gir.Layout
-open Thoth.Json.Net
 open Gir.Domain
 
 
@@ -12,7 +11,6 @@ let rowStyles =
 
 let columnStyles =
     _style "display: flex; flex-direction: column; padding: 20px 0px; width: 500px;"
-
 
 let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) (isEnabled: bool) =
     let checkedAttribute = if isChecked then [ _checked ] else []
@@ -37,7 +35,13 @@ let textareaView (areaId: string) (areaLabel: string) =
                 _value ""
                 _form "settings" ] [] ]
 
-let selectView (selectId: string) (selectLabel: string) (selectOptions: string list) (selectedOption: string) =
+let selectView
+    (selectId: string)
+    (selectLabel: string)
+    (selectOptions: string list)
+    (selectedOption: string)
+    (isEnabled: bool)
+    =
     let selectedOptionAttribute option =
         if option = selectedOption then [ _selected ] else []
 
@@ -45,7 +49,6 @@ let selectView (selectId: string) (selectLabel: string) (selectOptions: string l
         [ label [ _for selectId ] [ str selectLabel ]
           select [ _name selectId; _id selectId ]
               (List.map (fun o -> option ([ _value o ] @ selectedOptionAttribute o) [ str o ]) selectOptions) ]
-
 
 let template (settings: Settings) =
     let checkboxStateOptions = [ "Hidden"; "Checked"; "Unchecked" ]
@@ -57,26 +60,28 @@ let template (settings: Settings) =
             [ _id "settings"
               _action "/settings/save"
               _method "POST" ]
-              [ div [] [ h3 [] [ str "Extra Init Options" ] ]
+              [ div [] [ h3 [] [ str "Market" ] ]
+                selectView "market" "Market" [ "Sweden"; "Finland" ] (marketToString settings.Market) true
+                div [] [ h3 [] [ str "Extra Init Options" ] ]
                 selectView "language" "Language"
                     [ "English"
                       "Swedish"
                       "Finnish"
                       "Norwegian"
                       "Estonian"
-                      "Danish" ] (languageToString initSettings.Language)
-                selectView "mode" "Mode" [ "b2c"; "b2b" ] "b2c"
+                      "Danish" ] (languageToString initSettings.Language) true
+                selectView "mode" "Mode" [ "b2c"; "b2b" ] "b2c" false
                 selectView "differentDeliveryAddress" "Different Delivery Address" checkboxStateOptions
-                    (checkboxStateToString initSettings.DifferentDeliveryAddress)
+                    (checkboxStateToString initSettings.DifferentDeliveryAddress) false
                 checkboxView "displayItems" "Display Items" initSettings.DisplayItems true
                 selectView "recurringPayments" "Recurring Payments" checkboxStateOptions
-                    (checkboxStateToString initSettings.RecurringPayments)
+                    (checkboxStateToString initSettings.RecurringPayments) false
                 selectView "smsNewsletterSubscription" "SMS Newsletter Subscription" checkboxStateOptions
-                    (checkboxStateToString initSettings.SmsNewsletterSubscription)
+                    (checkboxStateToString initSettings.SmsNewsletterSubscription) false
                 selectView "emailNewsletterSubscription" "Email Newsletter Subscription" checkboxStateOptions
-                    (checkboxStateToString initSettings.EmailNewsletterSubscription)
+                    (checkboxStateToString initSettings.EmailNewsletterSubscription) false
                 selectView "emailInvoice" "Email Invoice" checkboxStateOptions
-                    (checkboxStateToString initSettings.EmailInvoice)
+                    (checkboxStateToString initSettings.EmailInvoice) false
                 div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
                 checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus true
                 checkboxView "beforeSubmitCallbackEnabled" "Before Submit Callback Enabled"

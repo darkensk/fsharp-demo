@@ -8,6 +8,7 @@ open System.Threading.Tasks
 open FSharp.Control.Tasks
 open Gir.Utils
 
+
 let settingsHandler next (ctx: HttpContext) =
     let settings = Session.getSettings ctx
     (htmlView <| settingsView settings) next ctx
@@ -54,8 +55,11 @@ let saveSettingsHandler next (ctx: HttpContext) =
                     EmailNewsletterSubscription =
                         getValue "emailNewsletterSubscription"
                         |> stringToCheckboxState
-                    EmailInvoice = getValue "emailInvoice" |> stringToCheckboxState } }
+                    EmailInvoice = getValue "emailInvoice" |> stringToCheckboxState }
+              Market = getValue "market" |> stringToMarket }
 
         Session.setSettings ctx formData
+        Session.deleteCartState ctx
+        Session.deletePurchaseId ctx
         return! next ctx
     }

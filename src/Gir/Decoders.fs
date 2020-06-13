@@ -60,7 +60,6 @@ let initPaymentDecoder s =
           Jwt = v.Jwt }
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
 
-
 let boolToCustomStyles b = if b then Set "{}" else NotSet
 
 let stringToCustomStyles s =
@@ -104,15 +103,18 @@ let extraInitSettingsDecoder =
               (get.Required.Field "emailInvoice" Decode.string)
               |> stringToCheckboxState })
 
-
 let decodeSettings =
     Decode.object (fun get ->
         { ExtraCheckoutFlags = get.Required.Field "extraCheckoutFlags" extraCheckoutFlagsDecoder
-          ExtraInitSettings = get.Required.Field "extraInitSettings" extraInitSettingsDecoder })
+          ExtraInitSettings = get.Required.Field "extraInitSettings" extraInitSettingsDecoder
+          Market =
+              get.Required.Field "market" Decode.string
+              |> stringToMarket })
 
 let settingsDecoder s =
     match Decode.fromString decodeSettings s with
     | Ok v ->
         { ExtraCheckoutFlags = v.ExtraCheckoutFlags
-          ExtraInitSettings = v.ExtraInitSettings }
+          ExtraInitSettings = v.ExtraInitSettings
+          Market = v.Market }
     | Error e -> failwithf "Cannot decode settings, error = %A" e

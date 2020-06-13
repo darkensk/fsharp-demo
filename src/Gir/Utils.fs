@@ -7,13 +7,20 @@ open Gir.Encoders
 open Gir.Domain
 
 
-let productDiv (product: Product) =
+let marketToCurrency (market: Market) =
+    match market with
+    | Sweden -> "kr"
+    | Finland -> "EUR"
+
+let productDiv (settings: Settings) (product: Product) =
     div [ _class "single-products-catagory clearfix" ]
         [ a [ _href (sprintf "/product/%i" product.ProductId) ]
               [ img [ _src product.Img; _alt "" ]
                 div [ _class "hover-content" ]
                     [ div [ _class "line" ] []
-                      p [] [ str <| sprintf "%.0f kr" product.Price ]
+                      p []
+                          [ str
+                            <| sprintf "%.0f %s" product.Price (marketToCurrency settings.Market) ]
                       h4 [] [ str product.Name ] ] ] ]
 
 [<RequireQualifiedAccess>]

@@ -74,12 +74,11 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
         | None -> sessionCart
     | Clear -> { Items = [] }
 
-
 let cartHandler
     (checkoutFrontendBundleUrl: string)
     (getPurchaseToken: CartState -> string -> Settings -> Task<InitializePaymentResponse>)
     (getProducts: unit -> Product list)
-    (getPartnerAccessToken: unit -> Task<string>)
+    (getPartnerAccessToken: Market -> Task<string>)
     (getReclaimToken: string -> string -> Task<string>)
     (next: HttpFunc)
     (ctx: HttpContext)
@@ -93,7 +92,7 @@ let cartHandler
                         (cartView settings cartState checkoutFrontendBundleUrl ""
                          <| getProducts ()) next ctx
         else
-            let! partnerToken = getPartnerAccessToken ()
+            let! partnerToken = getPartnerAccessToken settings.Market
             match Session.tryGetPurchaseId ctx with
             | Some v ->
                 let! purchaseToken = getReclaimToken partnerToken v
@@ -141,7 +140,7 @@ let clearCartHandler (getProducts: unit -> Product list) next (ctx: HttpContext)
         return! next ctx
     }
 
-let updateItemsHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
+let updateItemsHandler (backendUrl: string) (getPartnerAccessToken: Market -> Task<string>) next (ctx: HttpContext) =
     task {
         let cartState = Session.getCartState ctx
         let settings = Session.getSettings ctx
@@ -149,7 +148,7 @@ let updateItemsHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task
         if List.isEmpty cartState.Items then
             return! next ctx
         else
-            let! partnerToken = getPartnerAccessToken ()
+            let! partnerToken = getPartnerAccessToken settings.Market
             let sessionPurchaseId = Session.tryGetPurchaseId ctx
             match sessionPurchaseId with
             | Some v -> do! updateItems backendUrl settings cartState partnerToken v
@@ -166,7 +165,7 @@ let completedHandler next (ctx: HttpContext) =
         return! next ctx
     }
 
-let sessionExpiredHandler (backendUrl: string) (getPartnerAccessToken: unit -> Task<string>) next (ctx: HttpContext) =
+let sessionExpiredHandler (backendUrl: string) (getPartnerAccessToken: Market -> Task<string>) next (ctx: HttpContext) =
     task {
         // Re-use cart and initialize a new purchase
         let cartState = Session.getCartState ctx
@@ -175,7 +174,7 @@ let sessionExpiredHandler (backendUrl: string) (getPartnerAccessToken: unit -> T
         if List.isEmpty cartState.Items then
             return! next ctx
         else
-            let! partnerToken = getPartnerAccessToken ()
+            let! partnerToken = getPartnerAccessToken settings.Market
             let! initPaymentResponse = getPurchaseToken backendUrl cartState partnerToken settings
             Session.setPurchaseId ctx initPaymentResponse.PurchaseId
             return! next ctx

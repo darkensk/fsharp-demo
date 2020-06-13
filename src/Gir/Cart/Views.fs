@@ -100,7 +100,7 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
               });
               """        checkoutFrontendBundleUrl purchaseToken settings.ExtraCheckoutFlags.DisableFocus ] ])
 
-let cartItemView (cartItem: CartItem) =
+let cartItemView (settings: Settings) (cartItem: CartItem) =
     tr []
         [ td [ _class "cart_product_img" ]
               [ a [ _href "#" ]
@@ -108,7 +108,10 @@ let cartItemView (cartItem: CartItem) =
                         [ _src cartItem.ProductDetail.Img
                           _alt "Product" ] ] ]
           td [ _class "cart_product_desc" ] [ h5 [] [ str cartItem.ProductDetail.Name ] ]
-          td [ _class "price" ] [ span [] [ str (string cartItem.ProductDetail.Price + " kr") ] ]
+          td [ _class "price" ]
+              [ span []
+                    [ str
+                      <| sprintf "%.0f %s" cartItem.ProductDetail.Price (marketToCurrency settings.Market) ] ]
           td [ _class "qty" ]
               [ div []
                     [ div
@@ -141,11 +144,13 @@ let cartItemView (cartItem: CartItem) =
                                       [ _class "qty-plus qtyButtons"
                                         _type "submit" ] [ i [ _class "fa fa-plus" ] [] ] ] ] ] ] ]
 
-let cartSummaryView (cartState: CartState) =
+let cartSummaryView (settings: Settings) (cartState: CartState) =
     let subTotal =
         List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
 
-    let subTotalString = "\"" + string subTotal + " kr\""
+    let subTotalString =
+        sprintf "\"%.0f %s\"" subTotal (marketToCurrency settings.Market)
+
     div [ _class "col-12 col-lg-4" ]
         [ div [ _class "cart-summary" ]
               [ h5 [] [ str "Cart Total" ]
@@ -176,7 +181,9 @@ let template
     (checkoutFrontendBundleUrl: string)
     (purchaseToken: string)
     =
-    let products = products |> List.map productDiv
+    let products =
+        products |> List.map (productDiv settings)
+
     div []
         [ div []
               [ div [ _class "search-wrapper section-padding-100" ]
@@ -230,8 +237,9 @@ let template
                                                                            th [] [ str "Name" ]
                                                                            th [] [ str "Price" ]
                                                                            th [] [ str "Quantity" ] ] ]
-                                                               tbody [] (List.map (cartItemView) cartState.Items) ] ] ]
-                                             cartSummaryView cartState
+                                                               tbody []
+                                                                   (List.map (cartItemView settings) cartState.Items) ] ] ]
+                                             cartSummaryView settings cartState
                                              div [ _class "col-12 col-lg-8" ]
                                                  [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
                 subscribeSectionView
