@@ -87,7 +87,7 @@ let template (settings: Settings) =
                 selectView "emailInvoice" "Email Invoice" checkboxStateOptions
                     (checkboxStateToString initSettings.EmailInvoice) false
                 div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
-                checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus false
+                checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus true
                 checkboxView "beforeSubmitCallbackEnabled" "Before Submit Callback Enabled"
                     checkoutFlags.BeforeSubmitCallbackEnabled false
                 checkboxView "deliveryAddressChangedCallbackEnabled" "Delivery Address Changed Callback Enabled"
@@ -95,16 +95,13 @@ let template (settings: Settings) =
                 checkboxView "customStyles" "Use Custom Styles" (customStylesToBool checkoutFlags.CustomStyles) false
                 div
                     [ _style
-                        "display: flex; flex-direction: row; align-items: center; justify-content: flex-end; padding: 20px 50px;" ]
-                    [ input
-                        [ _style " background-color: #fbb710;
-                                           border: none;
-                                           color: white;
-                                           padding: 16px 32px;
-                                           text-decoration: none;
-                                           margin: 4px 2px;
-                                           cursor: pointer;"
-                          _type "submit"
-                          _value "Submit" ] ] ] ]
+                        "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 50px;" ]
+                    [ a
+                        [ _class "btn amado-btn active"
+                          _href "/" ] [ str "Back to Shop" ]
+                      input
+                          [ _class "btn amado-btn"
+                            _type "submit"
+                            _value "Save Settings" ] ] ] ]
 
 let settingsView (settings: Settings) = [ template settings ] |> layout

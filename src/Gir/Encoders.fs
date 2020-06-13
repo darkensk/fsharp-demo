@@ -59,7 +59,7 @@ let paymentPayloadEncoder (settings: Settings) (items: CartItem list) =
               Encode.list
               <| List.map (paymentItemEncoder) productsList
               "orderReference", Encode.string "TEST-AVARDA-ORDER-X"
-              "displayItems", Encode.bool true ]
+              "displayItems", Encode.bool settings.ExtraInitSettings.DisplayItems ]
         |> Encode.toString 0
 
 let modeEncoder = checkoutModeToString >> Encode.string
