@@ -186,7 +186,7 @@ let defaultExtraInitSettings =
       RecurringPayments = Hidden
       SmsNewsletterSubscription = Hidden
       EmailNewsletterSubscription = Hidden
-      EmailInvoice = Unchecked }
+      EmailInvoice = Hidden }
 
 let defaultSettings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags

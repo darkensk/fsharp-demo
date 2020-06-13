@@ -10,7 +10,7 @@ let rowStyles =
         "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 50px; height: 50px;"
 
 let columnStyles =
-    _style "display: flex; flex-direction: column; padding: 20px 0px; width: 500px;"
+    _style "display: flex; flex-direction: column; padding: 20px 0px 0px 20px; width: 600px;"
 
 let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) (isEnabled: bool) =
     let checkedAttribute = if isChecked then [ _checked ] else []
@@ -45,9 +45,13 @@ let selectView
     let selectedOptionAttribute option =
         if option = selectedOption then [ _selected ] else []
 
+    let disabledAttribute = if isEnabled then [] else [ _disabled ]
+
     div [ rowStyles ]
         [ label [ _for selectId ] [ str selectLabel ]
-          select [ _name selectId; _id selectId ]
+          select
+              ([ _name selectId; _id selectId ]
+               @ disabledAttribute)
               (List.map (fun o -> option ([ _value o ] @ selectedOptionAttribute o) [ str o ]) selectOptions) ]
 
 let template (settings: Settings) =
@@ -83,11 +87,11 @@ let template (settings: Settings) =
                 selectView "emailInvoice" "Email Invoice" checkboxStateOptions
                     (checkboxStateToString initSettings.EmailInvoice) false
                 div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
-                checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus true
+                checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus false
                 checkboxView "beforeSubmitCallbackEnabled" "Before Submit Callback Enabled"
-                    checkoutFlags.BeforeSubmitCallbackEnabled true
+                    checkoutFlags.BeforeSubmitCallbackEnabled false
                 checkboxView "deliveryAddressChangedCallbackEnabled" "Delivery Address Changed Callback Enabled"
-                    checkoutFlags.DeliveryAddressChangedCallbackEnabled true
+                    checkoutFlags.DeliveryAddressChangedCallbackEnabled false
                 checkboxView "customStyles" "Use Custom Styles" (customStylesToBool checkoutFlags.CustomStyles) false
                 div
                     [ _style
