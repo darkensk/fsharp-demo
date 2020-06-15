@@ -1,6 +1,5 @@
 module Gir.App
 
-open CompositionRoot
 open Giraffe
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
@@ -12,6 +11,7 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Configuration
 open System
 open System.IO
+open CompositionRoot
 
 
 let redirectHandler next (ctx: HttpContext) =
@@ -26,6 +26,7 @@ let webApp (root: CompositionRoot) =
                 route "/cart/clear" >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts >=> redirectTo false "/cart/"
                 route "/cart/completed" >=> Cart.HttpHandlers.completedHandler >=> text "OK - CompletedCallback Successfull"
                 route "/cart/sessionExpired" >=> Cart.HttpHandlers.sessionExpiredHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> text "OK - Session Timed Out Callback Successfull"
+                route "/settings/" >=> Settings.HttpHandlers.settingsHandler
                 subRoute "/product" (
                     choose [
                         subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById)
@@ -42,7 +43,8 @@ let webApp (root: CompositionRoot) =
             choose [
                 routef "/product/%i/add" (fun i -> Cart.HttpHandlers.addToCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
                 routef "/product/%i/remove" (fun i -> Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts >=> Cart.HttpHandlers.updateItemsHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken >=> redirectHandler )
-                route "/test/" >=> Test.HttpHandlers.easterEggHandler root.CheckoutFrontendBundle
+                route "/test/" >=> Test.HttpHandlers.easterEggHandler
+                route "/settings/save" >=> Settings.HttpHandlers.saveSettingsHandler >=> redirectTo false "/settings/"
             ]
         setStatusCode 404 >=> text "Not Found" ]
 

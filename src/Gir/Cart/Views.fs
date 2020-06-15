@@ -6,7 +6,7 @@ open Gir.Domain
 open Gir.Utils
 
 
-let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
+let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     div
         [ _id "checkout-form"
           _style "padding-top: 50px;" ]
@@ -93,14 +93,14 @@ let initCheckoutInstance (checkoutFrontendBundleUrl: string) (purchaseToken: str
                 "rootElementId": "checkout-form",
                 "redirectUrl": redirectUrlCallback,
                 "styles": {},
-                "disableFocus": true,
+                "disableFocus": %b,
                 "handleByMerchantCallback": handleByMerchantCallback,
                 "completedPurchaseCallback": completedCallback,
                 "sessionTimedOutCallback": sessionTimedOutCallback,
               });
-              """        checkoutFrontendBundleUrl purchaseToken ] ])
+              """        checkoutFrontendBundleUrl purchaseToken settings.ExtraCheckoutFlags.DisableFocus ] ])
 
-let cartItemView (cartItem: CartItem) =
+let cartItemView (settings: Settings) (cartItem: CartItem) =
     tr []
         [ td [ _class "cart_product_img" ]
               [ a [ _href "#" ]
@@ -108,7 +108,10 @@ let cartItemView (cartItem: CartItem) =
                         [ _src cartItem.ProductDetail.Img
                           _alt "Product" ] ] ]
           td [ _class "cart_product_desc" ] [ h5 [] [ str cartItem.ProductDetail.Name ] ]
-          td [ _class "price" ] [ span [] [ str (string cartItem.ProductDetail.Price + " kr") ] ]
+          td [ _class "price" ]
+              [ span []
+                    [ str
+                      <| sprintf "%.0f %s" cartItem.ProductDetail.Price (marketToCurrency settings.Market) ] ]
           td [ _class "qty" ]
               [ div []
                     [ div
@@ -141,11 +144,13 @@ let cartItemView (cartItem: CartItem) =
                                       [ _class "qty-plus qtyButtons"
                                         _type "submit" ] [ i [ _class "fa fa-plus" ] [] ] ] ] ] ] ]
 
-let cartSummaryView (cartState: CartState) =
+let cartSummaryView (settings: Settings) (cartState: CartState) =
     let subTotal =
         List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
 
-    let subTotalString = "\"" + string subTotal + " kr\""
+    let subTotalString =
+        sprintf "\"%.0f %s\"" subTotal (marketToCurrency settings.Market)
+
     div [ _class "col-12 col-lg-4" ]
         [ div [ _class "cart-summary" ]
               [ h5 [] [ str "Cart Total" ]
@@ -169,8 +174,16 @@ let cartSummaryView (cartState: CartState) =
                           [ _href "/cart/clear"
                             _class "btn amado-btn active mb-15" ] [ str "Clear Cart" ] ] ] ]
 
-let template (cartState: CartState) (products: Product list) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
-    let products = products |> List.map productDiv
+let template
+    (settings: Settings)
+    (cartState: CartState)
+    (products: Product list)
+    (checkoutFrontendBundleUrl: string)
+    (purchaseToken: string)
+    =
+    let products =
+        products |> List.map (productDiv settings)
+
     div []
         [ div []
               [ div [ _class "search-wrapper section-padding-100" ]
@@ -224,13 +237,20 @@ let template (cartState: CartState) (products: Product list) (checkoutFrontendBu
                                                                            th [] [ str "Name" ]
                                                                            th [] [ str "Price" ]
                                                                            th [] [ str "Quantity" ] ] ]
-                                                               tbody [] (List.map (cartItemView) cartState.Items) ] ] ]
-                                             cartSummaryView cartState
+                                                               tbody []
+                                                                   (List.map (cartItemView settings) cartState.Items) ] ] ]
+                                             cartSummaryView settings cartState
                                              div [ _class "col-12 col-lg-8" ]
-                                                 [ initCheckoutInstance checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
+                                                 [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
                 subscribeSectionView
                 footerView ] ]
 
-let cartView (cartState: CartState) (checkoutFrontendBundleUrl: string) (purchaseToken: string) (products: Product list) =
-    [ template cartState products checkoutFrontendBundleUrl purchaseToken ]
+let cartView
+    (settings: Settings)
+    (cartState: CartState)
+    (checkoutFrontendBundleUrl: string)
+    (purchaseToken: string)
+    (products: Product list)
+    =
+    [ template settings cartState products checkoutFrontendBundleUrl purchaseToken ]
     |> layout

@@ -6,9 +6,13 @@ Install .NET Core 3.1 [https://dotnet.microsoft.com/download/dotnet-core/3.1](ht
 
 Add following variables to your environment variables:
 
-- `clientId` - ClientID for shop authentication
+- `swedenClientId` - ClientID for shop authentication in Swedish Market
 
-- `clientSecret` - ClientSecret for shop authentication
+- `swedenClientSecret` - ClientSecret for shop authentication Swedish Market
+
+- `finlandClientId` - ClientID for shop authentication in Finnish Market
+
+- `finlandClientSecret` - ClientSecret for shop authentication in Finnish Market
 
 - `checkoutBackendApiUrl` - Checkout 3.0 Backend API url
 
