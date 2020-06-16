@@ -14,7 +14,7 @@ let productEncoder (product: Product) =
     Encode.object
         [ "productId", Encode.int product.ProductId
           "name", Encode.string product.Name
-          "price", Encode.float product.Price
+          "price", Encode.decimal product.Price
           "img", Encode.string product.Img ]
 
 let cartItemEncoder (cartItem: CartItem) =
@@ -34,9 +34,9 @@ let paymentItemEncoder (productDetail: Product) =
     Encode.object
         [ "description", Encode.string productDetail.Name
           "notes", Encode.string "-"
-          "amount", Encode.float productDetail.Price
+          "amount", Encode.decimal productDetail.Price
           "taxCode", Encode.string "20%"
-          "taxAmount", Encode.float (productDetail.Price * 0.2) ]
+          "taxAmount", Encode.decimal <| productDetail.Price * 0.2M ]
 
 let languageEncoder = languageToString >> Encode.string
 

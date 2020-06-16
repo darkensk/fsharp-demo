@@ -4,7 +4,7 @@ module Gir.Domain
 type Product =
     { ProductId: int
       Name: string
-      Price: float
+      Price: decimal
       Img: string }
 
 type CartEvent =

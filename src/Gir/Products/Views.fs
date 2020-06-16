@@ -149,7 +149,7 @@ let detailTemplate (settings:Settings) (cartState: CartState) (product: Product)
                                             [ div [ _class "product-meta-data" ]
                                                   [ div [ _class "line" ] []
                                                     p [ _class "product-price" ]
-                                                        [ str <| sprintf "%.0f %s" product.Price (marketToCurrency settings.Market)]
+                                                        [ str <| sprintf "%M %s" product.Price (marketToCurrency settings.Market)]
                                                     a [ _href "#" ] [ h6 [] [ str product.Name ] ]
                                                     div
                                                         [ _class

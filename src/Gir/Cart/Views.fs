@@ -111,7 +111,7 @@ let cartItemView (settings: Settings) (cartItem: CartItem) =
           td [ _class "price" ]
               [ span []
                     [ str
-                      <| sprintf "%.0f %s" cartItem.ProductDetail.Price (marketToCurrency settings.Market) ] ]
+                      <| sprintf "%M %s" cartItem.ProductDetail.Price (marketToCurrency settings.Market) ] ]
           td [ _class "qty" ]
               [ div []
                     [ div
@@ -146,10 +146,10 @@ let cartItemView (settings: Settings) (cartItem: CartItem) =
 
 let cartSummaryView (settings: Settings) (cartState: CartState) =
     let subTotal =
-        List.fold (fun acc x -> acc + (float x.Qty * x.ProductDetail.Price)) 0. cartState.Items
+        List.fold (fun acc x -> acc + (decimal x.Qty * x.ProductDetail.Price)) 0M cartState.Items
 
     let subTotalString =
-        sprintf "\"%.0f %s\"" subTotal (marketToCurrency settings.Market)
+        sprintf "\"%M %s\"" subTotal (marketToCurrency settings.Market)
 
     div [ _class "col-12 col-lg-4" ]
         [ div [ _class "cart-summary" ]

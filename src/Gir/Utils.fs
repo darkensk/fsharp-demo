@@ -20,7 +20,7 @@ let productDiv (settings: Settings) (product: Product) =
                     [ div [ _class "line" ] []
                       p []
                           [ str
-                            <| sprintf "%.0f %s" product.Price (marketToCurrency settings.Market) ]
+                            <| sprintf "%M %s" product.Price (marketToCurrency settings.Market) ]
                       h4 [] [ str product.Name ] ] ] ]
 
 [<RequireQualifiedAccess>]
