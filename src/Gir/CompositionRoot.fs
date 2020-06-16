@@ -20,16 +20,16 @@ let dummyProducts =
           Price = price
           Img = img }
 
-    [ createProduct 1 "Modern Chair" 180. "/img/bg-img/1.jpg"
-      createProduct 2 "Minimalistic Plant Pot" 10. "/img/bg-img/2.jpg"
-      createProduct 3 "Night Stand" 250. "/img/bg-img/4.jpg"
-      createProduct 4 "Plant Pot" 3. "/img/bg-img/5.jpg"
-      createProduct 5 "Small Table" 120. "/img/bg-img/6.jpg"
-      createProduct 6 "Metallic Chair" 317. "/img/bg-img/7.jpg"
-      createProduct 7 "Rocking Chair" 100. "/img/bg-img/8.jpg"
-      createProduct 8 "Modern Chair" 50. "/img/bg-img/1.jpg"
-      createProduct 9 "Minimalistic Plant Pot" 5. "/img/bg-img/2.jpg"
-      createProduct 10 "Home Deco" 30. "/img/bg-img/9.jpg" ]
+    [ createProduct 1 "Modern Chair" 180m "/img/bg-img/1.jpg"
+      createProduct 2 "Minimalistic Plant Pot" 10M "/img/bg-img/2.jpg"
+      createProduct 3 "Night Stand" 250M "/img/bg-img/4.jpg"
+      createProduct 4 "Plant Pot" 3M "/img/bg-img/5.jpg"
+      createProduct 5 "Small Table" 120M "/img/bg-img/6.jpg"
+      createProduct 6 "Metallic Chair" 317M "/img/bg-img/7.jpg"
+      createProduct 7 "Rocking Chair" 100M "/img/bg-img/8.jpg"
+      createProduct 8 "Modern Chair" 50M "/img/bg-img/1.jpg"
+      createProduct 9 "Minimalistic Plant Pot" 5M "/img/bg-img/2.jpg"
+      createProduct 10 "Home Deco" 30M "/img/bg-img/9.jpg" ]
 
 module CompositionRoot =
     let compose (cfg: IConfigurationRoot): CompositionRoot =

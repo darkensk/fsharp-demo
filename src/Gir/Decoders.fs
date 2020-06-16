@@ -16,7 +16,7 @@ let productDecoder =
     Decode.object (fun get ->
         { ProductId = get.Required.Field "productId" Decode.int
           Name = get.Required.Field "name" Decode.string
-          Price = get.Required.Field "price" Decode.float
+          Price = get.Required.Field "price" Decode.decimal
           Img = get.Required.Field "img" Decode.string })
 
 let cartItemDecoder =
