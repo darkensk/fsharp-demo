@@ -54,12 +54,14 @@ let paymentPayloadEncoder (settings: Settings) (items: CartItem list) =
                           Img = x.ProductDetail.Img } ]) [] items
 
         Encode.object
-            [ "language", languageEncoder settings.ExtraInitSettings.Language
+            [ "checkoutSetup",
+              Encode.object
+                  [ "language", languageEncoder settings.ExtraInitSettings.Language
+                    "displayItems", Encode.bool settings.ExtraInitSettings.DisplayItems ]
               "items",
               Encode.list
               <| List.map (paymentItemEncoder) productsList
-              "orderReference", Encode.string "TEST-AVARDA-ORDER-X"
-              "displayItems", Encode.bool settings.ExtraInitSettings.DisplayItems ]
+              "extraIdentifiers", Encode.object [ "orderReference", Encode.string "TEST-AVARDA-ORDER-X" ] ]
         |> Encode.toString 0
 
 let modeEncoder = checkoutModeToString >> Encode.string
