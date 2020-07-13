@@ -92,7 +92,7 @@ let template (settings: Settings) =
                     checkoutFlags.BeforeSubmitCallbackEnabled false
                 checkboxView "deliveryAddressChangedCallbackEnabled" "Delivery Address Changed Callback Enabled"
                     checkoutFlags.DeliveryAddressChangedCallbackEnabled false
-                checkboxView "customStyles" "Use Custom Styles" (customStylesToBool checkoutFlags.CustomStyles) false
+                checkboxView "customStyles" "Use Custom Styles" checkoutFlags.CustomStyles true
                 div
                     [ _style
                         "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 50px;" ]

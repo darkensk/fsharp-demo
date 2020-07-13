@@ -60,20 +60,12 @@ let initPaymentDecoder (s: string) =
           Jwt = v.Jwt }
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
 
-let boolToCustomStyles (b: bool) = if b then Set "{}" else NotSet
-
-let stringToCustomStyles (s: string) =
-    match s with
-    | _ -> NotSet
-
 let extraCheckoutFlagsDecoder =
     Decode.object (fun get ->
         { DisableFocus = get.Required.Field "disableFocus" Decode.bool
           BeforeSubmitCallbackEnabled = get.Required.Field "beforeSubmitCallbackEnabled" Decode.bool
           DeliveryAddressChangedCallbackEnabled = get.Required.Field "deliveryAddressChangedCallbackEnabled" Decode.bool
-          CustomStyles =
-              (get.Required.Field "customStyles" Decode.string)
-              |> stringToCustomStyles })
+          CustomStyles = get.Required.Field "customStyles" Decode.bool })
 
 let extraInitSettingsDecoder =
     Decode.object (fun get ->
