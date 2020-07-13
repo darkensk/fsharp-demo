@@ -16,18 +16,10 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
     task {
         let tryGetValue s = ctx.Request.Form.TryGetValue(s)
 
-        // let getValueFromSeq s =
-        //     s |> Seq.cast |> List.ofSeq |> List.head
-
         let checkboxValue s =
             match tryGetValue s with
             | (true, _) -> true
             | (false, _) -> false
-
-        // let boolToCustomStyles s =
-        //     match checkboxValue s with
-        //     | true -> Set "{}"
-        //     | false -> NotSet
 
         let getValue s = ctx.Request.Form.Item(s).ToString()
 
