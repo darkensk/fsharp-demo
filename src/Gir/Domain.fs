@@ -63,15 +63,11 @@ type ExtraInitSettings =
       EmailNewsletterSubscription: CheckboxState
       EmailInvoice: CheckboxState }
 
-type CustomStyles =
-    | Set of customStyles: string
-    | NotSet
-
 type ExtraCheckoutFlags =
     { DisableFocus: bool
       BeforeSubmitCallbackEnabled: bool
       DeliveryAddressChangedCallbackEnabled: bool
-      CustomStyles: CustomStyles }
+      CustomStyles: bool }
 
 type Market =
     | Sweden
@@ -153,11 +149,6 @@ let stringToSelectedPaymentMethod (s: string) =
     | "PayOnDelivery" -> Selected PayOnDelivery
     | _ -> NotSelected
 
-let customStylesToBool (cs: CustomStyles) =
-    match cs with
-    | Set _ -> true
-    | NotSet -> false
-
 let marketToString (m: Market) =
     match m with
     | Sweden -> "Sweden"
@@ -173,7 +164,7 @@ let defaultExtraCheckoutFlags =
     { DisableFocus = true
       BeforeSubmitCallbackEnabled = false
       DeliveryAddressChangedCallbackEnabled = false
-      CustomStyles = NotSet }
+      CustomStyles = false }
 
 let defaultExtraInitSettings =
     { Language = English

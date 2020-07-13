@@ -24,10 +24,10 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
             | (true, _) -> true
             | (false, _) -> false
 
-        let boolToCustomStyles s =
-            match checkboxValue s with
-            | true -> Set "{}"
-            | false -> NotSet
+        // let boolToCustomStyles s =
+        //     match checkboxValue s with
+        //     | true -> Set "{}"
+        //     | false -> NotSet
 
         let getValue s = ctx.Request.Form.Item(s).ToString()
 
@@ -36,7 +36,7 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                   { DisableFocus = checkboxValue "disableFocus"
                     BeforeSubmitCallbackEnabled = checkboxValue "beforeSubmitCallbackEnabled"
                     DeliveryAddressChangedCallbackEnabled = checkboxValue "deliveryAddressChangedCallbackEnabled"
-                    CustomStyles = boolToCustomStyles "customStyles" }
+                    CustomStyles = checkboxValue "customStyles" }
               ExtraInitSettings =
                   { Language = getValue "language" |> stringToLanguage
                     Mode = getValue "mode" |> stringToCheckoutMode

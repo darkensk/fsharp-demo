@@ -73,10 +73,6 @@ let selectedPaymentMethodEncoder (spm: SelectedPaymentMethod) =
     | Selected pm -> pm |> paymentMethodsToString |> Encode.string
     | NotSelected -> "" |> Encode.string
 
-let customStylesEncoder (cs: CustomStyles) =
-    match cs with
-    | Set customStyles -> Encode.string customStyles
-    | NotSet -> Encode.string "{}"
 
 let extraInitSettingsEncoder (initSettings: ExtraInitSettings) =
     Encode.object
@@ -95,7 +91,7 @@ let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
         [ "disableFocus", Encode.bool checkoutFlags.DisableFocus
           "beforeSubmitCallbackEnabled", Encode.bool checkoutFlags.BeforeSubmitCallbackEnabled
           "deliveryAddressChangedCallbackEnabled", Encode.bool checkoutFlags.DeliveryAddressChangedCallbackEnabled
-          "customStyles", customStylesEncoder checkoutFlags.CustomStyles ]
+          "customStyles", Encode.bool checkoutFlags.CustomStyles ]
 
 let settingsEncoder (settings: Settings) =
     Encode.object
