@@ -9,6 +9,7 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Configuration
+open Microsoft.AspNetCore.Authentication.Cookies
 open System
 open System.IO
 open CompositionRoot
@@ -75,11 +76,16 @@ let configureApp (root: CompositionRoot) (app: IApplicationBuilder) =
     (match env.IsDevelopment() with
     | true  -> app.UseDeveloperExceptionPage()
     | false -> app.UseGiraffeErrorHandler errorHandler)
-        //.UseHttpsRedirection()
+        .UseHttpsRedirection()
         .UseCors(configureCors)
         .UseStaticFiles()
         .UseSession()
         .UseGiraffe(webApp root)
+
+let cookieOptions =
+    (fun (options:CookieAuthenticationOptions) ->
+        options.Cookie.SameSite <- SameSiteMode.Strict
+        options.Cookie.SecurePolicy <- CookieSecurePolicy.Always)
 
 let configureServices (services: IServiceCollection) =
     services.AddCors()    |> ignore
@@ -88,6 +94,7 @@ let configureServices (services: IServiceCollection) =
     services.AddDataProtection() |> ignore
     services.AddSession() |> ignore
     services.AddMvc() |> ignore
+    services.ConfigureApplicationCookie(Action<_> cookieOptions) |> ignore
 
 let configureLogging (builder: ILoggingBuilder) =
     builder.AddFilter(fun l -> l.Equals LogLevel.Error)
