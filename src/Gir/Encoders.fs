@@ -40,6 +40,26 @@ let paymentItemEncoder (productDetail: Product) =
 
 let languageEncoder = languageToString >> Encode.string
 
+let modeEncoder = checkoutModeToString >> Encode.string
+
+let checkboxStateEncoder = checkboxStateToString >> Encode.string
+
+let selectedPaymentMethodEncoder (spm: SelectedPaymentMethod) =
+    match spm with
+    | Selected pm -> pm |> paymentMethodsToString |> Encode.string
+    | NotSelected -> "" |> Encode.string
+
+let extraInitSettingsEncoder (initSettings: ExtraInitSettings) =
+    Encode.object
+        [ "language", languageEncoder initSettings.Language
+          "mode", modeEncoder initSettings.Mode
+          "differentDeliveryAddress", checkboxStateEncoder initSettings.DifferentDeliveryAddress
+          "selectedPaymentMethod", selectedPaymentMethodEncoder initSettings.SelectedPaymentMethod
+          "displayItems", Encode.bool initSettings.DisplayItems
+          "recurringPayments", checkboxStateEncoder initSettings.RecurringPayments
+          "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
+          "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription ]
+
 let paymentPayloadEncoder (settings: Settings) (items: CartItem list) =
     if List.isEmpty items then
         ""
@@ -54,37 +74,12 @@ let paymentPayloadEncoder (settings: Settings) (items: CartItem list) =
                           Img = x.ProductDetail.Img } ]) [] items
 
         Encode.object
-            [ "checkoutSetup",
-              Encode.object
-                  [ "language", languageEncoder settings.ExtraInitSettings.Language
-                    "displayItems", Encode.bool settings.ExtraInitSettings.DisplayItems ]
+            [ "checkoutSetup", extraInitSettingsEncoder settings.ExtraInitSettings
               "items",
               Encode.list
               <| List.map (paymentItemEncoder) productsList
-              "extraIdentifiers", Encode.object [ "orderReference", Encode.string "TEST-AVARDA-ORDER-X" ] ]
+              "extraIdentifiers", Encode.object [ "orderReference", Encode.string settings.OrderReference ] ]
         |> Encode.toString 0
-
-let modeEncoder = checkoutModeToString >> Encode.string
-
-let checkboxStateEncoder = checkboxStateToString >> Encode.string
-
-let selectedPaymentMethodEncoder (spm: SelectedPaymentMethod) =
-    match spm with
-    | Selected pm -> pm |> paymentMethodsToString |> Encode.string
-    | NotSelected -> "" |> Encode.string
-
-
-let extraInitSettingsEncoder (initSettings: ExtraInitSettings) =
-    Encode.object
-        [ "language", languageEncoder initSettings.Language
-          "mode", modeEncoder initSettings.Mode
-          "differentDeliveryAddress", checkboxStateEncoder initSettings.DifferentDeliveryAddress
-          "selectedPaymentMethod", selectedPaymentMethodEncoder initSettings.SelectedPaymentMethod
-          "displayItems", Encode.bool initSettings.DisplayItems
-          "recurringPayments", checkboxStateEncoder initSettings.RecurringPayments
-          "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
-          "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
-          "emailInvoice", checkboxStateEncoder initSettings.EmailInvoice ]
 
 let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
     Encode.object
@@ -97,5 +92,6 @@ let settingsEncoder (settings: Settings) =
     Encode.object
         [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
           "extraInitSettings", extraInitSettingsEncoder settings.ExtraInitSettings
-          "market", settings.Market |> marketToString |> Encode.string ]
+          "market", settings.Market |> marketToString |> Encode.string
+          "orderReference", Encode.string settings.OrderReference ]
     |> Encode.toString 0

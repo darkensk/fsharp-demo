@@ -90,9 +90,6 @@ let extraInitSettingsDecoder =
               |> stringToCheckboxState
           EmailNewsletterSubscription =
               (get.Required.Field "emailNewsletterSubscription" Decode.string)
-              |> stringToCheckboxState
-          EmailInvoice =
-              (get.Required.Field "emailInvoice" Decode.string)
               |> stringToCheckboxState })
 
 let decodeSettings =
@@ -101,12 +98,16 @@ let decodeSettings =
           ExtraInitSettings = get.Required.Field "extraInitSettings" extraInitSettingsDecoder
           Market =
               get.Required.Field "market" Decode.string
-              |> stringToMarket })
+              |> stringToMarket
+          OrderReference =
+              (get.Optional.Field "orderReference" Decode.string)
+              |> Option.defaultValue defaultSettings.OrderReference })
 
 let settingsDecoder (s: string) =
     match Decode.fromString decodeSettings s with
     | Ok v ->
         { ExtraCheckoutFlags = v.ExtraCheckoutFlags
           ExtraInitSettings = v.ExtraInitSettings
-          Market = v.Market }
+          Market = v.Market
+          OrderReference = v.OrderReference }
     | Error e -> failwithf "Cannot decode settings, error = %A" e

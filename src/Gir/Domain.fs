@@ -60,8 +60,7 @@ type ExtraInitSettings =
       DisplayItems: bool
       RecurringPayments: CheckboxState
       SmsNewsletterSubscription: CheckboxState
-      EmailNewsletterSubscription: CheckboxState
-      EmailInvoice: CheckboxState }
+      EmailNewsletterSubscription: CheckboxState }
 
 type ExtraCheckoutFlags =
     { DisableFocus: bool
@@ -76,7 +75,8 @@ type Market =
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
       ExtraInitSettings: ExtraInitSettings
-      Market: Market }
+      Market: Market
+      OrderReference: string }
 
 let languageToString (language: Language) =
     match language with
@@ -161,7 +161,7 @@ let stringToMarket (s: string) =
     | _ -> Sweden
 
 let defaultExtraCheckoutFlags =
-    { DisableFocus = true
+    { DisableFocus = false
       BeforeSubmitCallbackEnabled = false
       DeliveryAddressChangedCallbackEnabled = false
       CustomStyles = false }
@@ -174,10 +174,10 @@ let defaultExtraInitSettings =
       DisplayItems = true
       RecurringPayments = Hidden
       SmsNewsletterSubscription = Hidden
-      EmailNewsletterSubscription = Hidden
-      EmailInvoice = Hidden }
+      EmailNewsletterSubscription = Hidden }
 
 let defaultSettings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
       ExtraInitSettings = defaultExtraInitSettings
-      Market = Sweden }
+      Market = Sweden
+      OrderReference = "TEST-AVARDA-DEMO-SHOP" }
