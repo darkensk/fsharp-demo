@@ -7,28 +7,32 @@ open Gir.Domain
 
 let rowStyles =
     _style
-        "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 50px; height: 50px;"
+        "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 10px 0px 0px; height: 50px;"
 
 let columnStyles =
     _style "display: flex; flex-direction: column; padding: 20px 0px 0px 20px;"
+
+let labelStyles =
+    "text-overflow: ellipsis; overflow: hidden;"
 
 let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) (isEnabled: bool) =
     let checkedAttribute = if isChecked then [ _checked ] else []
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
     div [ rowStyles ]
-        [ label [ _for inputId ] [ str inputLabel ]
-          input
-              ([ _style "width: 30px; height: 30px;"
-                 _type "checkbox"
-                 _id inputId
-                 _name inputId
-                 _value "true" ]
-               @ checkedAttribute
-               @ disabledAttribute) ]
+        [ label [ _for inputId; _style labelStyles ] [ str inputLabel ]
+          div [ _style "display: flex; flex-direction-row; min-width: 60px;" ]
+              [ input
+                  ([ _style "width: 30px; height: 30px;"
+                     _type "checkbox"
+                     _id inputId
+                     _name inputId
+                     _value "true" ]
+                   @ checkedAttribute
+                   @ disabledAttribute) ] ]
 
 let textareaView (areaId: string) (areaLabel: string) =
     div [ rowStyles ]
-        [ label [ _for areaId ] [ str areaLabel ]
+        [ label [ _for areaId; _style labelStyles ] [ str areaLabel ]
           textarea
               [ _id areaId
                 _name areaId
@@ -48,7 +52,7 @@ let selectView
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
 
     div [ rowStyles ]
-        [ label [ _for selectId ] [ str selectLabel ]
+        [ label [ _for selectId; _style labelStyles ] [ str selectLabel ]
           select
               ([ _name selectId; _id selectId ]
                @ disabledAttribute)
@@ -57,7 +61,7 @@ let selectView
 let inputView inputId inputLabel value isEnabled =
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
     div [ rowStyles ]
-        [ label [ _for inputId ] [ str inputLabel ]
+        [ label [ _for inputId; _style labelStyles ] [ str inputLabel ]
           input
               ([ _type "text"
                  _style "width: 50%;
@@ -110,10 +114,11 @@ let template (settings: Settings) (cartState: CartState) =
                 div [ _class "single-product-area section-padding-100 clearfix" ]
                     [ div [ _class "container-fluid" ]
                           [ div [ columnStyles ]
-                                [ form
-                                    [ _id "settings"
-                                      _action "/settings/save"
-                                      _method "POST" ]
+                                [ h1 [] [ str "Settings Page" ]
+                                  form
+                                      [ _id "settings"
+                                        _action "/settings/save"
+                                        _method "POST" ]
                                       [ div [] [ h3 [] [ str "Market" ] ]
                                         selectView "market" "Market" [ "Sweden"; "Finland" ]
                                             (marketToString settings.Market) true
@@ -150,12 +155,14 @@ let template (settings: Settings) (cartState: CartState) =
                                         checkboxView "customStyles" "Use Custom Styles" checkoutFlags.CustomStyles true
                                         div
                                             [ _style
-                                                "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 50px;" ]
+                                                "display: flex; flex: 1; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 10px;" ]
                                             [ a
                                                 [ _class "btn amado-btn active"
+                                                  _style "min-width: 200px; width: 30%;"
                                                   _href "/" ] [ str "Back to Shop" ]
                                               input
                                                   [ _class "btn amado-btn"
+                                                    _style "min-width: 200px; width: 30%;"
                                                     _type "submit"
                                                     _value "Save Settings" ] ] ] ] ] ] ]
           subscribeSectionView
