@@ -321,7 +321,9 @@ const initCheckout = (
   checkoutFrontendBundle,
   purchaseJwt,
   disableFocus,
-  useCustomStyles
+  useCustomStyles,
+  isBeforeSubmitCallbackEnabled,
+  isDeliveryAddressChangedCallbackEnabled
 ) => {
   (function (e, t, n, a, s, c, o, i, r) {
     e[a] =
@@ -395,6 +397,34 @@ const initCheckout = (
   const redirectUrlCallback = () =>
     window.location.origin + "/cart/#checkout-form";
 
+  var beforeSubmitCallback = function (
+    { zip, country, selectedPaymentMethodId },
+    checkoutInstance
+  ) {
+    var confirmAlert = confirm(
+      `Before Submit Callback Triggered:\nZip: "${zip}"\nCountry: "${country}"\nSelectedPaymentMethod: "${selectedPaymentMethodId}"\nPress 'OK' to continue or 'Cancel' to abort!`
+    );
+    if (confirmAlert == true) {
+      checkoutInstance.beforeSubmitContinue();
+    } else {
+      checkoutInstance.beforeSubmitAbort();
+    }
+  };
+
+  var deliveryAddressChangedCallback = function (
+    { zip, country },
+    checkoutInstance
+  ) {
+    var confirmAlert = confirm(
+      `Delivery Address Changed Callback Triggered:\nZip: "${zip}"\nCountry: "${country}"\nPress 'OK' to continue or 'Cancel' to abort!`
+    );
+    if (confirmAlert == true) {
+      checkoutInstance.deliveryAddressChangedContinue();
+    } else {
+      checkoutInstance.refreshForm();
+    }
+  };
+
   window.avardaCheckoutInit({
     purchaseJwt: purchaseJwt,
     rootElementId: "checkout-form",
@@ -404,5 +434,11 @@ const initCheckout = (
     handleByMerchantCallback: handleByMerchantCallback,
     completedPurchaseCallback: completedCallback,
     sessionTimedOutCallback: sessionTimedOutCallback,
+    beforeSubmitCallback: isBeforeSubmitCallbackEnabled
+      ? beforeSubmitCallback
+      : false,
+    deliveryAddressChangedCallback: isDeliveryAddressChangedCallbackEnabled
+      ? deliveryAddressChangedCallback
+      : false,
   });
 };

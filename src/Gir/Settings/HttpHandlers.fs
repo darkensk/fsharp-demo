@@ -9,8 +9,9 @@ open Views
 
 
 let settingsHandler (next: HttpFunc) (ctx: HttpContext) =
+    let cartState = Session.getCartState ctx
     let settings = Session.getSettings ctx
-    (htmlView <| settingsView settings) next ctx
+    (htmlView <| settingsView settings cartState) next ctx
 
 let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
     task {
@@ -45,9 +46,9 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                         |> stringToCheckboxState
                     EmailNewsletterSubscription =
                         getValue "emailNewsletterSubscription"
-                        |> stringToCheckboxState
-                    EmailInvoice = getValue "emailInvoice" |> stringToCheckboxState }
-              Market = getValue "market" |> stringToMarket }
+                        |> stringToCheckboxState }
+              Market = getValue "market" |> stringToMarket
+              OrderReference = getValue "orderReference" }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx
