@@ -14,12 +14,14 @@ FROM build AS publish
 RUN dotnet publish ./src/Gir/ -o /app
 
 FROM base AS final
+ARG apiPublicUrl
 ARG swedenClientId
 ARG swedenClientSecret
 ARG finlandClientId
 ARG finlandClientSecret
 ARG checkoutBackendApiUrl="https://avdonl-p-checkout.westeurope.cloudapp.azure.com"
 ARG checkoutFrontendBundleUrl="https://avdonl0p0checkout0fe.blob.core.windows.net/frontend/static/js/main.js"
+ENV apiPublicUrl=${apiPublicUrl}
 ENV swedenClientId=${swedenClientId}
 ENV swedenClientSecret=${swedenClientSecret}
 ENV finlandClientId=${finlandClientId}
