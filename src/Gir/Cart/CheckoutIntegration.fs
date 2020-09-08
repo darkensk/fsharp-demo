@@ -75,10 +75,15 @@ let reclaimPurchaseToken (backendUrl: string) (partnerToken: string) (sessionPur
                 |> Task.map decodePurchaseToken
     }
 
-let getPurchaseToken (backendUrl: string) (cartState: CartState) (partnerToken: string) (settings: Settings) =
+let getPurchaseToken (backendUrl: string)
+                     (apiPublicUrl: string)
+                     (cartState: CartState)
+                     (partnerToken: string)
+                     (settings: Settings)
+                     =
     task {
         let encodedPaymentPayload =
-            paymentPayloadEncoder settings cartState.Items
+            paymentPayloadEncoder apiPublicUrl settings cartState.Items
 
         let bearerString = "Bearer " + partnerToken
 
@@ -93,16 +98,16 @@ let getPurchaseToken (backendUrl: string) (cartState: CartState) (partnerToken: 
                 |> Task.map initPaymentDecoder
     }
 
-let updateItems
-    (backendUrl: string)
-    (settings: Settings)
-    (cartState: CartState)
-    (partnerToken: string)
-    (sessionPurchaseId: string)
-    =
+let updateItems (backendUrl: string)
+                (apiPublicUrl: string)
+                (settings: Settings)
+                (cartState: CartState)
+                (partnerToken: string)
+                (sessionPurchaseId: string)
+                =
     task {
         let encodedPaymentPayload =
-            paymentPayloadEncoder settings cartState.Items
+            paymentPayloadEncoder apiPublicUrl settings cartState.Items
 
         let bearerString = "Bearer " + partnerToken
 

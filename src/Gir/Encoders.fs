@@ -5,23 +5,20 @@ open Domain
 
 
 let getPartnerTokenPayloadEncoder (clientId: string) (clientSecret: string) =
-    Encode.object
-        [ "clientId", Encode.string clientId
-          "clientSecret", Encode.string clientSecret ]
+    Encode.object [ "clientId", Encode.string clientId
+                    "clientSecret", Encode.string clientSecret ]
     |> Encode.toString 0
 
 let productEncoder (product: Product) =
-    Encode.object
-        [ "productId", Encode.int product.ProductId
-          "name", Encode.string product.Name
-          "price", Encode.decimal product.Price
-          "img", Encode.string product.Img ]
+    Encode.object [ "productId", Encode.int product.ProductId
+                    "name", Encode.string product.Name
+                    "price", Encode.decimal product.Price
+                    "img", Encode.string product.Img ]
 
 let cartItemEncoder (cartItem: CartItem) =
-    Encode.object
-        [ "id", Encode.int cartItem.Id
-          "qty", Encode.int cartItem.Qty
-          "product", productEncoder cartItem.ProductDetail ]
+    Encode.object [ "id", Encode.int cartItem.Id
+                    "qty", Encode.int cartItem.Qty
+                    "product", productEncoder cartItem.ProductDetail ]
 
 let cartEncoder (cartState: CartState) =
     Encode.object
@@ -31,12 +28,11 @@ let cartEncoder (cartState: CartState) =
     |> Encode.toString 0
 
 let paymentItemEncoder (productDetail: Product) =
-    Encode.object
-        [ "description", Encode.string productDetail.Name
-          "notes", Encode.string "-"
-          "amount", Encode.decimal productDetail.Price
-          "taxCode", Encode.string "20%"
-          "taxAmount", Encode.decimal <| productDetail.Price * 0.2M ]
+    Encode.object [ "description", Encode.string productDetail.Name
+                    "notes", Encode.string "-"
+                    "amount", Encode.decimal productDetail.Price
+                    "taxCode", Encode.string "20%"
+                    "taxAmount", Encode.decimal <| productDetail.Price * 0.2M ]
 
 let languageEncoder = languageToString >> Encode.string
 
@@ -44,23 +40,44 @@ let modeEncoder = checkoutModeToString >> Encode.string
 
 let checkboxStateEncoder = checkboxStateToString >> Encode.string
 
-let selectedPaymentMethodEncoder (spm: SelectedPaymentMethod) =
-    match spm with
+let backendNotificationStateEncoder (apiPublicUrl: string) =
+    function
+    | NotSet -> Encode.nil
+    | ShouldSucceed -> apiPublicUrl + "/be2be/succeed" |> Encode.string
+    | ShouldFail -> apiPublicUrl + "/be2be/fail" |> Encode.string
+
+let selectedPaymentMethodEncoder =
+    function
     | Selected pm -> pm |> paymentMethodsToString |> Encode.string
     | NotSelected -> "" |> Encode.string
 
-let extraInitSettingsEncoder (initSettings: ExtraInitSettings) =
-    Encode.object
-        [ "language", languageEncoder initSettings.Language
-          "mode", modeEncoder initSettings.Mode
-          "differentDeliveryAddress", checkboxStateEncoder initSettings.DifferentDeliveryAddress
-          "selectedPaymentMethod", selectedPaymentMethodEncoder initSettings.SelectedPaymentMethod
-          "displayItems", Encode.bool initSettings.DisplayItems
-          "recurringPayments", checkboxStateEncoder initSettings.RecurringPayments
-          "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
-          "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription ]
+let extraInitSettingsEncoderForInitPayment (apiPublicUrl: string) (initSettings: ExtraInitSettings) =
+    Encode.object [ "language", languageEncoder initSettings.Language
+                    "mode", modeEncoder initSettings.Mode
+                    "differentDeliveryAddress", checkboxStateEncoder initSettings.DifferentDeliveryAddress
+                    "selectedPaymentMethod", selectedPaymentMethodEncoder initSettings.SelectedPaymentMethod
+                    "displayItems", Encode.bool initSettings.DisplayItems
+                    "recurringPayments", checkboxStateEncoder initSettings.RecurringPayments
+                    "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
+                    "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
+                    "completedNotificationUrl",
+                    backendNotificationStateEncoder apiPublicUrl initSettings.BackendNotification ]
 
-let paymentPayloadEncoder (settings: Settings) (items: CartItem list) =
+let extraInitSettingsEncoderForSettings (initSettings: ExtraInitSettings) =
+    Encode.object [ "language", languageEncoder initSettings.Language
+                    "mode", modeEncoder initSettings.Mode
+                    "differentDeliveryAddress", checkboxStateEncoder initSettings.DifferentDeliveryAddress
+                    "selectedPaymentMethod", selectedPaymentMethodEncoder initSettings.SelectedPaymentMethod
+                    "displayItems", Encode.bool initSettings.DisplayItems
+                    "recurringPayments", checkboxStateEncoder initSettings.RecurringPayments
+                    "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
+                    "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
+                    "completedNotificationUrl",
+                    initSettings.BackendNotification
+                    |> backendNotificationStateToString
+                    |> Encode.string ]
+
+let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: CartItem list) =
     if List.isEmpty items then
         ""
     else
@@ -73,25 +90,23 @@ let paymentPayloadEncoder (settings: Settings) (items: CartItem list) =
                           Price = x.ProductDetail.Price
                           Img = x.ProductDetail.Img } ]) [] items
 
-        Encode.object
-            [ "checkoutSetup", extraInitSettingsEncoder settings.ExtraInitSettings
-              "items",
-              Encode.list
-              <| List.map (paymentItemEncoder) productsList
-              "extraIdentifiers", Encode.object [ "orderReference", Encode.string settings.OrderReference ] ]
+        Encode.object [ "checkoutSetup", extraInitSettingsEncoderForInitPayment apiPublicUrl settings.ExtraInitSettings
+                        "items",
+                        Encode.list
+                        <| List.map (paymentItemEncoder) productsList
+                        "extraIdentifiers", Encode.object [ "orderReference", Encode.string settings.OrderReference ] ]
         |> Encode.toString 0
 
 let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
-    Encode.object
-        [ "disableFocus", Encode.bool checkoutFlags.DisableFocus
-          "beforeSubmitCallbackEnabled", Encode.bool checkoutFlags.BeforeSubmitCallbackEnabled
-          "deliveryAddressChangedCallbackEnabled", Encode.bool checkoutFlags.DeliveryAddressChangedCallbackEnabled
-          "customStyles", Encode.bool checkoutFlags.CustomStyles ]
+    Encode.object [ "disableFocus", Encode.bool checkoutFlags.DisableFocus
+                    "beforeSubmitCallbackEnabled", Encode.bool checkoutFlags.BeforeSubmitCallbackEnabled
+                    "deliveryAddressChangedCallbackEnabled",
+                    Encode.bool checkoutFlags.DeliveryAddressChangedCallbackEnabled
+                    "customStyles", Encode.bool checkoutFlags.CustomStyles ]
 
 let settingsEncoder (settings: Settings) =
-    Encode.object
-        [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
-          "extraInitSettings", extraInitSettingsEncoder settings.ExtraInitSettings
-          "market", settings.Market |> marketToString |> Encode.string
-          "orderReference", Encode.string settings.OrderReference ]
+    Encode.object [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
+                    "extraInitSettings", extraInitSettingsEncoderForSettings settings.ExtraInitSettings
+                    "market", settings.Market |> marketToString |> Encode.string
+                    "orderReference", Encode.string settings.OrderReference ]
     |> Encode.toString 0

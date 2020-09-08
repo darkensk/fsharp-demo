@@ -11,7 +11,8 @@ type CompositionRoot =
       GetPurchaseToken: CartState -> string -> Settings -> Task<InitializePaymentResponse>
       GetAllProducts: unit -> Product list
       GetProductById: int -> Product option
-      ReclaimPurchaseToken: string -> string -> Task<string> }
+      ReclaimPurchaseToken: string -> string -> Task<string>
+      ApiPublicUrl: string }
 
 let dummyProducts =
     let createProduct id name price img =
@@ -37,21 +38,23 @@ module CompositionRoot =
             cfg.["checkoutBackendApiUrl"]
             + "/api/partner/tokens"
 
-        let getPartnerAccessToken (market:Market) =
+        let getPartnerAccessToken (market: Market) =
             let getCachedToken =
                 Cart.CheckoutIntegration.getCachedToken url market
 
             match market with
-                | Sweden ->  getCachedToken cfg.["swedenClientId"] cfg.["swedenClientSecret"]
-                | Finland -> getCachedToken cfg.["finlandClientId"] cfg.["finlandClientSecret"]
+            | Sweden -> getCachedToken cfg.["swedenClientId"] cfg.["swedenClientSecret"]
+            | Finland -> getCachedToken cfg.["finlandClientId"] cfg.["finlandClientSecret"]
 
         { CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
           CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
           GetPartnerAccessToken = getPartnerAccessToken
-          GetPurchaseToken = Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"]
+          GetPurchaseToken =
+              Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] cfg.["apiPublicUrl"]
           GetAllProducts = fun _ -> dummyProducts
           GetProductById =
               fun i ->
                   dummyProducts
                   |> List.tryFind (fun x -> x.ProductId = i)
-          ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"] }
+          ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"]
+          ApiPublicUrl = cfg.["apiPublicUrl"] }

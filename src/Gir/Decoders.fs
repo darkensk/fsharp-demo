@@ -90,7 +90,10 @@ let extraInitSettingsDecoder =
               |> stringToCheckboxState
           EmailNewsletterSubscription =
               (get.Required.Field "emailNewsletterSubscription" Decode.string)
-              |> stringToCheckboxState })
+              |> stringToCheckboxState
+          BackendNotification =
+              (get.Required.Field "completedNotificationUrl" Decode.string)
+              |> stringToBackendNotificationState })
 
 let decodeSettings =
     Decode.object (fun get ->
