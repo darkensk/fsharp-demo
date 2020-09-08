@@ -14,4 +14,6 @@ let easterEggHandler (next: HttpFunc) (ctx: HttpContext) =
         ctx.Request.Form.Item("purchaseJwt").ToString().Replace("\"", "")
 
     (redirectTo false
-     <| sprintf "/test/%s" purchaseToken) next ctx
+     <| sprintf "/test/%s" purchaseToken)
+        next
+        ctx

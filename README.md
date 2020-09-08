@@ -6,6 +6,8 @@ Install .NET Core 3.1 [https://dotnet.microsoft.com/download/dotnet-core/3.1](ht
 
 Add following variables to your environment variables:
 
+- `apiPublicUrl` - URL where the server is running
+
 - `swedenClientId` - ClientID for shop authentication in Swedish Market
 
 - `swedenClientSecret` - ClientSecret for shop authentication Swedish Market

@@ -46,7 +46,10 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                         |> stringToCheckboxState
                     EmailNewsletterSubscription =
                         getValue "emailNewsletterSubscription"
-                        |> stringToCheckboxState }
+                        |> stringToCheckboxState
+                    BackendNotification =
+                        getValue "completedNotificationUrl"
+                        |> stringToBackendNotificationState }
               Market = getValue "market" |> stringToMarket
               OrderReference = getValue "orderReference" }
 

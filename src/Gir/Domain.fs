@@ -52,6 +52,11 @@ type SelectedPaymentMethod =
     | Selected of selectedPaymentMethod: PaymentMethod
     | NotSelected
 
+type BackendNotificationState =
+    | NotSet
+    | ShouldSucceed
+    | ShouldFail
+
 type ExtraInitSettings =
     { Language: Language
       Mode: CheckoutMode
@@ -60,7 +65,8 @@ type ExtraInitSettings =
       DisplayItems: bool
       RecurringPayments: CheckboxState
       SmsNewsletterSubscription: CheckboxState
-      EmailNewsletterSubscription: CheckboxState }
+      EmailNewsletterSubscription: CheckboxState
+      BackendNotification: BackendNotificationState }
 
 type ExtraCheckoutFlags =
     { DisableFocus: bool
@@ -78,8 +84,8 @@ type Settings =
       Market: Market
       OrderReference: string }
 
-let languageToString (language: Language) =
-    match language with
+let languageToString =
+    function
     | English -> "English"
     | Swedish -> "Swedish"
     | Finnish -> "Finnish"
@@ -87,8 +93,8 @@ let languageToString (language: Language) =
     | Estonian -> "Estonian"
     | Danish -> "Danish"
 
-let stringToLanguage (s: string) =
-    match s with
+let stringToLanguage =
+    function
     | "English" -> English
     | "Swedish" -> Swedish
     | "Finnish" -> Finnish
@@ -97,32 +103,45 @@ let stringToLanguage (s: string) =
     | "Danish" -> Danish
     | _ -> English
 
-let checkoutModeToString (mode: CheckoutMode) =
-    match mode with
+let checkoutModeToString =
+    function
     | B2C -> "b2c"
     | B2B -> "b2b"
 
-let stringToCheckoutMode (s: string) =
-    match s with
+let stringToCheckoutMode =
+    function
     | "b2c" -> B2C
     | "b2b" -> B2B
     | _ -> B2C
 
-let checkboxStateToString (checkboxState: CheckboxState) =
-    match checkboxState with
+let checkboxStateToString =
+    function
     | Hidden -> "Hidden"
     | Checked -> "Checked"
     | Unchecked -> "Unchecked"
 
-let stringToCheckboxState (s: string) =
-    match s with
+let backendNotificationStateToString =
+    function
+    | NotSet -> "NotSet"
+    | ShouldSucceed -> "ShouldSucceed"
+    | ShouldFail -> "ShouldFail"
+
+let stringToCheckboxState =
+    function
     | "Hidden" -> Hidden
     | "Checked" -> Checked
     | "Unchecked" -> Unchecked
     | _ -> Hidden
 
-let paymentMethodsToString (pm: PaymentMethod) =
-    match pm with
+let stringToBackendNotificationState =
+    function
+    | "NotSet" -> NotSet
+    | "ShouldSucceed" -> ShouldSucceed
+    | "ShouldFail" -> ShouldFail
+    | _ -> NotSet
+
+let paymentMethodsToString =
+    function
     | Loan -> "Loan"
     | Invoice -> "Invoice"
     | Card -> "Card"
@@ -132,13 +151,13 @@ let paymentMethodsToString (pm: PaymentMethod) =
     | PartPayment -> "PartPayment"
     | PayOnDelivery -> "PayOnDelivery"
 
-let selectedPaymentMethodToString (spm: SelectedPaymentMethod) =
-    match spm with
+let selectedPaymentMethodToString =
+    function
     | Selected selectedPaymentMethod -> paymentMethodsToString selectedPaymentMethod
     | NotSelected -> ""
 
-let stringToSelectedPaymentMethod (s: string) =
-    match s with
+let stringToSelectedPaymentMethod =
+    function
     | "Loan" -> Selected Loan
     | "Invoice" -> Selected Invoice
     | "Card" -> Selected Card
@@ -149,13 +168,13 @@ let stringToSelectedPaymentMethod (s: string) =
     | "PayOnDelivery" -> Selected PayOnDelivery
     | _ -> NotSelected
 
-let marketToString (m: Market) =
-    match m with
+let marketToString =
+    function
     | Sweden -> "Sweden"
     | Finland -> "Finland"
 
-let stringToMarket (s: string) =
-    match s with
+let stringToMarket =
+    function
     | "Sweden" -> Sweden
     | "Finland" -> Finland
     | _ -> Sweden
@@ -174,7 +193,8 @@ let defaultExtraInitSettings =
       DisplayItems = true
       RecurringPayments = Hidden
       SmsNewsletterSubscription = Hidden
-      EmailNewsletterSubscription = Hidden }
+      EmailNewsletterSubscription = Hidden
+      BackendNotification = NotSet }
 
 let defaultSettings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
