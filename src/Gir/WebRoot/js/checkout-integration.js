@@ -73,7 +73,7 @@ const styles = {
       borderRadius: 0,
     },
   },
-  fontFamilies: ["HelveticaNeue-Medium"],
+  fontFamilies: ["HelveticaNeue-Medium", "sans-serif"],
   headings: {
     h1: {
       fontSize: 30,
@@ -114,7 +114,11 @@ const styles = {
     borderWidth: 1,
     borderRadius: 0,
     focusOutlineColor: "#fbb710",
-    hintColor: "#555555",
+    disabled: {
+      backgroundColor: "#f5f5f5",
+      borderColor: "#aeaeae",
+      color: "#aeaeae",
+    },
     placeholderColor: "#aeaeae",
   },
   links: {
@@ -127,6 +131,10 @@ const styles = {
         color: "#fbb710",
         textDecoration: "underline",
       },
+      disabled: {
+        color: "#aeaeae",
+        textDecoration: "underline",
+      },
     },
     blue: {
       fontSize: 13,
@@ -135,6 +143,10 @@ const styles = {
       textDecoration: "underline",
       hover: {
         color: "#fbb710",
+        textDecoration: "underline",
+      },
+      disabled: {
+        color: "#aeaeae",
         textDecoration: "underline",
       },
     },
@@ -147,6 +159,10 @@ const styles = {
         color: "#fbb710",
         textDecoration: "underline",
       },
+      disabled: {
+        color: "#aeaeae",
+        textDecoration: "underline",
+      },
     },
     smallNoDecoration: {
       fontSize: 11,
@@ -157,14 +173,8 @@ const styles = {
         color: "#fbb710",
         textDecoration: "none",
       },
-    },
-    smallBlack: {
-      fontSize: 11,
-      fontWeight: 400,
-      color: "#777777",
-      textDecoration: "underline",
-      hover: {
-        color: "#fbb710",
+      disabled: {
+        color: "#aeaeae",
         textDecoration: "underline",
       },
     },
@@ -191,17 +201,14 @@ const styles = {
     fontWeight: 400,
   },
   labels: {
-    blue: {
+    active: {
       color: "#fbb710",
     },
     disabled: {
       color: "#aeaeae",
     },
-    red: {
+    error: {
       color: "#e20000",
-    },
-    darkGray: {
-      color: "#4b4b4b",
     },
   },
   footer: {
@@ -212,41 +219,31 @@ const styles = {
   icons: {
     labelColor: "#fbb710",
     card: {
-      backgroundUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_AvardaIconCard.svg",
+      color: "#fbb710",
       width: 30,
       height: 30,
     },
     loanPayment: {
-      backgroundUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_AvardaIconLoanPayment.svg",
+      color: "#fbb710",
       width: 30,
       height: 30,
     },
     partPayment: {
-      backgroundUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_AvardaIconPartPayment.svg",
+      color: "#fbb710",
       width: 30,
       height: 30,
     },
     invoice: {
-      backgroundUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_AvardaIconInvoice.svg",
+      color: "#fbb710",
       width: 30,
       height: 30,
     },
     directBank: {
-      backgroundUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_AvardaIconDirectBank.svg",
+      color: "#fbb710",
       width: 30,
       height: 30,
     },
-    payOnDelivery: {
-      backgroundUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_PayOnDelivery.svg",
-      width: 30,
-      height: 30,
-    },
+    payOnDelivery: { color: "#fbb710", width: 30, height: 30 },
   },
   paymentMethods: {
     selected: {
@@ -267,54 +264,82 @@ const styles = {
         },
       },
       bulletIconColor: "#00a0ba",
+      radioButtonColor: "#fbb710",
     },
     unselected: {
       labelColor: "#000000",
       backgroundColor: "",
       borderColor: "#b2b2b2",
+      radioButtonColor: "#fbb710",
     },
   },
   amountToPayColor: "#fbb710",
   backgroundBorderRadius: 0,
   commonBorderColor: "#b2b2b2",
+  paymentSection: { activeBorderWidth: 2, borderRadius: 5 },
   checkbox: {
     primary: {
       width: 20,
       height: 20,
-      checkedUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryChecked.svg",
-      uncheckedUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUnchecked.svg",
-      checkedDisabledUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryCheckedDisabled.svg",
-      uncheckedDisabledUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUncheckedDisabled.svg",
-      checkedInvalidUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg",
-      uncheckedInvalidUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg",
+      checked: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryChecked.svg",
+      },
+      unchecked: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUnchecked.svg",
+      },
+      checkedDisabled: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryCheckedDisabled.svg",
+      },
+      uncheckedDisabled: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUncheckedDisabled.svg",
+      },
+      checkedInvalid: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg",
+      },
+      uncheckedInvalid: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg",
+      },
       focusOutlineColor: "#fbb710",
       checkedLabelColor: "#fbb710",
     },
     secondary: {
       width: 20,
       height: 20,
-      checkedUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryChecked.svg",
-      uncheckedUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUnchecked.svg",
-      checkedDisabledUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryCheckedDisabled.svg",
-      uncheckedDisabledUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUncheckedDisabled.svg",
-      checkedInvalidUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg",
-      uncheckedInvalidUrl:
-        "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg",
+      checked: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryChecked.svg",
+      },
+      unchecked: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUnchecked.svg",
+      },
+      checkedDisabled: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryCheckedDisabled.svg",
+      },
+      uncheckedDisabled: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUncheckedDisabled.svg",
+      },
+      checkedInvalid: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg",
+      },
+      uncheckedInvalid: {
+        backgroundUrl:
+          "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg",
+      },
       focusOutlineColor: "#fbb710",
       checkedLabelColor: "#fbb710",
     },
   },
+  spinnerColor: "#aeaeae",
 };
 
 const initCheckout = (
