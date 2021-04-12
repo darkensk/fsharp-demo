@@ -29,3 +29,7 @@ input[type="number"] {
   flex-direction: row;
   justify-content: center;
 }
+
+#cart-main-content-wrapper {
+  z-index: 100;
+}
