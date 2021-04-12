@@ -19,12 +19,12 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
                    rawText
                    <| sprintf
                        """initCheckout("%s", "%s", %b, %b, %b, %b);"""
-                          checkoutFrontendBundleUrl
-                          purchaseToken
-                          settings.ExtraCheckoutFlags.DisableFocus
-                          settings.ExtraCheckoutFlags.CustomStyles
-                          settings.ExtraCheckoutFlags.BeforeSubmitCallbackEnabled
-                          settings.ExtraCheckoutFlags.DeliveryAddressChangedCallbackEnabled
+                       checkoutFrontendBundleUrl
+                       purchaseToken
+                       settings.ExtraCheckoutFlags.DisableFocus
+                       settings.ExtraCheckoutFlags.CustomStyles
+                       settings.ExtraCheckoutFlags.BeforeSubmitCallbackEnabled
+                       settings.ExtraCheckoutFlags.DeliveryAddressChangedCallbackEnabled
                ] ])
 
 let cartItemView (settings: Settings) (cartItem: CartItem) =
@@ -52,14 +52,16 @@ let cartItemView (settings: Settings) (cartItem: CartItem) =
                       _style "display: flex;" ] [
                     form [ _id "quantityForm"
                            _method "POST"
-                           _action
-                               (sprintf "/product/%s/add"
-                                <| string cartItem.ProductDetail.ProductId) ] [
+                           _action (
+                               sprintf "/product/%s/add"
+                               <| string cartItem.ProductDetail.ProductId
+                           ) ] [
                         button [ _class "qty-minus qtyButtons"
                                  _type "submit"
-                                 _formaction
-                                     (sprintf "/product/%s/remove"
-                                      <| string cartItem.ProductDetail.ProductId) ] [
+                                 _formaction (
+                                     sprintf "/product/%s/remove"
+                                     <| string cartItem.ProductDetail.ProductId
+                                 ) ] [
                             i [ _class "fa fa-minus" ] []
                         ]
                         input [ _type "number"
@@ -123,12 +125,13 @@ let cartSummaryView (settings: Settings) (cartState: CartState) =
         ]
     ]
 
-let template (settings: Settings)
-             (cartState: CartState)
-             (products: Product list)
-             (checkoutFrontendBundleUrl: string)
-             (purchaseToken: string)
-             =
+let template
+    (settings: Settings)
+    (cartState: CartState)
+    (products: Product list)
+    (checkoutFrontendBundleUrl: string)
+    (purchaseToken: string)
+    =
     let products =
         products |> List.map (productDiv settings)
 
@@ -158,7 +161,8 @@ let template (settings: Settings)
                     ]
                 ]
             ]
-            div [ _class "main-content-wrapper d-flex clearfix" ] [
+            div [ _class "main-content-wrapper d-flex clearfix"
+                  _id "cart-main-content-wrapper" ] [
                 div [ _class "mobile-nav" ] [
                     div [ _class "amado-navbar-brand" ] [
                         a [ _href "/" ] [
@@ -221,11 +225,12 @@ let template (settings: Settings)
         ]
     ]
 
-let cartView (settings: Settings)
-             (cartState: CartState)
-             (checkoutFrontendBundleUrl: string)
-             (purchaseToken: string)
-             (products: Product list)
-             =
+let cartView
+    (settings: Settings)
+    (cartState: CartState)
+    (checkoutFrontendBundleUrl: string)
+    (purchaseToken: string)
+    (products: Product list)
+    =
     [ template settings cartState products checkoutFrontendBundleUrl purchaseToken ]
     |> layout
