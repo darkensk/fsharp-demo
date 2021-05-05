@@ -8,10 +8,14 @@ open Gir.Utils
 open Views
 
 
-let settingsHandler (next: HttpFunc) (ctx: HttpContext) =
+let settingsHandler (enabledMarkets: Market list) (next: HttpFunc) (ctx: HttpContext) =
     let cartState = Session.getCartState ctx
     let settings = Session.getSettings ctx
-    (htmlView <| settingsView settings cartState) next ctx
+
+    (htmlView
+     <| settingsView enabledMarkets settings cartState)
+        next
+        ctx
 
 let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
     task {
@@ -49,7 +53,10 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                         |> stringToCheckboxState
                     BackendNotification =
                         getValue "completedNotificationUrl"
-                        |> stringToBackendNotificationState }
+                        |> stringToBackendNotificationState
+                    EnableB2BLink = checkboxValue "enableB2BLink"
+                    EnableCountrySelector = checkboxValue "enableCountrySelector"
+                    ShowThankYouPage = checkboxValue "showThankYouPage" }
               Market = getValue "market" |> stringToMarket
               OrderReference = getValue "orderReference" }
 

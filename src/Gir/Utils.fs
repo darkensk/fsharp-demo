@@ -11,6 +11,13 @@ let marketToCurrency (market: Market) =
     match market with
     | Sweden -> "kr"
     | Finland -> "EUR"
+    | Norway -> "kr"
+    | Denmark -> "kr."
+    | Slovakia -> "€"
+    | Czechia -> "kč"
+    | Poland -> "zł"
+    | Latvia -> "€"
+    | Estonia -> "€"
 
 let productDiv (settings: Settings) (product: Product) =
     div [ _class "single-products-catagory clearfix" ] [

@@ -28,6 +28,10 @@ type Language =
     | Norwegian
     | Estonian
     | Danish
+    | Slovak
+    | Czech
+    | Polish
+    | Latvian
 
 type CheckoutMode =
     | B2C
@@ -66,7 +70,10 @@ type ExtraInitSettings =
       RecurringPayments: CheckboxState
       SmsNewsletterSubscription: CheckboxState
       EmailNewsletterSubscription: CheckboxState
-      BackendNotification: BackendNotificationState }
+      BackendNotification: BackendNotificationState
+      EnableB2BLink: bool
+      EnableCountrySelector: bool
+      ShowThankYouPage: bool }
 
 type ExtraCheckoutFlags =
     { DisableFocus: bool
@@ -77,6 +84,13 @@ type ExtraCheckoutFlags =
 type Market =
     | Sweden
     | Finland
+    | Norway
+    | Denmark
+    | Slovakia
+    | Czechia
+    | Poland
+    | Latvia
+    | Estonia
 
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
@@ -92,6 +106,11 @@ let languageToString =
     | Norwegian -> "Norwegian"
     | Estonian -> "Estonian"
     | Danish -> "Danish"
+    | Slovak -> "Slovak"
+    | Czech -> "Czech"
+    | Polish -> "Polish"
+    | Latvian -> "Latvian"
+
 
 let stringToLanguage =
     function
@@ -101,6 +120,10 @@ let stringToLanguage =
     | "Norwegian" -> Norwegian
     | "Estonian" -> Estonian
     | "Danish" -> Danish
+    | "Slovak" -> Slovak
+    | "Czech" -> Czech
+    | "Polish" -> Polish
+    | "Latvian" -> Latvian
     | _ -> English
 
 let checkoutModeToString =
@@ -172,11 +195,26 @@ let marketToString =
     function
     | Sweden -> "Sweden"
     | Finland -> "Finland"
+    | Norway -> "Norway"
+    | Denmark -> "Denmark"
+    | Slovakia -> "Slovakia"
+    | Czechia -> "Czechia"
+    | Poland -> "Poland"
+    | Latvia -> "Latvia"
+    | Estonia -> "Estonia"
+
 
 let stringToMarket =
     function
     | "Sweden" -> Sweden
     | "Finland" -> Finland
+    | "Norway" -> Norway
+    | "Denmark" -> Denmark
+    | "Slovakia" -> Slovakia
+    | "Czechia" -> Czechia
+    | "Poland" -> Poland
+    | "Latvia" -> Latvia
+    | "Estonia" -> Estonia
     | _ -> Sweden
 
 let defaultExtraCheckoutFlags =
@@ -194,7 +232,10 @@ let defaultExtraInitSettings =
       RecurringPayments = Hidden
       SmsNewsletterSubscription = Hidden
       EmailNewsletterSubscription = Hidden
-      BackendNotification = NotSet }
+      BackendNotification = NotSet
+      EnableB2BLink = false
+      EnableCountrySelector = false
+      ShowThankYouPage = true }
 
 let defaultSettings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags

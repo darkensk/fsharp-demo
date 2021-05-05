@@ -21,10 +21,9 @@ let cartItemEncoder (cartItem: CartItem) =
                     "product", productEncoder cartItem.ProductDetail ]
 
 let cartEncoder (cartState: CartState) =
-    Encode.object
-        [ "items",
-          Encode.list
-          <| List.map (cartItemEncoder) cartState.Items ]
+    Encode.object [ "items",
+                    Encode.list
+                    <| List.map (cartItemEncoder) cartState.Items ]
     |> Encode.toString 0
 
 let paymentItemEncoder (productDetail: Product) =
@@ -61,7 +60,10 @@ let extraInitSettingsEncoderForInitPayment (apiPublicUrl: string) (initSettings:
                     "smsNewsletterSubscription", checkboxStateEncoder initSettings.SmsNewsletterSubscription
                     "emailNewsletterSubscription", checkboxStateEncoder initSettings.EmailNewsletterSubscription
                     "completedNotificationUrl",
-                    backendNotificationStateEncoder apiPublicUrl initSettings.BackendNotification ]
+                    backendNotificationStateEncoder apiPublicUrl initSettings.BackendNotification
+                    "enableB2BLink", Encode.bool initSettings.EnableB2BLink
+                    "enableCountrySelector", Encode.bool initSettings.EnableCountrySelector
+                    "showThankYouPage", Encode.bool initSettings.ShowThankYouPage ]
 
 let extraInitSettingsEncoderForSettings (initSettings: ExtraInitSettings) =
     Encode.object [ "language", languageEncoder initSettings.Language
@@ -75,20 +77,28 @@ let extraInitSettingsEncoderForSettings (initSettings: ExtraInitSettings) =
                     "completedNotificationUrl",
                     initSettings.BackendNotification
                     |> backendNotificationStateToString
-                    |> Encode.string ]
+                    |> Encode.string
+                    "enableB2BLink", Encode.bool initSettings.EnableB2BLink
+                    "enableCountrySelector", Encode.bool initSettings.EnableCountrySelector
+                    "showThankYouPage", Encode.bool initSettings.ShowThankYouPage ]
 
 let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: CartItem list) =
     if List.isEmpty items then
         ""
     else
         let productsList =
-            List.fold (fun acc x ->
-                acc
-                @ [ for i in 1 .. x.Qty do
-                        { ProductId = x.ProductDetail.ProductId
-                          Name = x.ProductDetail.Name
-                          Price = x.ProductDetail.Price
-                          Img = x.ProductDetail.Img } ]) [] items
+            // Checkout 3 will soon allow quantity
+            // - remove this fold and send quantity in init payment instead
+            List.fold
+                (fun acc x ->
+                    acc
+                    @ [ for i in 1 .. x.Qty do
+                            { ProductId = x.ProductDetail.ProductId
+                              Name = x.ProductDetail.Name
+                              Price = x.ProductDetail.Price
+                              Img = x.ProductDetail.Img } ])
+                []
+                items
 
         Encode.object [ "checkoutSetup", extraInitSettingsEncoderForInitPayment apiPublicUrl settings.ExtraInitSettings
                         "items",
