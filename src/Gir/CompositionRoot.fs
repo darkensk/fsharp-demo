@@ -12,7 +12,8 @@ type CompositionRoot =
       GetAllProducts: unit -> Product list
       GetProductById: int -> Product option
       ReclaimPurchaseToken: string -> string -> Task<string>
-      ApiPublicUrl: string }
+      ApiPublicUrl: string
+      EnabledMarkets: Market list }
 
 let dummyProducts =
     let createProduct id name price img =
@@ -33,7 +34,38 @@ let dummyProducts =
       createProduct 10 "Home Deco" 30M "/img/bg-img/9.jpg" ]
 
 module CompositionRoot =
-    let compose (cfg: IConfigurationRoot): CompositionRoot =
+    let compose (cfg: IConfigurationRoot) : CompositionRoot =
+        let allMarkets =
+            [ Sweden
+              Finland
+              Norway
+              Denmark
+              Slovakia
+              Poland
+              Latvia
+              Estonia ]
+
+        let credentialsByMarket market =
+            match market with
+            | Sweden -> ("swedenClientId", "swedenClientSecret")
+            | Finland -> ("finlandClientId", "finlandClientSecret")
+            | Norway -> ("norwayClientId", "norwayClientSecret")
+            | Denmark -> ("denmarkClientId", "denmarkClientSecret")
+            | Slovakia -> ("slovakiaClientId", "slovakiaClientSecret")
+            | Czechia -> ("czechiaClientId", "czechiaClientSecret")
+            | Poland -> ("polandClientId", "polandClientSecret")
+            | Latvia -> ("latviaClientId", "latviaClientSecret")
+            | Estonia -> ("estoniaClientId", "estoniaClientSecret")
+
+        let hasCredentials market =
+            market
+            |> credentialsByMarket
+            |> (fun (clientId, clientSecret) ->
+                (cfg.[clientId] = null || cfg.[clientSecret] = null)
+                |> not)
+
+        let enabledMarkets = List.filter hasCredentials allMarkets
+
         let url =
             cfg.["checkoutBackendApiUrl"]
             + "/api/partner/tokens"
@@ -45,6 +77,13 @@ module CompositionRoot =
             match market with
             | Sweden -> getCachedToken cfg.["swedenClientId"] cfg.["swedenClientSecret"]
             | Finland -> getCachedToken cfg.["finlandClientId"] cfg.["finlandClientSecret"]
+            | Norway -> getCachedToken cfg.["norwayClientId"] cfg.["norwayClientSecret"]
+            | Denmark -> getCachedToken cfg.["denmarkClientId"] cfg.["denmarkClientSecret"]
+            | Slovakia -> getCachedToken cfg.["slovakiaClientId"] cfg.["slovakiaClientSecret"]
+            | Czechia -> getCachedToken cfg.["czechiaClientId"] cfg.["czechiaClientSecret"]
+            | Poland -> getCachedToken cfg.["polandClientId"] cfg.["polandClientSecret"]
+            | Latvia -> getCachedToken cfg.["latviaClientId"] cfg.["latviaClientSecret"]
+            | Estonia -> getCachedToken cfg.["estoniaClientId"] cfg.["estoniaClientSecret"]
 
         { CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
           CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
@@ -57,4 +96,5 @@ module CompositionRoot =
                   dummyProducts
                   |> List.tryFind (fun x -> x.ProductId = i)
           ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"]
-          ApiPublicUrl = cfg.["apiPublicUrl"] }
+          ApiPublicUrl = cfg.["apiPublicUrl"]
+          EnabledMarkets = enabledMarkets }

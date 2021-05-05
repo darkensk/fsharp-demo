@@ -9,29 +9,39 @@ let rowStyles =
     _style
         "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 10px 0px 0px; height: 50px;"
 
+let helpTextRowStyles =
+    _style
+        "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 20px 10px 20px; height: 20px; color: grey; font-size: 12px; font-weight: 100;"
+
 let columnStyles =
     _style "display: flex; flex-direction: column; padding: 20px 0px 0px 20px;"
 
 let labelStyles =
-    "text-overflow: ellipsis; overflow: hidden;"
+    "text-overflow: ellipsis; overflow: hidden; margin: 0px;"
 
-let checkboxView (inputId: string) (inputLabel: string) (isChecked: bool) (isEnabled: bool) =
+let checkboxView (inputId: string) (inputLabel: string) (helpText: string option) (isChecked: bool) (isEnabled: bool) =
     let checkedAttribute = if isChecked then [ _checked ] else []
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
-    div [ rowStyles ] [
-        label [ _for inputId; _style labelStyles ] [
-            str inputLabel
+
+    div [] [
+        div [ rowStyles ] [
+            label [ _for inputId; _style labelStyles ] [
+                str inputLabel
+            ]
+            div [ _style "display: flex; flex-direction-row; min-width: 60px;" ] [
+                input (
+                    [ _style "width: 30px; height: 30px;"
+                      _type "checkbox"
+                      _id inputId
+                      _name inputId
+                      _value "true" ]
+                    @ checkedAttribute @ disabledAttribute
+                )
+            ]
         ]
-        div [ _style "display: flex; flex-direction-row; min-width: 60px;" ] [
-            input
-                ([ _style "width: 30px; height: 30px;"
-                   _type "checkbox"
-                   _id inputId
-                   _name inputId
-                   _value "true" ]
-                 @ checkedAttribute
-                 @ disabledAttribute)
-        ]
+        (helpText
+         |> Option.map (fun ht -> div [ helpTextRowStyles ] [ str ht ])
+         |> Option.defaultValue (div [] []))
     ]
 
 let textareaView (areaId: string) (areaLabel: string) =
@@ -45,14 +55,18 @@ let textareaView (areaId: string) (areaLabel: string) =
                    _form "settings" ] []
     ]
 
-let selectView (selectId: string)
-               (selectLabel: string)
-               (selectOptions: string list)
-               (selectedOption: string)
-               (isEnabled: bool)
-               =
+let selectView
+    (selectId: string)
+    (selectLabel: string)
+    (selectOptions: (string * bool) list)
+    (selectedOption: string)
+    (isEnabled: bool)
+    =
     let selectedOptionAttribute option =
-        if option = selectedOption then [ _selected ] else []
+        if option = selectedOption then
+            [ _selected ]
+        else
+            []
 
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
 
@@ -63,18 +77,27 @@ let selectView (selectId: string)
         select
             ([ _name selectId; _id selectId ]
              @ disabledAttribute)
-            (List.map (fun o -> option ([ _value o ] @ selectedOptionAttribute o) [ str o ]) selectOptions)
+            (List.map
+                (fun (o, isDisabled) ->
+                    option
+                        ([ _value o
+                           if isDisabled then _disabled ]
+                         @ selectedOptionAttribute o)
+                        [ str o ])
+                selectOptions)
     ]
 
 let inputView inputId inputLabel value isEnabled =
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
+
     div [ rowStyles ] [
         label [ _for inputId; _style labelStyles ] [
             str inputLabel
         ]
-        input
-            ([ _type "text"
-               _style "width: 50%;
+        input (
+            [ _type "text"
+              _style
+                  "width: 50%;
                         height: 50px;
                         background-color: #fff;
                         color: #000;
@@ -82,16 +105,25 @@ let inputView inputId inputLabel value isEnabled =
                         border: 1px solid #e8e8e8;
                         border-radius: 5px;
                         padding: 0 10px;"
-               _id inputId
-               _name inputId
-               _value value ]
-             @ disabledAttribute)
+              _id inputId
+              _name inputId
+              _value value ]
+            @ disabledAttribute
+        )
     ]
 
-let template (settings: Settings) (cartState: CartState) =
-    let checkboxStateOptions = [ "Hidden"; "Checked"; "Unchecked" ]
+let template (enabledMarkets: Market list) (settings: Settings) (cartState: CartState) =
+    let checkboxStateOptions =
+        [ ("Hidden", false)
+          ("Checked", false)
+          ("Unchecked", false) ]
 
-    let { ExtraInitSettings = initSettings; ExtraCheckoutFlags = checkoutFlags } = settings
+    let { ExtraInitSettings = initSettings
+          ExtraCheckoutFlags = checkoutFlags } =
+        settings
+
+    let marketsOptions =
+        List.map (fun m -> (marketToString m, false)) enabledMarkets
 
     div [] [
         div [ _class "search-wrapper section-padding-100" ] [
@@ -141,7 +173,7 @@ let template (settings: Settings) (cartState: CartState) =
                                _action "/settings/save"
                                _method "POST" ] [
                             div [] [ h3 [] [ str "Market" ] ]
-                            selectView "market" "Market" [ "Sweden"; "Finland" ] (marketToString settings.Market) true
+                            selectView "market" "Market" marketsOptions (marketToString settings.Market) true
                             div [] [
                                 h3 [] [ str "Extra Identifiers" ]
                             ]
@@ -152,28 +184,32 @@ let template (settings: Settings) (cartState: CartState) =
                             selectView
                                 "language"
                                 "Language"
-                                [ "English"
-                                  "Swedish"
-                                  "Finnish"
-                                  "Norwegian"
-                                  "Estonian"
-                                  "Danish" ]
+                                [ ("English", false)
+                                  ("Swedish", false)
+                                  ("Finnish", false)
+                                  ("Norwegian", false)
+                                  ("Danish", false)
+                                  ("Slovak", true)
+                                  ("Czech", true)
+                                  ("Latvian", true)
+                                  ("Polish", true)
+                                  ("Estonian", true) ]
                                 (languageToString initSettings.Language)
                                 true
-                            selectView "mode" "Mode" [ "b2c"; "b2b" ] "b2c" true
+                            selectView "mode" "Mode" [ ("b2c", false); ("b2b", false) ] "b2c" true
                             selectView
                                 "differentDeliveryAddress"
                                 "Different Delivery Address"
                                 checkboxStateOptions
                                 (checkboxStateToString initSettings.DifferentDeliveryAddress)
                                 true
-                            checkboxView "displayItems" "Display Items" initSettings.DisplayItems true
+                            checkboxView "displayItems" "Display Items" None initSettings.DisplayItems true
                             selectView
                                 "recurringPayments"
                                 "Recurring Payments"
                                 checkboxStateOptions
                                 (checkboxStateToString initSettings.RecurringPayments)
-                                true
+                                false
                             selectView
                                 "smsNewsletterSubscription"
                                 "SMS Newsletter Subscription"
@@ -189,26 +225,46 @@ let template (settings: Settings) (cartState: CartState) =
                             selectView
                                 "completedNotificationUrl"
                                 "Backend Notification"
-                                [ "NotSet"
-                                  "ShouldSucceed"
-                                  "ShouldFail" ]
+                                [ ("NotSet", false)
+                                  ("ShouldSucceed", false)
+                                  ("ShouldFail", false) ]
                                 (backendNotificationStateToString initSettings.BackendNotification)
+                                true
+                            checkboxView
+                                "enableB2BLink"
+                                "Enable B2B Link"
+                                (Some "Requires branch setting enabled: B2B mode")
+                                initSettings.EnableB2BLink
+                                true
+                            checkboxView
+                                "enableCountrySelector"
+                                "Enable Country Selector"
+                                (Some "Requires branch setting enabled: ShowCountryInCheckoutForm")
+                                initSettings.EnableCountrySelector
+                                true
+                            checkboxView
+                                "showThankYouPage"
+                                "Show 'Thank You' Page"
+                                None
+                                initSettings.ShowThankYouPage
                                 true
                             div [] [
                                 h3 [] [ str "Extra Checkout Flags" ]
                             ]
-                            checkboxView "disableFocus" "Disable Focus" checkoutFlags.DisableFocus true
+                            checkboxView "disableFocus" "Disable Focus" None checkoutFlags.DisableFocus true
                             checkboxView
                                 "beforeSubmitCallbackEnabled"
                                 "Before Submit Callback Enabled"
+                                None
                                 checkoutFlags.BeforeSubmitCallbackEnabled
                                 true
                             checkboxView
                                 "deliveryAddressChangedCallbackEnabled"
                                 "Delivery Address Changed Callback Enabled"
+                                None
                                 checkoutFlags.DeliveryAddressChangedCallbackEnabled
                                 true
-                            checkboxView "customStyles" "Use Custom Styles" checkoutFlags.CustomStyles true
+                            checkboxView "customStyles" "Use Custom Styles" None checkoutFlags.CustomStyles true
                             div [ _style
                                       "display: flex; flex: 1; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 10px;" ] [
                                 a [ _class "btn amado-btn active"
@@ -230,5 +286,6 @@ let template (settings: Settings) (cartState: CartState) =
         footerView
     ]
 
-let settingsView (settings: Settings) (cartState: CartState) =
-    [ template settings cartState ] |> layout
+let settingsView (enabledMarkets: Market list) (settings: Settings) (cartState: CartState) =
+    [ template enabledMarkets settings cartState ]
+    |> layout
