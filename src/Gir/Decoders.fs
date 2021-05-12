@@ -125,3 +125,24 @@ let settingsDecoder (s: string) =
           Market = v.Market
           OrderReference = v.OrderReference }
     | Error e -> failwithf "Cannot decode settings, error = %A" e
+
+
+let decodeExtraIdentifiers =
+    Decode.object (fun get -> { OrderReference = get.Required.Field "orderReference" Decode.string })
+
+
+let decodePaymentStatus =
+    Decode.object
+        (fun get ->
+            { PurchaseId = get.Required.Field "purchaseId" Decode.string
+              ExtraIdentifiers = get.Required.Field "extraIdentifiers" decodeExtraIdentifiers
+              Mode = get.Required.Field "mode" Decode.string })
+
+
+let getPaymentStatusDecoder (s: string) =
+    match Decode.fromString decodePaymentStatus s with
+    | Ok v ->
+        { PurchaseId = v.PurchaseId
+          ExtraIdentifiers = v.ExtraIdentifiers
+          Mode = v.Mode }
+    | Error e -> failwithf "Cannot decode get payment status, error = %A" e
