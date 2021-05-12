@@ -81,6 +81,7 @@ const styles = {
       display: "block",
       fontWeight: 400,
       color: "#000000",
+      alignment: "left",
     },
     h2: {
       fontSize: 30,
@@ -88,6 +89,7 @@ const styles = {
       display: "block",
       fontWeight: 400,
       color: "#000000",
+      alignment: "left",
     },
     h3: {
       fontSize: 18,
@@ -95,6 +97,7 @@ const styles = {
       display: "block",
       fontWeight: 400,
       color: "#000000",
+      alignment: "left",
     },
     h4: {
       fontSize: 16,
@@ -102,6 +105,7 @@ const styles = {
       display: "block",
       fontWeight: 400,
       color: "#000000",
+      alignment: "left",
     },
   },
   input: {
@@ -383,8 +387,8 @@ const initCheckout = (
       })
       .then((data) => {
         console.log(data);
+        window.location.replace(cartUrl);
       });
-    window.location.replace(cartUrl);
   };
 
   var handleByMerchantCallback = function (avardaCheckoutInstance) {
@@ -406,8 +410,8 @@ const initCheckout = (
       })
       .then((data) => {
         console.log(data);
+        window.location.replace(cartUrl);
       });
-    window.location.replace(cartUrl);
   };
 
   var sessionTimedOutCallback = function (avardaCheckoutInstance) {

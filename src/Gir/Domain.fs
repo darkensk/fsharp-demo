@@ -242,3 +242,10 @@ let defaultSettings =
       ExtraInitSettings = defaultExtraInitSettings
       Market = Sweden
       OrderReference = "TEST-AVARDA-DEMO-SHOP" }
+
+type ExtraIdentifiers = { OrderReference: string }
+
+type PaymentStatus =
+    { PurchaseId: string
+      ExtraIdentifiers: ExtraIdentifiers
+      Mode: string }

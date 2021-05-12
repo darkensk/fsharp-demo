@@ -34,7 +34,7 @@ let webApp (root: CompositionRoot) =
                           >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
                           >=> redirectTo false "/cart/"
                           route "/cart/completed"
-                          >=> Cart.HttpHandlers.completedHandler
+                          >=> Cart.HttpHandlers.completedHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
                           >=> text "OK - CompletedCallback Successfull"
                           route "/cart/sessionExpired"
                           >=> Cart.HttpHandlers.sessionExpiredHandler

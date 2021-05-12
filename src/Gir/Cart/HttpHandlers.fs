@@ -74,24 +74,26 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
         | None -> sessionCart
     | Clear -> { Items = [] }
 
-let cartHandler (checkoutFrontendBundleUrl: string)
-                (getPurchaseToken: CartState -> string -> Settings -> Task<InitializePaymentResponse>)
-                (getProducts: unit -> Product list)
-                (getPartnerAccessToken: Market -> Task<string>)
-                (getReclaimToken: string -> string -> Task<string>)
-                (next: HttpFunc)
-                (ctx: HttpContext)
-                =
+let cartHandler
+    (checkoutFrontendBundleUrl: string)
+    (getPurchaseToken: CartState -> string -> Settings -> Task<InitializePaymentResponse>)
+    (getProducts: unit -> Product list)
+    (getPartnerAccessToken: Market -> Task<string>)
+    (getReclaimToken: string -> string -> Task<string>)
+    (next: HttpFunc)
+    (ctx: HttpContext)
+    =
     task {
         let cartState = Session.getCartState ctx
         let settings = Session.getSettings ctx
 
         if List.isEmpty cartState.Items then
-            return! htmlView
-                        (cartView settings cartState checkoutFrontendBundleUrl ""
-                         <| getProducts ())
-                        next
-                        ctx
+            return!
+                htmlView
+                    (cartView settings cartState checkoutFrontendBundleUrl ""
+                     <| getProducts ())
+                    next
+                    ctx
         else
             let! partnerToken = getPartnerAccessToken settings.Market
 
@@ -99,21 +101,23 @@ let cartHandler (checkoutFrontendBundleUrl: string)
             | Some v ->
                 let! purchaseToken = getReclaimToken partnerToken v
 
-                return! htmlView
-                            (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
-                             <| getProducts ())
-                            next
-                            ctx
+                return!
+                    htmlView
+                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
+                         <| getProducts ())
+                        next
+                        ctx
             | None ->
                 let! initPurchaseResponse = getPurchaseToken cartState partnerToken settings
                 let purchaseToken = initPurchaseResponse.Jwt
                 Session.setPurchaseId ctx initPurchaseResponse.PurchaseId
 
-                return! htmlView
-                            (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
-                             <| getProducts ())
-                            next
-                            ctx
+                return!
+                    htmlView
+                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
+                         <| getProducts ())
+                        next
+                        ctx
     }
 
 let encodeAndSaveCart (ctx: HttpContext) = cartEncoder >> Session.setCartState ctx
@@ -121,20 +125,26 @@ let encodeAndSaveCart (ctx: HttpContext) = cartEncoder >> Session.setCartState c
 let addToCartHandler (productId: int) (getProducts: unit -> Product list) next (ctx: HttpContext) =
     task {
         let sessionCart = Session.getCartState ctx
-        do productId
-           |> CartEvent.Add
-           |> cartEventHandler sessionCart (getProducts ())
-           |> encodeAndSaveCart ctx
+
+        do
+            productId
+            |> CartEvent.Add
+            |> cartEventHandler sessionCart (getProducts ())
+            |> encodeAndSaveCart ctx
+
         return! next ctx
     }
 
 let removeFromCartHandler (productId: int) (getProducts: unit -> Product list) next (ctx: HttpContext) =
     task {
         let sessionCart = Session.getCartState ctx
-        do productId
-           |> CartEvent.Remove
-           |> cartEventHandler sessionCart (getProducts ())
-           |> encodeAndSaveCart ctx
+
+        do
+            productId
+            |> CartEvent.Remove
+            |> cartEventHandler sessionCart (getProducts ())
+            |> encodeAndSaveCart ctx
+
         return! next ctx
     }
 
@@ -142,18 +152,22 @@ let clearCartHandler (getProducts: unit -> Product list) next (ctx: HttpContext)
     task {
         Session.deletePurchaseId ctx
         let sessionCart = Session.getCartState ctx
-        do CartEvent.Clear
-           |> cartEventHandler sessionCart (getProducts ())
-           |> encodeAndSaveCart ctx
+
+        do
+            CartEvent.Clear
+            |> cartEventHandler sessionCart (getProducts ())
+            |> encodeAndSaveCart ctx
+
         return! next ctx
     }
 
-let updateItemsHandler (backendUrl: string)
-                       (apiPublicUrl: string)
-                       (getPartnerAccessToken: Market -> Task<string>)
-                       next
-                       (ctx: HttpContext)
-                       =
+let updateItemsHandler
+    (backendUrl: string)
+    (apiPublicUrl: string)
+    (getPartnerAccessToken: Market -> Task<string>)
+    next
+    (ctx: HttpContext)
+    =
     task {
         let cartState = Session.getCartState ctx
         let settings = Session.getSettings ctx
@@ -173,19 +187,32 @@ let updateItemsHandler (backendUrl: string)
             return! next ctx
     }
 
-let completedHandler next (ctx: HttpContext) =
+let completedHandler (backendUrl: string) (getPartnerAccessToken: Market -> Task<string>) next (ctx: HttpContext) =
     task {
-        Session.deleteCartState ctx
-        Session.deletePurchaseId ctx
+        let settings = Session.getSettings ctx
+        let purchaseId = Session.tryGetPurchaseId ctx
+
+        match purchaseId with
+        | Some id ->
+            let! partnerToken = getPartnerAccessToken settings.Market
+            let! getPaymentStatusResponse = getPaymentStatus backendUrl partnerToken id
+            Session.deleteCartState ctx
+            Session.deletePurchaseId ctx
+
+        | None ->
+            Session.deleteCartState ctx
+            Session.deletePurchaseId ctx
+
         return! next ctx
     }
 
-let sessionExpiredHandler (backendUrl: string)
-                          (apiPublicUrl: string)
-                          (getPartnerAccessToken: Market -> Task<string>)
-                          next
-                          (ctx: HttpContext)
-                          =
+let sessionExpiredHandler
+    (backendUrl: string)
+    (apiPublicUrl: string)
+    (getPartnerAccessToken: Market -> Task<string>)
+    next
+    (ctx: HttpContext)
+    =
     task {
         // Re-use cart and initialize a new purchase
         let cartState = Session.getCartState ctx
