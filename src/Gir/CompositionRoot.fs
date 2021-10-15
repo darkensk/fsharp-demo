@@ -40,6 +40,7 @@ module CompositionRoot =
               Finland
               Norway
               Denmark
+              Czechia
               Slovakia
               Poland
               Latvia
