@@ -18,6 +18,7 @@ let marketToCurrency (market: Market) =
     | Poland -> "zł"
     | Latvia -> "€"
     | Estonia -> "€"
+    | International -> "€"
 
 let productDiv (settings: Settings) (product: Product) =
     div [ _class "single-products-catagory clearfix" ] [

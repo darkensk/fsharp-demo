@@ -91,6 +91,7 @@ type Market =
     | Poland
     | Latvia
     | Estonia
+    | International
 
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
@@ -202,6 +203,7 @@ let marketToString =
     | Poland -> "Poland"
     | Latvia -> "Latvia"
     | Estonia -> "Estonia"
+    | International -> "International"
 
 
 let stringToMarket =
@@ -215,6 +217,7 @@ let stringToMarket =
     | "Poland" -> Poland
     | "Latvia" -> Latvia
     | "Estonia" -> Estonia
+    | "International" -> International
     | _ -> Sweden
 
 let defaultExtraCheckoutFlags =
