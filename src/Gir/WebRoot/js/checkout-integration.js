@@ -224,8 +224,8 @@ const styles = {
     labelColor: "#fbb710",
     card: {
       color: "#fbb710",
-      width: 30,
-      height: 30,
+      width: 91,
+      height: 24,
     },
     loanPayment: {
       color: "#fbb710",
