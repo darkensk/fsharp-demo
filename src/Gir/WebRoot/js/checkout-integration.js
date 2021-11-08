@@ -219,9 +219,9 @@ const styles = {
     fontSize: 13,
     fontWeight: 400,
     color: "#b2b2b2",
+    iconLabelColor: "#fbb710"
   },
   icons: {
-    labelColor: "#fbb710",
     card: {
       color: "#fbb710",
       width: 91,
