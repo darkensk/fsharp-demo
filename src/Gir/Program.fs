@@ -104,11 +104,11 @@ let errorHandler (ex: Exception) (logger: ILogger) =
 // ---------------------------------
 
 let configureCors (builder: CorsPolicyBuilder) =
-    // builder
-    //     .WithOrigins("http://localhost:5000")
-    //     .AllowAnyMethod()
-    //     .AllowAnyHeader()
-    // |> ignore
+    builder
+        .WithOrigins("http://localhost:5000")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+    |> ignore
 
     builder
         .WithOrigins("https://localhost:5001")
