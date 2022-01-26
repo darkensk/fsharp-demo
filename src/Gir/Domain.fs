@@ -79,7 +79,8 @@ type ExtraCheckoutFlags =
     { DisableFocus: bool
       BeforeSubmitCallbackEnabled: bool
       DeliveryAddressChangedCallbackEnabled: bool
-      CustomStyles: bool }
+      CustomStyles: bool
+      IncludePaymentFeeInTotalPrice: bool }
 
 type Market =
     | Sweden
@@ -224,7 +225,8 @@ let defaultExtraCheckoutFlags =
     { DisableFocus = false
       BeforeSubmitCallbackEnabled = false
       DeliveryAddressChangedCallbackEnabled = false
-      CustomStyles = false }
+      CustomStyles = false
+      IncludePaymentFeeInTotalPrice = false }
 
 let defaultExtraInitSettings =
     { Language = English

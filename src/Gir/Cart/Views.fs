@@ -18,13 +18,14 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
                script [ _type "application/javascript" ] [
                    rawText
                    <| sprintf
-                       """initCheckout("%s", "%s", %b, %b, %b, %b);"""
+                       """initCheckout("%s", "%s", %b, %b, %b, %b, %b);"""
                        checkoutFrontendBundleUrl
                        purchaseToken
                        settings.ExtraCheckoutFlags.DisableFocus
                        settings.ExtraCheckoutFlags.CustomStyles
                        settings.ExtraCheckoutFlags.BeforeSubmitCallbackEnabled
                        settings.ExtraCheckoutFlags.DeliveryAddressChangedCallbackEnabled
+                       settings.ExtraCheckoutFlags.IncludePaymentFeeInTotalPrice
                ] ])
 
 let cartItemView (settings: Settings) (cartItem: CartItem) =

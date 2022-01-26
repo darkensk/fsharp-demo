@@ -219,7 +219,7 @@ const styles = {
     fontSize: 13,
     fontWeight: 400,
     color: "#b2b2b2",
-    iconLabelColor: "#fbb710"
+    iconLabelColor: "#fbb710",
   },
   icons: {
     card: {
@@ -352,7 +352,8 @@ const initCheckout = (
   disableFocus,
   useCustomStyles,
   isBeforeSubmitCallbackEnabled,
-  isDeliveryAddressChangedCallbackEnabled
+  isDeliveryAddressChangedCallbackEnabled,
+  includePaymentFeeInTotalPrice
 ) => {
   (function (e, t, n, a, s, c, o, i, r) {
     e[a] =
@@ -469,5 +470,6 @@ const initCheckout = (
     deliveryAddressChangedCallback: isDeliveryAddressChangedCallbackEnabled
       ? deliveryAddressChangedCallback
       : false,
+    includePaymentFeeInTotalPrice: includePaymentFeeInTotalPrice,
   });
 };

@@ -71,7 +71,8 @@ let extraCheckoutFlagsDecoder =
               BeforeSubmitCallbackEnabled = get.Required.Field "beforeSubmitCallbackEnabled" Decode.bool
               DeliveryAddressChangedCallbackEnabled =
                   get.Required.Field "deliveryAddressChangedCallbackEnabled" Decode.bool
-              CustomStyles = get.Required.Field "customStyles" Decode.bool })
+              CustomStyles = get.Required.Field "customStyles" Decode.bool
+              IncludePaymentFeeInTotalPrice = get.Required.Field "includePaymentFeeInTotalPrice" Decode.bool })
 
 let extraInitSettingsDecoder =
     Decode.object
