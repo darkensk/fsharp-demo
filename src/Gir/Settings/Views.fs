@@ -19,18 +19,21 @@ let columnStyles =
 let labelStyles =
     "text-overflow: ellipsis; overflow: hidden; margin: 0px;"
 
+let checkboxLabelStyles =
+    "text-overflow: ellipsis; overflow: hidden; margin: 0px; cursor: pointer;"
+
 let checkboxView (inputId: string) (inputLabel: string) (helpText: string option) (isChecked: bool) (isEnabled: bool) =
     let checkedAttribute = if isChecked then [ _checked ] else []
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
 
     div [] [
         div [ rowStyles ] [
-            label [ _for inputId; _style labelStyles ] [
+            label [ _for inputId; _style checkboxLabelStyles ] [
                 str inputLabel
             ]
             div [ _style "display: flex; flex-direction-row; min-width: 60px;" ] [
                 input (
-                    [ _style "width: 30px; height: 30px;"
+                    [ _style "width: 30px; height: 30px; cursor: pointer;"
                       _type "checkbox"
                       _id inputId
                       _name inputId
@@ -265,6 +268,7 @@ let template (enabledMarkets: Market list) (settings: Settings) (cartState: Cart
                                 checkoutFlags.DeliveryAddressChangedCallbackEnabled
                                 true
                             checkboxView "customStyles" "Use Custom Styles" None checkoutFlags.CustomStyles true
+                            checkboxView "includePaymentFeeInTotalPrice" "Include Payment Fees in Total Price" None checkoutFlags.IncludePaymentFeeInTotalPrice true
                             div [ _style
                                       "display: flex; flex: 1; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 10px;" ] [
                                 a [ _class "btn amado-btn active"

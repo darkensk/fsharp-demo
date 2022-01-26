@@ -112,7 +112,8 @@ let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
                     "beforeSubmitCallbackEnabled", Encode.bool checkoutFlags.BeforeSubmitCallbackEnabled
                     "deliveryAddressChangedCallbackEnabled",
                     Encode.bool checkoutFlags.DeliveryAddressChangedCallbackEnabled
-                    "customStyles", Encode.bool checkoutFlags.CustomStyles ]
+                    "customStyles", Encode.bool checkoutFlags.CustomStyles
+                    "includePaymentFeeInTotalPrice", Encode.bool checkoutFlags.IncludePaymentFeeInTotalPrice ]
 
 let settingsEncoder (settings: Settings) =
     Encode.object [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
