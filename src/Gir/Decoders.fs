@@ -74,6 +74,16 @@ let extraCheckoutFlagsDecoder =
               CustomStyles = get.Required.Field "customStyles" Decode.bool
               IncludePaymentFeeInTotalPrice = get.Required.Field "includePaymentFeeInTotalPrice" Decode.bool })
 
+// let decodeAgeValidation =
+//     Decode.string 
+//         |> Decode.andThen (fun limit ->  
+//             match limit with
+//                 | null -> Decode.succeed Disabled
+//                 | "" -> Decode.succeed Disabled
+//                 | _ -> Decode.succeed (Enabled limit)
+//                 | invalid -> Decode.succeed Disabled
+//             )
+
 let extraInitSettingsDecoder =
     Decode.object
         (fun get ->
@@ -104,7 +114,8 @@ let extraInitSettingsDecoder =
                   |> stringToBackendNotificationState
               EnableB2BLink = get.Required.Field "enableB2BLink" Decode.bool
               EnableCountrySelector = get.Required.Field "enableCountrySelector" Decode.bool
-              ShowThankYouPage = get.Required.Field "showThankYouPage" Decode.bool })
+              ShowThankYouPage = get.Required.Field "showThankYouPage" Decode.bool
+              AgeValidation = (get.Required.Field "ageValidation" Decode.string) |> stringToAgeValidation  })
 
 let decodeSettings =
     Decode.object

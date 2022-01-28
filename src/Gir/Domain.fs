@@ -1,5 +1,6 @@
 module Gir.Domain
 
+open System
 
 type Product =
     { ProductId: int
@@ -61,6 +62,10 @@ type BackendNotificationState =
     | ShouldSucceed
     | ShouldFail
 
+type AgeValidation =
+    | Disabled
+    | Enabled of ageValidationLimit: int
+
 type ExtraInitSettings =
     { Language: Language
       Mode: CheckoutMode
@@ -73,7 +78,8 @@ type ExtraInitSettings =
       BackendNotification: BackendNotificationState
       EnableB2BLink: bool
       EnableCountrySelector: bool
-      ShowThankYouPage: bool }
+      ShowThankYouPage: bool
+      AgeValidation: AgeValidation }
 
 type ExtraCheckoutFlags =
     { DisableFocus: bool
@@ -221,6 +227,24 @@ let stringToMarket =
     | "International" -> International
     | _ -> Sweden
 
+let stringToAgeValidation (limit: string)=
+    let mutable intvalue = 0
+    match limit with
+    | "" -> Disabled
+    | _ -> 
+        if System.Int32.TryParse(limit, &intvalue) then 
+            if intvalue <= 0 then
+                Disabled
+            else 
+                Enabled intvalue
+        else 
+            Disabled
+
+let ageValidationToString =
+    function
+    | Enabled limit -> limit |> string
+    | Disabled -> ""
+
 let defaultExtraCheckoutFlags =
     { DisableFocus = false
       BeforeSubmitCallbackEnabled = false
@@ -240,7 +264,8 @@ let defaultExtraInitSettings =
       BackendNotification = NotSet
       EnableB2BLink = false
       EnableCountrySelector = false
-      ShowThankYouPage = true }
+      ShowThankYouPage = true
+      AgeValidation = Disabled }
 
 let defaultSettings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags

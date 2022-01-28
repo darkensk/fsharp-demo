@@ -90,17 +90,30 @@ let selectView
                 selectOptions)
     ]
 
-let inputView inputId inputLabel value isEnabled =
+let inputView inputType inputStyle inputId inputLabel helpText value isEnabled =
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
 
-    div [ rowStyles ] [
-        label [ _for inputId; _style labelStyles ] [
-            str inputLabel
+    div [] [
+        div [ rowStyles ] [
+            label [ _for inputId; _style labelStyles ] [
+                str inputLabel
+            ]
+            input (
+                [ _type inputType
+                  _style inputStyle
+                  _id inputId
+                  _name inputId
+                  _value value ]
+                @ disabledAttribute
+            )
         ]
-        input (
-            [ _type "text"
-              _style
-                  "width: 50%;
+        (helpText
+        |> Option.map (fun ht -> div [ helpTextRowStyles ] [ str ht ])
+        |> Option.defaultValue (div [] []))
+    ]
+
+let textInput =
+    inputView "text" "width: 50%;
                         height: 50px;
                         background-color: #fff;
                         color: #000;
@@ -108,12 +121,16 @@ let inputView inputId inputLabel value isEnabled =
                         border: 1px solid #e8e8e8;
                         border-radius: 5px;
                         padding: 0 10px;"
-              _id inputId
-              _name inputId
-              _value value ]
-            @ disabledAttribute
-        )
-    ]
+
+let numberInput = 
+    inputView "number" "width: 20%;
+                        height: 50px;
+                        background-color: #fff;
+                        color: #000;
+                        font-size: 14px;
+                        border: 1px solid #e8e8e8;
+                        border-radius: 5px;
+                        padding: 0 10px;"
 
 let template (enabledMarkets: Market list) (settings: Settings) (cartState: CartState) =
     let checkboxStateOptions =
@@ -180,7 +197,7 @@ let template (enabledMarkets: Market list) (settings: Settings) (cartState: Cart
                             div [] [
                                 h3 [] [ str "Extra Identifiers" ]
                             ]
-                            inputView "orderReference" "Order Reference" settings.OrderReference true
+                            textInput "orderReference" "Order Reference" None settings.OrderReference true
                             div [] [
                                 h3 [] [ str "Extra Init Options" ]
                             ]
@@ -251,6 +268,7 @@ let template (enabledMarkets: Market list) (settings: Settings) (cartState: Cart
                                 None
                                 initSettings.ShowThankYouPage
                                 true
+                            numberInput "ageValidation" "Age Validation" (Some "Insert age limit as number") (initSettings.AgeValidation |> ageValidationToString) true
                             div [] [
                                 h3 [] [ str "Extra Checkout Flags" ]
                             ]

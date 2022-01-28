@@ -50,6 +50,16 @@ let selectedPaymentMethodEncoder =
     | Selected pm -> pm |> paymentMethodsToString |> Encode.string
     | NotSelected -> "" |> Encode.string
 
+let ageValidationEncoder ageValidation =
+    ageValidation 
+    |> ageValidationToString
+    |> Encode.string
+
+let ageValidationEncoderExternal =
+    function
+    | Disabled -> Encode.nil
+    | Enabled limit -> Encode.int limit
+
 let extraInitSettingsEncoderForInitPayment (apiPublicUrl: string) (initSettings: ExtraInitSettings) =
     Encode.object [ "language", languageEncoder initSettings.Language
                     "mode", modeEncoder initSettings.Mode
@@ -63,7 +73,8 @@ let extraInitSettingsEncoderForInitPayment (apiPublicUrl: string) (initSettings:
                     backendNotificationStateEncoder apiPublicUrl initSettings.BackendNotification
                     "enableB2BLink", Encode.bool initSettings.EnableB2BLink
                     "enableCountrySelector", Encode.bool initSettings.EnableCountrySelector
-                    "showThankYouPage", Encode.bool initSettings.ShowThankYouPage ]
+                    "showThankYouPage", Encode.bool initSettings.ShowThankYouPage
+                    "ageValidation", ageValidationEncoderExternal initSettings.AgeValidation ]
 
 let extraInitSettingsEncoderForSettings (initSettings: ExtraInitSettings) =
     Encode.object [ "language", languageEncoder initSettings.Language
@@ -80,7 +91,8 @@ let extraInitSettingsEncoderForSettings (initSettings: ExtraInitSettings) =
                     |> Encode.string
                     "enableB2BLink", Encode.bool initSettings.EnableB2BLink
                     "enableCountrySelector", Encode.bool initSettings.EnableCountrySelector
-                    "showThankYouPage", Encode.bool initSettings.ShowThankYouPage ]
+                    "showThankYouPage", Encode.bool initSettings.ShowThankYouPage
+                    "ageValidation", ageValidationEncoder initSettings.AgeValidation ]
 
 let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: CartItem list) =
     if List.isEmpty items then

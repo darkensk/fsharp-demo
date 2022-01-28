@@ -57,7 +57,8 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                         |> stringToBackendNotificationState
                     EnableB2BLink = checkboxValue "enableB2BLink"
                     EnableCountrySelector = checkboxValue "enableCountrySelector"
-                    ShowThankYouPage = checkboxValue "showThankYouPage" }
+                    ShowThankYouPage = checkboxValue "showThankYouPage"
+                    AgeValidation = getValue "ageValidation" |> stringToAgeValidation }
               Market = getValue "market" |> stringToMarket
               OrderReference = getValue "orderReference" }
 
