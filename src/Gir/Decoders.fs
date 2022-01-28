@@ -104,7 +104,8 @@ let extraInitSettingsDecoder =
                   |> stringToBackendNotificationState
               EnableB2BLink = get.Required.Field "enableB2BLink" Decode.bool
               EnableCountrySelector = get.Required.Field "enableCountrySelector" Decode.bool
-              ShowThankYouPage = get.Required.Field "showThankYouPage" Decode.bool })
+              ShowThankYouPage = get.Required.Field "showThankYouPage" Decode.bool
+              AgeValidation = (get.Required.Field "ageValidation" Decode.string) |> stringToAgeValidation  })
 
 let decodeSettings =
     Decode.object
