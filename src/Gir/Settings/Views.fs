@@ -90,8 +90,12 @@ let selectView
                 selectOptions)
     ]
 
-let inputView inputType inputStyle inputId inputLabel helpText value isEnabled =
+let inputView inputType inputStyle inputId inputLabel helpText value isEnabled minMax =
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
+    let minMaxAttributes = 
+        match minMax with 
+            | Some (min, max) -> [ _min min; _max max; ]
+            | None -> []
 
     div [] [
         div [ rowStyles ] [
@@ -105,6 +109,7 @@ let inputView inputType inputStyle inputId inputLabel helpText value isEnabled =
                   _name inputId
                   _value value ]
                 @ disabledAttribute
+                @ minMaxAttributes
             )
         ]
         (helpText
@@ -197,7 +202,7 @@ let template (enabledMarkets: Market list) (settings: Settings) (cartState: Cart
                             div [] [
                                 h3 [] [ str "Extra Identifiers" ]
                             ]
-                            textInput "orderReference" "Order Reference" None settings.OrderReference true
+                            textInput "orderReference" "Order Reference" None settings.OrderReference true None
                             div [] [
                                 h3 [] [ str "Extra Init Options" ]
                             ]
@@ -268,7 +273,7 @@ let template (enabledMarkets: Market list) (settings: Settings) (cartState: Cart
                                 None
                                 initSettings.ShowThankYouPage
                                 true
-                            numberInput "ageValidation" "Age Validation" (Some "Insert age limit as number") (initSettings.AgeValidation |> ageValidationToString) true
+                            numberInput "ageValidation" "Age Validation" (Some "Insert age limit as number between 0 and 100") (initSettings.AgeValidation |> ageValidationToString) true (Some ("0", "100"))
                             div [] [
                                 h3 [] [ str "Extra Checkout Flags" ]
                             ]
