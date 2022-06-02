@@ -1,6 +1,6 @@
 module Gir.Test.Views
 
-open Giraffe.GiraffeViewEngine
+open Giraffe.ViewEngine
 open Gir.Layout
 
 

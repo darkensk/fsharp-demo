@@ -1,6 +1,6 @@
 module Gir.Utils
 
-open Giraffe.GiraffeViewEngine
+open Giraffe.ViewEngine
 open Microsoft.AspNetCore.Http
 open Decoders
 open Encoders
