@@ -1,4 +1,6 @@
 Giraffe
+Giraffe.ViewEngine
 Thoth.Json.Net
 FSharp.Data
 Microsoft.IdentityModel.JsonWebTokens
+TaskBuilder.fs

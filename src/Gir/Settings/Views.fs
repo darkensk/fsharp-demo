@@ -1,6 +1,6 @@
 module Gir.Settings.Views
 
-open Giraffe.GiraffeViewEngine
+open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
 
