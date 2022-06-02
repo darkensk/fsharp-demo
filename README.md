@@ -2,7 +2,7 @@
 
 Checkout 3.0 integration in F# + Giraffe
 
-Install .NET Core 3.1 [https://dotnet.microsoft.com/download/dotnet-core/3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- Install .NET 6 [https://dotnet.microsoft.com/en-us/download/dotnet/6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 ### Add following variables to your environment variables:
 
