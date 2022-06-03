@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
 
 WORKDIR /app
-EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
@@ -34,5 +33,8 @@ ENV checkoutFrontendBundleUrl=${checkoutFrontendBundleUrl}
 
 WORKDIR /app
 COPY --from=publish /app .
+
+EXPOSE 80
+ENV ASPNETCORE_URLS=http://+:80
 
 ENTRYPOINT ["dotnet", "Gir.dll"]
