@@ -1,7 +1,8 @@
+version 7.1.5
 source https://api.nuget.org/v3/index.json
 framework: net6.0
 storage:none
-nuget FSharp.Core
+nuget FSharp.Core ~> 6.0.0
 nuget Microsoft.IdentityModel.JsonWebTokens 6.32.1
 nuget TaskBuilder.fs
 nuget Giraffe
@@ -12,7 +13,7 @@ nuget Microsoft.AspNetCore.Session
 group Build
     source https://api.nuget.org/v3/index.json
     storage: none
-    nuget FSharp.Core
+    nuget FSharp.Core ~> 6.0.0
     nuget Fake.DotNet.Cli
     nuget Fake.Core.Target
     nuget Fake.IO.FileSystem

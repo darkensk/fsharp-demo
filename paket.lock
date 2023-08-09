@@ -3,7 +3,7 @@ RESTRICTION: == net6.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
     Fable.Core (4.0)
-    FSharp.Core (7.0.300)
+    FSharp.Core (6.0.7)
     FSharp.Data (6.2)
       FSharp.Core (>= 5.0.1)
       FSharp.Data.Csv.Core (>= 6.2)
@@ -47,10 +47,10 @@ NUGET
       System.Text.Json (>= 7.0.3)
     Giraffe.ViewEngine (1.4)
       FSharp.Core (>= 5.0)
-    Microsoft.AspNetCore.Cryptography.Internal (7.0.9)
-    Microsoft.AspNetCore.DataProtection (7.0.9)
-      Microsoft.AspNetCore.Cryptography.Internal (>= 7.0.9)
-      Microsoft.AspNetCore.DataProtection.Abstractions (>= 7.0.9)
+    Microsoft.AspNetCore.Cryptography.Internal (7.0.10)
+    Microsoft.AspNetCore.DataProtection (7.0.10)
+      Microsoft.AspNetCore.Cryptography.Internal (>= 7.0.10)
+      Microsoft.AspNetCore.DataProtection.Abstractions (>= 7.0.10)
       Microsoft.Extensions.DependencyInjection.Abstractions (>= 7.0)
       Microsoft.Extensions.Hosting.Abstractions (>= 7.0)
       Microsoft.Extensions.Logging.Abstractions (>= 7.0.1)
@@ -58,7 +58,7 @@ NUGET
       Microsoft.Win32.Registry (>= 5.0)
       System.Security.Cryptography.Xml (>= 7.0.1)
       System.Security.Principal.Windows (>= 5.0)
-    Microsoft.AspNetCore.DataProtection.Abstractions (7.0.9)
+    Microsoft.AspNetCore.DataProtection.Abstractions (7.0.10)
     Microsoft.AspNetCore.Http.Abstractions (2.2)
       Microsoft.AspNetCore.Http.Features (>= 2.2)
       System.Text.Encodings.Web (>= 4.5)
@@ -239,17 +239,18 @@ NUGET
     FSharp.Control.Reactive (5.0.5) - restriction: >= netstandard2.0
       FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
       System.Reactive (>= 5.0 < 6.0) - restriction: >= netstandard2.0
-    FSharp.Core (7.0.300)
-    Microsoft.Build.Framework (17.6.3) - restriction: >= netstandard2.0
+    FSharp.Core (6.0.7)
+    Microsoft.Build.Framework (17.7) - restriction: >= netstandard2.0
       Microsoft.VisualStudio.Setup.Configuration.Interop (>= 3.2.2146) - restriction: >= net472
       Microsoft.Win32.Registry (>= 5.0) - restriction: && (< net472) (< net7.0) (>= netstandard2.0)
-      System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: >= net472
+      System.Memory (>= 4.5.5) - restriction: && (< net472) (< net7.0) (>= netstandard2.0)
+      System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: || (>= net472) (&& (< net7.0) (>= netstandard2.0))
       System.Security.Permissions (>= 7.0) - restriction: || (&& (< net472) (>= netstandard2.0)) (>= net7.0)
       System.Security.Principal.Windows (>= 5.0) - restriction: && (< net472) (< net7.0) (>= netstandard2.0)
-    Microsoft.Build.Utilities.Core (17.6.3) - restriction: >= netstandard2.0
-      Microsoft.Build.Framework (>= 17.6.3) - restriction: >= netstandard2.0
+    Microsoft.Build.Utilities.Core (17.7) - restriction: >= netstandard2.0
+      Microsoft.Build.Framework (>= 17.7) - restriction: >= netstandard2.0
       Microsoft.IO.Redist (>= 6.0) - restriction: >= net472
-      Microsoft.NET.StringTools (>= 17.6.3) - restriction: >= netstandard2.0
+      Microsoft.NET.StringTools (>= 17.7) - restriction: >= netstandard2.0
       Microsoft.VisualStudio.Setup.Configuration.Interop (>= 3.2.2146) - restriction: || (>= net472) (>= net7.0)
       Microsoft.Win32.Registry (>= 5.0) - restriction: && (< net472) (< net7.0) (>= netstandard2.0)
       System.Collections.Immutable (>= 7.0) - restriction: >= netstandard2.0
@@ -262,7 +263,7 @@ NUGET
     Microsoft.IO.Redist (6.0) - restriction: >= net472
       System.Buffers (>= 4.5.1) - restriction: >= net472
       System.Memory (>= 4.5.4) - restriction: >= net472
-    Microsoft.NET.StringTools (17.6.3) - restriction: >= netstandard2.0
+    Microsoft.NET.StringTools (17.7) - restriction: >= netstandard2.0
       System.Memory (>= 4.5.5) - restriction: || (>= net472) (&& (< net7.0) (>= netstandard2.0))
       System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: || (>= net472) (&& (< net7.0) (>= netstandard2.0))
     Microsoft.NETCore.Platforms (7.0.4) - restriction: || (&& (< monoandroid) (< net45) (< netcoreapp3.1) (>= netstandard2.0) (< win8) (< wpa81) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (&& (< monoandroid) (< net45) (< netstandard1.2) (>= netstandard2.0) (< win8)) (&& (< monoandroid) (< net45) (< netstandard1.3) (>= netstandard2.0) (< win8) (< wpa81)) (&& (< monoandroid) (< net45) (< netstandard1.5) (>= netstandard2.0) (< win8) (< wpa81)) (&& (< monoandroid) (>= net5.0) (< netcoreapp2.1) (< netstandard2.1) (< xamarintvos) (< xamarinwatchos)) (&& (>= netcoreapp2.0) (< netcoreapp2.1)) (&& (>= netcoreapp2.1) (< netcoreapp3.0))
