@@ -2,7 +2,7 @@ source https://api.nuget.org/v3/index.json
 framework: net6.0
 storage:none
 nuget FSharp.Core
-nuget Microsoft.IdentityModel.JsonWebTokens 5.6.0
+nuget Microsoft.IdentityModel.JsonWebTokens 6.32.1
 nuget TaskBuilder.fs
 nuget Giraffe
 nuget Thoth.Json.Net
