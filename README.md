@@ -16,6 +16,8 @@ Checkout 3.0 integration in F# + Giraffe
 
 - `checkoutFrontendBundleUrl` - Checkout 3.0 Frontend JS bundle url
 
+- `partPaymentWidgetBundleUrl` - ***NEW*** PartPayment Widget bundle url (optional)
+
 ### Available markets:
 
 In order to test different markets set up following `clientId`/`clientSecret` values based on market. Market will be available in the `/settings/` page when credentials are set up.

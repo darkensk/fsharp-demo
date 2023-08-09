@@ -107,6 +107,12 @@ let extraInitSettingsDecoder =
               ShowThankYouPage = get.Required.Field "showThankYouPage" Decode.bool
               AgeValidation = (get.Required.Field "ageValidation" Decode.string) |> stringToAgeValidation  })
 
+let partPaymentWidgetSettingsDecoder =
+    Decode.object
+        (fun get -> 
+            { Enabled = get.Required.Field "enabled" Decode.bool
+              CustomStyles = get.Required.Field "customStyles" Decode.bool })
+
 let decodeSettings =
     Decode.object
         (fun get ->
@@ -117,7 +123,8 @@ let decodeSettings =
                   |> stringToMarket
               OrderReference =
                   (get.Optional.Field "orderReference" Decode.string)
-                  |> Option.defaultValue defaultSettings.OrderReference })
+                  |> Option.defaultValue defaultSettings.OrderReference
+              PartPaymentWidgetSettings = get.Required.Field "partPaymentWidgetSettings" partPaymentWidgetSettingsDecoder })
 
 let settingsDecoder (s: string) =
     match Decode.fromString decodeSettings s with
@@ -125,7 +132,8 @@ let settingsDecoder (s: string) =
         { ExtraCheckoutFlags = v.ExtraCheckoutFlags
           ExtraInitSettings = v.ExtraInitSettings
           Market = v.Market
-          OrderReference = v.OrderReference }
+          OrderReference = v.OrderReference
+          PartPaymentWidgetSettings = v.PartPaymentWidgetSettings }
     | Error e -> failwithf "Cannot decode settings, error = %A" e
 
 
@@ -148,3 +156,17 @@ let getPaymentStatusDecoder (s: string) =
           ExtraIdentifiers = v.ExtraIdentifiers
           Mode = v.Mode }
     | Error e -> failwithf "Cannot decode get payment status, error = %A" e
+
+
+let initPartPaymentWidgetPayloadDecoder = 
+    Decode.object
+        (fun get ->
+                { PaymentId = get.Required.Field "paymentId" Decode.string
+                  WidgetJwt = get.Required.Field "widgetJwt" Decode.string })
+
+let initPartPaymentWidgetDecoder (s: string) =
+    match Decode.fromString initPartPaymentWidgetPayloadDecoder s with
+    | Ok v ->
+        { PaymentId = v.PaymentId
+          WidgetJwt = v.WidgetJwt }
+    | Error e -> failwithf "Cannot decode init part payment widget, error = %A" e

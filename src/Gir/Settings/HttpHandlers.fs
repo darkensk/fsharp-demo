@@ -8,12 +8,12 @@ open Gir.Utils
 open Views
 
 
-let settingsHandler (enabledMarkets: Market list) (next: HttpFunc) (ctx: HttpContext) =
+let settingsHandler (partPaymentWidgetBundleUrl: string) (enabledMarkets: Market list) (next: HttpFunc) (ctx: HttpContext) =
     let cartState = Session.getCartState ctx
     let settings = Session.getSettings ctx
 
     (htmlView
-     <| settingsView enabledMarkets settings cartState)
+     <| settingsView partPaymentWidgetBundleUrl enabledMarkets settings cartState)
         next
         ctx
 
@@ -60,7 +60,9 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                     ShowThankYouPage = checkboxValue "showThankYouPage"
                     AgeValidation = getValue "ageValidation" |> stringToAgeValidation }
               Market = getValue "market" |> stringToMarket
-              OrderReference = getValue "orderReference" }
+              OrderReference = getValue "orderReference"
+              PartPaymentWidgetSettings = { Enabled = checkboxValue "partPaymentWidgetEnabled"
+                                            CustomStyles = checkboxValue "partPaymentWidgetCustomStyles" } }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx
