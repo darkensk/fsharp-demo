@@ -1,7 +1,5 @@
 module Gir.Domain
 
-open System
-
 type Product =
     { ProductId: int
       Name: string

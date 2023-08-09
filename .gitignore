@@ -18,3 +18,4 @@ local.settings.json
 .vscode/
 .DS_Store
 global.json
+src/Gir/Properties/launchSettings.json

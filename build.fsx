@@ -2,11 +2,9 @@
 #load ".fake/build.fsx/intellisense.fsx"
 
 open Fake.IO
-open System.IO
 open Fake.Core
 open Fake.DotNet
 open Fake.IO.FileSystemOperators
-open Fake.Core.TargetOperators
 
 module Tools =
     let private findTool tool winTool =
