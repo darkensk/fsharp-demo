@@ -3,7 +3,7 @@ module Gir.Settings.Views
 open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
-
+open Gir.Utils
 
 let rowStyles =
     _style
@@ -137,18 +137,22 @@ let numberInput =
                         border-radius: 5px;
                         padding: 0 10px;"
 
-let template (enabledMarkets: Market list) (settings: Settings) (cartState: CartState) =
+let template (partPaymentWidgetBundleUrl: string) (enabledMarkets: Market list) (settings: Settings) (cartState: CartState) =
     let checkboxStateOptions =
         [ ("Hidden", false)
           ("Checked", false)
           ("Unchecked", false) ]
 
     let { ExtraInitSettings = initSettings
-          ExtraCheckoutFlags = checkoutFlags } =
+          ExtraCheckoutFlags = checkoutFlags 
+          PartPaymentWidgetSettings = partPaymentWidgetSettings } =
         settings
 
     let marketsOptions =
         List.map (fun m -> (marketToString m, false)) enabledMarkets
+
+    let partPaymentWidgetHelpText = 
+        if (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl) then None else Some "Requires 'partPaymentWidgetBundleUrl' environment variable specified"
 
     div [] [
         div [ _class "search-wrapper section-padding-100" ] [
@@ -292,6 +296,11 @@ let template (enabledMarkets: Market list) (settings: Settings) (cartState: Cart
                                 true
                             checkboxView "customStyles" "Use Custom Styles" None checkoutFlags.CustomStyles true
                             checkboxView "includePaymentFeeInTotalPrice" "Include Payment Fees in Total Price" None checkoutFlags.IncludePaymentFeeInTotalPrice true
+                            div [] [
+                                h3 [] [ str "Part Payment Widget" ]
+                            ]
+                            checkboxView "partPaymentWidgetEnabled" "Enable Part Payment Widget" partPaymentWidgetHelpText partPaymentWidgetSettings.Enabled (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl)
+                            checkboxView "partPaymentWidgetCustomStyles" "Use Custom Styles in Part Payment Widget" None partPaymentWidgetSettings.CustomStyles (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl)
                             div [ _style
                                       "display: flex; flex: 1; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 10px;" ] [
                                 a [ _class "btn amado-btn active"
@@ -313,6 +322,6 @@ let template (enabledMarkets: Market list) (settings: Settings) (cartState: Cart
         footerView
     ]
 
-let settingsView (enabledMarkets: Market list) (settings: Settings) (cartState: CartState) =
-    [ template enabledMarkets settings cartState ]
+let settingsView (partPaymentWidgetBundleUrl: string) (enabledMarkets: Market list) (settings: Settings) (cartState: CartState) =
+    [ template partPaymentWidgetBundleUrl enabledMarkets settings cartState ]
     |> layout

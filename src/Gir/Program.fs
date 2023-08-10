@@ -16,77 +16,76 @@ open CompositionRoot
 
 
 let redirectHandler next (ctx: HttpContext) =
-    let reffererUrl =
-        ctx.Request.GetTypedHeaders().Referer.ToString()
+    let reffererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
 
     redirectTo false reffererUrl next ctx
 
 let webApp (root: CompositionRoot) =
-    choose [ GET
-             >=> choose [ route "/cart/"
-                          >=> Cart.HttpHandlers.cartHandler
-                                  root.CheckoutFrontendBundle
-                                  root.GetPurchaseToken
-                                  root.GetAllProducts
-                                  root.GetPartnerAccessToken
-                                  root.ReclaimPurchaseToken
-                          route "/cart/clear"
-                          >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
-                          >=> redirectTo false "/cart/"
-                          route "/cart/completed"
-                          >=> Cart.HttpHandlers.completedHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
-                          >=> text "OK - CompletedCallback Successfull"
-                          route "/cart/sessionExpired"
-                          >=> Cart.HttpHandlers.sessionExpiredHandler
-                                  root.CheckoutBackendApiUrl
-                                  root.ApiPublicUrl
-                                  root.GetPartnerAccessToken
-                          >=> text "OK - Session Timed Out Callback Successfull"
-                          route "/settings/"
-                          >=> Settings.HttpHandlers.settingsHandler root.EnabledMarkets
-                          subRoute
-                              "/product"
-                              (choose [ subRoutef "/%i" (Products.HttpHandlers.detailHandler root.GetProductById) ])
-                          route "/"
-                          >=> Products.HttpHandlers.listHandler root.GetAllProducts
-                          subRoute
-                              "/test"
-                              (choose [ subRoutef
-                                            "/%s"
-                                            (fun purchaseToken ->
-                                                Test.HttpHandlers.testCheckoutHandler
-                                                    root.CheckoutFrontendBundle
-                                                    purchaseToken) ]) ]
-             POST
-             >=> choose [ routef
-                              "/product/%i/add"
-                              (fun i ->
-                                  Cart.HttpHandlers.addToCartHandler i root.GetAllProducts
-                                  >=> Cart.HttpHandlers.updateItemsHandler
-                                          root.CheckoutBackendApiUrl
-                                          root.ApiPublicUrl
-                                          root.GetPartnerAccessToken
-                                  >=> redirectHandler)
-                          routef
-                              "/product/%i/remove"
-                              (fun i ->
-                                  Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts
-                                  >=> Cart.HttpHandlers.updateItemsHandler
-                                          root.CheckoutBackendApiUrl
-                                          root.ApiPublicUrl
-                                          root.GetPartnerAccessToken
-                                  >=> redirectHandler)
-                          route "/test/"
-                          >=> Test.HttpHandlers.easterEggHandler
-                          route "/settings/save"
-                          >=> Settings.HttpHandlers.saveSettingsHandler
-                          >=> redirectTo false "/settings/"
-                          route "/be2be/fail"
-                          >=> setStatusCode 500
-                          >=> text "ERROR - Backend notification failed"
-                          route "/be2be/succeed"
-                          >=> text "OK - Backend notification received" ]
-             setStatusCode 404 >=> text "Not Found" ]
+    choose
+        [ GET
+          >=> choose
+                  [ route "/cart/"
+                    >=> Cart.HttpHandlers.cartHandler
+                            root.CheckoutFrontendBundle
+                            root.GetPurchaseToken
+                            root.GetAllProducts
+                            root.GetPartnerAccessToken
+                            root.ReclaimPurchaseToken
+                    route "/cart/clear"
+                    >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
+                    >=> redirectTo false "/cart/"
+                    route "/cart/completed"
+                    >=> Cart.HttpHandlers.completedHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
+                    >=> text "OK - CompletedCallback Successfull"
+                    route "/cart/sessionExpired"
+                    >=> Cart.HttpHandlers.sessionExpiredHandler
+                            root.CheckoutBackendApiUrl
+                            root.ApiPublicUrl
+                            root.GetPartnerAccessToken
+                    >=> text "OK - Session Timed Out Callback Successfull"
+                    route "/settings/"
+                    >=> Settings.HttpHandlers.settingsHandler root.PartPaymentWidgetBundle root.EnabledMarkets
+                    subRoute
+                        "/product"
+                        (choose
+                            [ subRoutef
+                                  "/%i"
+                                  (Products.HttpHandlers.detailHandler
+                                      root.GetPartPaymentWidgetToken
+                                      root.GetPartnerAccessToken
+                                      root.PartPaymentWidgetBundle
+                                      root.GetProductById) ])
+                    route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
+                    subRoute
+                        "/test"
+                        (choose
+                            [ subRoutef "/%s" (fun purchaseToken ->
+                                  Test.HttpHandlers.testCheckoutHandler root.CheckoutFrontendBundle purchaseToken) ]) ]
+          POST
+          >=> choose
+                  [ routef "/product/%i/add" (fun i ->
+                        Cart.HttpHandlers.addToCartHandler i root.GetAllProducts
+                        >=> Cart.HttpHandlers.updateItemsHandler
+                                root.CheckoutBackendApiUrl
+                                root.ApiPublicUrl
+                                root.GetPartnerAccessToken
+                        >=> redirectHandler)
+                    routef "/product/%i/remove" (fun i ->
+                        Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts
+                        >=> Cart.HttpHandlers.updateItemsHandler
+                                root.CheckoutBackendApiUrl
+                                root.ApiPublicUrl
+                                root.GetPartnerAccessToken
+                        >=> redirectHandler)
+                    route "/test/" >=> Test.HttpHandlers.easterEggHandler
+                    route "/settings/save"
+                    >=> Settings.HttpHandlers.saveSettingsHandler
+                    >=> redirectTo false "/settings/"
+                    route "/be2be/fail"
+                    >=> setStatusCode 500
+                    >=> text "ERROR - Backend notification failed"
+                    route "/be2be/succeed" >=> text "OK - Backend notification received" ]
+          setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
 // Error handler
@@ -95,30 +94,21 @@ let webApp (root: CompositionRoot) =
 let errorHandler (ex: Exception) (logger: ILogger) =
     logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
 
-    clearResponse
-    >=> setStatusCode 500
-    >=> text ex.Message
+    clearResponse >=> setStatusCode 500 >=> text ex.Message
 
 // ---------------------------------
 // Config and Main
 // ---------------------------------
 
 let configureCors (builder: CorsPolicyBuilder) =
-    builder
-        .WithOrigins("http://localhost:5000")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
+    builder.WithOrigins("http://localhost:5000").AllowAnyMethod().AllowAnyHeader()
     |> ignore
 
-    builder
-        .WithOrigins("https://localhost:5001")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
+    builder.WithOrigins("https://localhost:5001").AllowAnyMethod().AllowAnyHeader()
     |> ignore
 
 let configureApp (root: CompositionRoot) (app: IApplicationBuilder) =
-    let env =
-        app.ApplicationServices.GetService<IWebHostEnvironment>()
+    let env = app.ApplicationServices.GetService<IWebHostEnvironment>()
 
     (match env.IsDevelopment() with
      | true -> app.UseDeveloperExceptionPage()
@@ -142,22 +132,15 @@ let configureServices (services: IServiceCollection) =
     services.AddSession() |> ignore
     services.AddMvc() |> ignore
 
-    services.ConfigureApplicationCookie(Action<_> cookieOptions)
-    |> ignore
+    services.ConfigureApplicationCookie(Action<_> cookieOptions) |> ignore
 
 let configureLogging (builder: ILoggingBuilder) =
-    builder
-        .AddFilter(fun l -> l.Equals LogLevel.Error)
-        .AddConsole()
-        .AddDebug()
+    builder.AddFilter(fun l -> l.Equals LogLevel.Error).AddConsole().AddDebug()
     |> ignore
 
 [<EntryPoint>]
 let main _ =
-    let cfg =
-        (ConfigurationBuilder())
-            .AddEnvironmentVariables()
-            .Build()
+    let cfg = (ConfigurationBuilder()).AddEnvironmentVariables().Build()
 
     let root = CompositionRoot.compose cfg
 

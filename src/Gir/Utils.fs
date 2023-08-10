@@ -35,6 +35,12 @@ let productDiv (settings: Settings) (product: Product) =
         ]
     ]
 
+let isPartPaymentWidgetEnabledGlobally (partPaymentWidgetBundleUrl: string) =
+    match partPaymentWidgetBundleUrl with
+        | null -> false
+        | "" -> false
+        | _ -> true
+
 [<RequireQualifiedAccess>]
 module Task =
     open FSharp.Control.Tasks
@@ -51,6 +57,7 @@ module Session =
     let private cartKey = "cart"
     let private purchaseKey = "purchaseId"
     let private settingsKey = "settings"
+    let private partPaymentWidgetStateKey = "partPaymentWidgetStateKey"
 
     let getCartState (ctx: HttpContext) =
         let currentCart =
@@ -74,6 +81,14 @@ module Session =
         ctx.Session.SetString(purchaseKey, purchaseId)
 
     let deletePurchaseId (ctx: HttpContext) = ctx.Session.Remove(purchaseKey)
+
+    let tryGetPartPaymentWidgeState (ctx: HttpContext) =
+        match ctx.Session.GetString(partPaymentWidgetStateKey) with
+        | null -> None
+        | v -> Some v
+
+    let setPartPaymentWidgetState (ctx: HttpContext) (encodedPartPaymentWidgetState: string) =
+        ctx.Session.SetString(partPaymentWidgetStateKey, encodedPartPaymentWidgetState)
 
     let getSettings (ctx: HttpContext) =
         match ctx.Session.GetString(settingsKey) with

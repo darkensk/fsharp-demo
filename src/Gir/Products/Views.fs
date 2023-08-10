@@ -6,6 +6,394 @@ open Gir.Domain
 open Gir.Utils
 
 
+
+let avardaPlacement = tag "avarda-placement"
+
+let _priceAttribute = attr "price"
+
+let _currencyAttribute = attr "currency"
+
+let _languageAttribute = attr "lang"
+
+let _jwtTokenAttribute = attr "jwt-token"
+
+let _clientIdAttribute = attr "clientId"
+
+let _customStylesAttribute = attr "custom-styles"
+
+let rawCustomStyles = 
+    """
+    {
+  "buttons": {
+    "primary": {
+      "base": {
+        "backgroundColor": "#fbb710",
+        "color": "#ffffff",
+        "borderColor": "#fbb710"
+      },
+      "hover": {
+        "backgroundColor": "#131212",
+        "borderColor": "#131212",
+        "color": "#ffffff"
+      },
+      "boxShadow": {
+        "hOffset": 0,
+        "vOffset": 0,
+        "blur": 0,
+        "spread": 0,
+        "color": "#000000"
+      },
+      "disabled": {
+        "backgroundColor": "#FDE9B7",
+        "borderColor": "#FDE9B7",
+        "color": "#ffffff"
+      },
+      "borderWidth": 0,
+      "fontSize": 18,
+      "lineHeight": 56,
+      "minHeight": 55,
+      "fontWeight": 400,
+      "padding": {
+        "top": 10,
+        "right": 16,
+        "bottom": 10,
+        "left": 16
+      },
+      "borderRadius": 0
+    },
+    "secondary": {
+      "base": {
+        "backgroundColor": "#131212",
+        "borderColor": "#131212",
+        "color": "#ffffff"
+      },
+      "hover": {
+        "backgroundColor": "#131212",
+        "borderColor": "#131212",
+        "color": "#ffffff"
+      },
+      "boxShadow": {
+        "hOffset": 0,
+        "vOffset": 0,
+        "blur": 0,
+        "spread": 0,
+        "color": "#000000"
+      },
+      "disabled": {
+        "backgroundColor": "#FDE9B7",
+        "borderColor": "#FDE9B7",
+        "color": "#ffffff"
+      },
+      "borderWidth": 0,
+      "fontSize": 18,
+      "lineHeight": 56,
+      "minHeight": 55,
+      "fontWeight": 400,
+      "padding": {
+        "top": 10,
+        "right": 16,
+        "bottom": 10,
+        "left": 16
+      },
+      "borderRadius": 0
+    }
+  },
+  "fontFamilies": [
+    "HelveticaNeue-Medium",
+    "sans-serif"
+  ],
+  "headings": {
+    "h1": {
+      "fontSize": 30,
+      "lineHeight": 32,
+      "display": "block",
+      "fontWeight": 400,
+      "color": "#000000",
+      "alignment": "left"
+    },
+    "h2": {
+      "fontSize": 30,
+      "lineHeight": 32,
+      "display": "block",
+      "fontWeight": 400,
+      "color": "#000000",
+      "alignment": "left"
+    },
+    "h3": {
+      "fontSize": 18,
+      "lineHeight": 20,
+      "display": "block",
+      "fontWeight": 400,
+      "color": "#000000",
+      "alignment": "left"
+    },
+    "h4": {
+      "fontSize": 16,
+      "lineHeight": 16,
+      "display": "block",
+      "fontWeight": 400,
+      "color": "#000000",
+      "alignment": "left"
+    }
+  },
+  "input": {
+    "height": 50,
+    "fontSize": 16,
+    "fontWeight": 400,
+    "backgroundColorValid": "#ffffff",
+    "backgroundColorInvalid": "#fee7e7",
+    "borderColor": "#b2b2b2",
+    "borderWidth": 1,
+    "borderRadius": 0,
+    "focusOutlineColor": "#fbb710",
+    "disabled": {
+      "backgroundColor": "#f5f5f5",
+      "borderColor": "#aeaeae",
+      "color": "#aeaeae"
+    },
+    "placeholderColor": "#aeaeae"
+  },
+  "links": {
+    "default": {
+      "fontSize": 13,
+      "fontWeight": 400,
+      "color": "#777777",
+      "textDecoration": "underline",
+      "hover": {
+        "color": "#fbb710",
+        "textDecoration": "underline"
+      },
+      "disabled": {
+        "color": "#aeaeae",
+        "textDecoration": "underline"
+      }
+    },
+    "blue": {
+      "fontSize": 13,
+      "fontWeight": 400,
+      "color": "#131212",
+      "textDecoration": "underline",
+      "hover": {
+        "color": "#fbb710",
+        "textDecoration": "underline"
+      },
+      "disabled": {
+        "color": "#aeaeae",
+        "textDecoration": "underline"
+      }
+    },
+    "biggerBlue": {
+      "fontSize": 16,
+      "fontWeight": 400,
+      "color": "#131212",
+      "textDecoration": "underline",
+      "hover": {
+        "color": "#fbb710",
+        "textDecoration": "underline"
+      },
+      "disabled": {
+        "color": "#aeaeae",
+        "textDecoration": "underline"
+      }
+    },
+    "smallNoDecoration": {
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#4b4b4b",
+      "textDecoration": "none",
+      "hover": {
+        "color": "#fbb710",
+        "textDecoration": "none"
+      },
+      "disabled": {
+        "color": "#aeaeae",
+        "textDecoration": "underline"
+      }
+    }
+  },
+  "select": {
+    "base": {
+      "backgroundColor": "#ffffff",
+      "color": "#4b4b4b",
+      "borderColor": "#b2b2b2",
+      "selectArrowUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/default_selectArrow.svg"
+    },
+    "disabled": {
+      "backgroundColor": "#f5f5f5",
+      "color": "#aeaeae",
+      "borderColor": "#aeaeae",
+      "selectArrowUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/default_selectArrow.svg"
+    },
+    "fontSize": 16,
+    "lineHeight": 30,
+    "height": 50,
+    "borderWidth": 1,
+    "fontWeight": 400
+  },
+  "labels": {
+    "active": {
+      "color": "#fbb710"
+    },
+    "disabled": {
+      "color": "#aeaeae"
+    },
+    "error": {
+      "color": "#e20000"
+    }
+  },
+  "footer": {
+    "fontSize": 13,
+    "fontWeight": 400,
+    "color": "#b2b2b2",
+    "iconLabelColor": "#fbb710"
+  },
+  "icons": {
+    "card": {
+      "color": "#fbb710",
+      "width": 91,
+      "height": 24
+    },
+    "loanPayment": {
+      "color": "#fbb710",
+      "width": 30,
+      "height": 30
+    },
+    "partPayment": {
+      "color": "#fbb710",
+      "width": 30,
+      "height": 30
+    },
+    "invoice": {
+      "color": "#fbb710",
+      "width": 30,
+      "height": 30
+    },
+    "directBank": {
+      "color": "#fbb710",
+      "width": 30,
+      "height": 30
+    },
+    "payOnDelivery": {
+      "color": "#fbb710",
+      "width": 30,
+      "height": 30
+    }
+  },
+  "paymentMethods": {
+    "selected": {
+      "labelColor": "#fbb710",
+      "borderColor": "#fbb710",
+      "borderWidth": 1,
+      "backgroundColor": "#FEFAF0",
+      "partPaymentPaymentTermSelect": {
+        "selected": {
+          "labelColor": "#131212",
+          "borderColor": "#131212",
+          "backgroundColor": "#FDE9B7"
+        },
+        "unselected": {
+          "labelColor": "#000000",
+          "borderColor": "#b2b2b2",
+          "backgroundColor": "#ffffff"
+        }
+      },
+      "bulletIconColor": "#00a0ba",
+      "radioButtonColor": "#fbb710"
+    },
+    "unselected": {
+      "labelColor": "#000000",
+      "backgroundColor": "",
+      "borderColor": "#b2b2b2",
+      "radioButtonColor": "#fbb710"
+    }
+  },
+  "amountToPayColor": "#fbb710",
+  "backgroundBorderRadius": 0,
+  "commonBorderColor": "#b2b2b2",
+  "paymentSection": {
+    "activeBorderWidth": 2,
+    "borderRadius": 5
+  },
+  "checkbox": {
+    "primary": {
+      "width": 20,
+      "height": 20,
+      "checked": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryChecked.svg"
+      },
+      "unchecked": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUnchecked.svg"
+      },
+      "checkedDisabled": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryCheckedDisabled.svg"
+      },
+      "uncheckedDisabled": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUncheckedDisabled.svg"
+      },
+      "checkedInvalid": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg"
+      },
+      "uncheckedInvalid": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg"
+      },
+      "focusOutlineColor": "#fbb710",
+      "checkedLabelColor": "#fbb710"
+    },
+    "secondary": {
+      "width": 20,
+      "height": 20,
+      "checked": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryChecked.svg"
+      },
+      "unchecked": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUnchecked.svg"
+      },
+      "checkedDisabled": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryCheckedDisabled.svg"
+      },
+      "uncheckedDisabled": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUncheckedDisabled.svg"
+      },
+      "checkedInvalid": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg"
+      },
+      "uncheckedInvalid": {
+        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg"
+      },
+      "focusOutlineColor": "#fbb710",
+      "checkedLabelColor": "#fbb710"
+    }
+  },
+  "spinnerColor": "#aeaeae"
+}
+    """
+
+let partPaymentWidgetScriptView (partPaymentWidgetBundleUrl: string) (partPaymentWidgetSettings: PartPaymentWidgetSettings) (paymentWidgetState: PartPaymentWidgetState option) = 
+    match paymentWidgetState with
+        | Some state -> 
+                let { PaymentId = paymentId; WidgetJwt = widgetJwt } = state
+
+                let bundleUrl = 
+                    partPaymentWidgetBundleUrl + "?ts=" + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
+                
+                if partPaymentWidgetSettings.CustomStyles then
+                    script [ _async 
+                             _crossorigin "annonymous"
+                             _src bundleUrl
+                             _clientIdAttribute paymentId
+                             _jwtTokenAttribute widgetJwt
+                             _customStylesAttribute rawCustomStyles ] []
+                else
+                    script [ _async 
+                             _crossorigin "annonymous"
+                             _src bundleUrl
+                             _clientIdAttribute paymentId
+                             _jwtTokenAttribute widgetJwt
+                            ] []
+        | None -> 
+            div [] []
+
+
 let listTemplate (settings: Settings) (cartState: CartState) (productList: Product list) =
     let products =
         productList |> List.map (productDiv settings)
@@ -62,7 +450,7 @@ let listView (settings: Settings) (cartState: CartState) (products: Product list
     [ listTemplate settings cartState products ]
     |> layout
 
-let detailTemplate (settings: Settings) (cartState: CartState) (product: Product) =
+let detailTemplate (settings: Settings) (cartState: CartState) (product: Product) (partPaymentWidgetBundleUrl: string) (paymentWidgetState: PartPaymentWidgetState option) =
     div [] [
         div [ _class "main-content-wrapper d-flex clearfix" ] [
             div [ _class "mobile-nav" ] [
@@ -232,6 +620,13 @@ let detailTemplate (settings: Settings) (cartState: CartState) (product: Product
                                         str "Add to cart"
                                     ]
                                 ]
+                                br []
+                                if settings.PartPaymentWidgetSettings.Enabled then
+                                    avardaPlacement [ _priceAttribute <| sprintf "%M" product.Price 
+                                                      _currencyAttribute (marketToCurrency settings.Market)
+                                                      _languageAttribute "en" ] [ str "" ]
+                                else 
+                                    str ""
                             ]
                         ]
                     ]
@@ -240,7 +635,8 @@ let detailTemplate (settings: Settings) (cartState: CartState) (product: Product
         ]
         subscribeSectionView
         footerView
+        partPaymentWidgetScriptView partPaymentWidgetBundleUrl settings.PartPaymentWidgetSettings paymentWidgetState
     ]
 
-let productDetailView (settings: Settings) (cartState: CartState) (p: Product) =
-    [ detailTemplate settings cartState p ] |> layout
+let productDetailView (settings: Settings) (cartState: CartState) (p: Product) (partPaymentWidgetBundleUrl: string) (paymentWidgetState: PartPaymentWidgetState option) =
+    [ detailTemplate settings cartState p partPaymentWidgetBundleUrl paymentWidgetState] |> layout

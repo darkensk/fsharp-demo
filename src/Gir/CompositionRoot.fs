@@ -13,7 +13,9 @@ type CompositionRoot =
       GetProductById: int -> Product option
       ReclaimPurchaseToken: string -> string -> Task<string>
       ApiPublicUrl: string
-      EnabledMarkets: Market list }
+      EnabledMarkets: Market list
+      PartPaymentWidgetBundle: string
+      GetPartPaymentWidgetToken: string -> Task<PartPaymentWidgetState> }
 
 let dummyProducts =
     let createProduct id name price img =
@@ -24,7 +26,7 @@ let dummyProducts =
 
     [ createProduct 1 "Modern Chair" 180m "/img/bg-img/1.jpg"
       createProduct 2 "Minimalistic Plant Pot" 10M "/img/bg-img/2.jpg"
-      createProduct 3 "Night Stand" 250M "/img/bg-img/4.jpg"
+      createProduct 3 "Night Stand" 2500M "/img/bg-img/4.jpg"
       createProduct 4 "Plant Pot" 3M "/img/bg-img/5.jpg"
       createProduct 5 "Small Table" 120M "/img/bg-img/6.jpg"
       createProduct 6 "Metallic Chair" 317M "/img/bg-img/7.jpg"
@@ -44,8 +46,8 @@ module CompositionRoot =
               Slovakia
               Poland
               Latvia
-              Estonia 
-              International]
+              Estonia
+              International ]
 
         let credentialsByMarket market =
             match market with
@@ -63,19 +65,14 @@ module CompositionRoot =
         let hasCredentials market =
             market
             |> credentialsByMarket
-            |> (fun (clientId, clientSecret) ->
-                (cfg.[clientId] = null || cfg.[clientSecret] = null)
-                |> not)
+            |> (fun (clientId, clientSecret) -> (cfg.[clientId] = null || cfg.[clientSecret] = null) |> not)
 
         let enabledMarkets = List.filter hasCredentials allMarkets
 
-        let url =
-            cfg.["checkoutBackendApiUrl"]
-            + "/api/partner/tokens"
+        let url = cfg.["checkoutBackendApiUrl"] + "/api/partner/tokens"
 
         let getPartnerAccessToken (market: Market) =
-            let getCachedToken =
-                Cart.CheckoutIntegration.getCachedToken url market
+            let getCachedToken = Cart.CheckoutIntegration.getCachedToken url market
 
             match market with
             | Sweden -> getCachedToken cfg.["swedenClientId"] cfg.["swedenClientSecret"]
@@ -93,12 +90,12 @@ module CompositionRoot =
           CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
           GetPartnerAccessToken = getPartnerAccessToken
           GetPurchaseToken =
-              Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] cfg.["apiPublicUrl"]
+            Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] cfg.["apiPublicUrl"]
           GetAllProducts = fun _ -> dummyProducts
-          GetProductById =
-              fun i ->
-                  dummyProducts
-                  |> List.tryFind (fun x -> x.ProductId = i)
+          GetProductById = fun productId -> dummyProducts |> List.tryFind (fun product -> product.ProductId = productId)
           ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"]
           ApiPublicUrl = cfg.["apiPublicUrl"]
-          EnabledMarkets = enabledMarkets }
+          EnabledMarkets = enabledMarkets
+          PartPaymentWidgetBundle = cfg.["partPaymentWidgetBundleUrl"]
+          GetPartPaymentWidgetToken =
+            Products.PartPaymentWidgetIntegration.getPartPaymentWidgetToken cfg.["checkoutBackendApiUrl"] }
