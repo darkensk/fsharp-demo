@@ -20,7 +20,8 @@ type CartState = { Items: CartItem list }
 
 type InitializePaymentResponse = { PurchaseId: string; Jwt: string }
 
-type PartPaymentWidgetState = { PaymentId: string; WidgetJwt: string }
+type PartPaymentWidgetState =
+    { PaymentId: string; WidgetJwt: string }
 
 type Language =
     | English
@@ -100,9 +101,7 @@ type Market =
     | Estonia
     | International
 
-type PartPaymentWidgetSettings =
-    { Enabled: bool
-      CustomStyles: bool }
+type PartPaymentWidgetSettings = { Enabled: bool; CustomStyles: bool }
 
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
@@ -232,17 +231,15 @@ let stringToMarket =
     | "International" -> International
     | _ -> Sweden
 
-let stringToAgeValidation (limit: string)=
+let stringToAgeValidation (limit: string) =
     let mutable intvalue = 0
+
     match limit with
     | "" -> Disabled
-    | _ -> 
-        if System.Int32.TryParse(limit, &intvalue) then 
-            if intvalue <= 0 then
-                Disabled
-            else 
-                Enabled intvalue
-        else 
+    | _ ->
+        if System.Int32.TryParse(limit, &intvalue) then
+            if intvalue <= 0 then Disabled else Enabled intvalue
+        else
             Disabled
 
 let ageValidationToString =
@@ -272,7 +269,7 @@ let defaultExtraInitSettings =
       ShowThankYouPage = true
       AgeValidation = Disabled }
 
-let defaultPartPaymentWidgetSettings : PartPaymentWidgetSettings =
+let defaultPartPaymentWidgetSettings: PartPaymentWidgetSettings =
     { Enabled = false
       CustomStyles = false }
 

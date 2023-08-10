@@ -8,8 +8,7 @@ open Fake.IO.FileSystemOperators
 
 module Tools =
     let private findTool tool winTool =
-        let tool =
-            if Environment.isUnix then tool else winTool
+        let tool = if Environment.isUnix then tool else winTool
 
         match ProcessUtils.tryFindFileOnPath tool with
         | Some t -> t
@@ -22,8 +21,7 @@ module Tools =
             failwith errorMsg
 
     let private runTool (cmd: string) args workingDir =
-        let arguments =
-            args |> String.split ' ' |> Arguments.OfArgs
+        let arguments = args |> String.split ' ' |> Arguments.OfArgs
 
         Command.RawCommand(cmd, arguments)
         |> CreateProcess.fromCommand
@@ -33,16 +31,14 @@ module Tools =
         |> ignore
 
     let dotnet cmd workingDir =
-        let result =
-            DotNet.exec (DotNet.Options.withWorkingDirectory workingDir) cmd ""
+        let result = DotNet.exec (DotNet.Options.withWorkingDirectory workingDir) cmd ""
 
-        if result.ExitCode <> 0
-        then failwithf "'dotnet %s' failed in %s" cmd workingDir
+        if result.ExitCode <> 0 then
+            failwithf "'dotnet %s' failed in %s" cmd workingDir
 
 // Targets
 let clean proj =
-    [ proj </> "bin"; proj </> "obj" ]
-    |> Shell.cleanDirs
+    [ proj </> "bin"; proj </> "obj" ] |> Shell.cleanDirs
 
 let serverSrcPath = "src" </> "Gir"
 

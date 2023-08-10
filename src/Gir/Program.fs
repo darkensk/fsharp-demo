@@ -24,67 +24,67 @@ let webApp (root: CompositionRoot) =
     choose
         [ GET
           >=> choose
-                  [ route "/cart/"
-                    >=> Cart.HttpHandlers.cartHandler
-                            root.CheckoutFrontendBundle
-                            root.GetPurchaseToken
-                            root.GetAllProducts
-                            root.GetPartnerAccessToken
-                            root.ReclaimPurchaseToken
-                    route "/cart/clear"
-                    >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
-                    >=> redirectTo false "/cart/"
-                    route "/cart/completed"
-                    >=> Cart.HttpHandlers.completedHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
-                    >=> text "OK - CompletedCallback Successfull"
-                    route "/cart/sessionExpired"
-                    >=> Cart.HttpHandlers.sessionExpiredHandler
-                            root.CheckoutBackendApiUrl
-                            root.ApiPublicUrl
-                            root.GetPartnerAccessToken
-                    >=> text "OK - Session Timed Out Callback Successfull"
-                    route "/settings/"
-                    >=> Settings.HttpHandlers.settingsHandler root.PartPaymentWidgetBundle root.EnabledMarkets
-                    subRoute
-                        "/product"
-                        (choose
-                            [ subRoutef
-                                  "/%i"
-                                  (Products.HttpHandlers.detailHandler
-                                      root.GetPartPaymentWidgetToken
-                                      root.GetPartnerAccessToken
-                                      root.PartPaymentWidgetBundle
-                                      root.GetProductById) ])
-                    route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
-                    subRoute
-                        "/test"
-                        (choose
-                            [ subRoutef "/%s" (fun purchaseToken ->
-                                  Test.HttpHandlers.testCheckoutHandler root.CheckoutFrontendBundle purchaseToken) ]) ]
+              [ route "/cart/"
+                >=> Cart.HttpHandlers.cartHandler
+                    root.CheckoutFrontendBundle
+                    root.GetPurchaseToken
+                    root.GetAllProducts
+                    root.GetPartnerAccessToken
+                    root.ReclaimPurchaseToken
+                route "/cart/clear"
+                >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
+                >=> redirectTo false "/cart/"
+                route "/cart/completed"
+                >=> Cart.HttpHandlers.completedHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
+                >=> text "OK - CompletedCallback Successfull"
+                route "/cart/sessionExpired"
+                >=> Cart.HttpHandlers.sessionExpiredHandler
+                    root.CheckoutBackendApiUrl
+                    root.ApiPublicUrl
+                    root.GetPartnerAccessToken
+                >=> text "OK - Session Timed Out Callback Successfull"
+                route "/settings/"
+                >=> Settings.HttpHandlers.settingsHandler root.PartPaymentWidgetBundle root.EnabledMarkets
+                subRoute
+                    "/product"
+                    (choose
+                        [ subRoutef
+                              "/%i"
+                              (Products.HttpHandlers.detailHandler
+                                  root.GetPartPaymentWidgetToken
+                                  root.GetPartnerAccessToken
+                                  root.PartPaymentWidgetBundle
+                                  root.GetProductById) ])
+                route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
+                subRoute
+                    "/test"
+                    (choose
+                        [ subRoutef "/%s" (fun purchaseToken ->
+                              Test.HttpHandlers.testCheckoutHandler root.CheckoutFrontendBundle purchaseToken) ]) ]
           POST
           >=> choose
-                  [ routef "/product/%i/add" (fun i ->
-                        Cart.HttpHandlers.addToCartHandler i root.GetAllProducts
-                        >=> Cart.HttpHandlers.updateItemsHandler
-                                root.CheckoutBackendApiUrl
-                                root.ApiPublicUrl
-                                root.GetPartnerAccessToken
-                        >=> redirectHandler)
-                    routef "/product/%i/remove" (fun i ->
-                        Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts
-                        >=> Cart.HttpHandlers.updateItemsHandler
-                                root.CheckoutBackendApiUrl
-                                root.ApiPublicUrl
-                                root.GetPartnerAccessToken
-                        >=> redirectHandler)
-                    route "/test/" >=> Test.HttpHandlers.easterEggHandler
-                    route "/settings/save"
-                    >=> Settings.HttpHandlers.saveSettingsHandler
-                    >=> redirectTo false "/settings/"
-                    route "/be2be/fail"
-                    >=> setStatusCode 500
-                    >=> text "ERROR - Backend notification failed"
-                    route "/be2be/succeed" >=> text "OK - Backend notification received" ]
+              [ routef "/product/%i/add" (fun i ->
+                    Cart.HttpHandlers.addToCartHandler i root.GetAllProducts
+                    >=> Cart.HttpHandlers.updateItemsHandler
+                        root.CheckoutBackendApiUrl
+                        root.ApiPublicUrl
+                        root.GetPartnerAccessToken
+                    >=> redirectHandler)
+                routef "/product/%i/remove" (fun i ->
+                    Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts
+                    >=> Cart.HttpHandlers.updateItemsHandler
+                        root.CheckoutBackendApiUrl
+                        root.ApiPublicUrl
+                        root.GetPartnerAccessToken
+                    >=> redirectHandler)
+                route "/test/" >=> Test.HttpHandlers.easterEggHandler
+                route "/settings/save"
+                >=> Settings.HttpHandlers.saveSettingsHandler
+                >=> redirectTo false "/settings/"
+                route "/be2be/fail"
+                >=> setStatusCode 500
+                >=> text "ERROR - Backend notification failed"
+                route "/be2be/succeed" >=> text "OK - Backend notification received" ]
           setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
