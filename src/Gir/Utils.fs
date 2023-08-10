@@ -21,25 +21,22 @@ let marketToCurrency (market: Market) =
     | International -> "€"
 
 let productDiv (settings: Settings) (product: Product) =
-    div [ _class "single-products-catagory clearfix" ] [
-        a [ _href (sprintf "/product/%i" product.ProductId) ] [
-            img [ _src product.Img; _alt "" ]
-            div [ _class "hover-content" ] [
-                div [ _class "line" ] []
-                p [] [
-                    str
-                    <| sprintf "%M %s" product.Price (marketToCurrency settings.Market)
-                ]
-                h4 [] [ str product.Name ]
-            ]
-        ]
-    ]
+    div
+        [ _class "single-products-catagory clearfix" ]
+        [ a
+              [ _href (sprintf "/product/%i" product.ProductId) ]
+              [ img [ _src product.Img; _alt "" ]
+                div
+                    [ _class "hover-content" ]
+                    [ div [ _class "line" ] []
+                      p [] [ str <| sprintf "%M %s" product.Price (marketToCurrency settings.Market) ]
+                      h4 [] [ str product.Name ] ] ] ]
 
 let isPartPaymentWidgetEnabledGlobally (partPaymentWidgetBundleUrl: string) =
     match partPaymentWidgetBundleUrl with
-        | null -> false
-        | "" -> false
-        | _ -> true
+    | null -> false
+    | "" -> false
+    | _ -> true
 
 [<RequireQualifiedAccess>]
 module Task =

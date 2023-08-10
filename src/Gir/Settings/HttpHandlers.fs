@@ -8,7 +8,12 @@ open Gir.Utils
 open Views
 
 
-let settingsHandler (partPaymentWidgetBundleUrl: string) (enabledMarkets: Market list) (next: HttpFunc) (ctx: HttpContext) =
+let settingsHandler
+    (partPaymentWidgetBundleUrl: string)
+    (enabledMarkets: Market list)
+    (next: HttpFunc)
+    (ctx: HttpContext)
+    =
     let cartState = Session.getCartState ctx
     let settings = Session.getSettings ctx
 
@@ -30,39 +35,30 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
 
         let formData =
             { ExtraCheckoutFlags =
-                  { DisableFocus = checkboxValue "disableFocus"
-                    BeforeSubmitCallbackEnabled = checkboxValue "beforeSubmitCallbackEnabled"
-                    DeliveryAddressChangedCallbackEnabled = checkboxValue "deliveryAddressChangedCallbackEnabled"
-                    CustomStyles = checkboxValue "customStyles"
-                    IncludePaymentFeeInTotalPrice = checkboxValue "includePaymentFeeInTotalPrice" }
+                { DisableFocus = checkboxValue "disableFocus"
+                  BeforeSubmitCallbackEnabled = checkboxValue "beforeSubmitCallbackEnabled"
+                  DeliveryAddressChangedCallbackEnabled = checkboxValue "deliveryAddressChangedCallbackEnabled"
+                  CustomStyles = checkboxValue "customStyles"
+                  IncludePaymentFeeInTotalPrice = checkboxValue "includePaymentFeeInTotalPrice" }
               ExtraInitSettings =
-                  { Language = getValue "language" |> stringToLanguage
-                    Mode = getValue "mode" |> stringToCheckoutMode
-                    DifferentDeliveryAddress =
-                        getValue "differentDeliveryAddress"
-                        |> stringToCheckboxState
-                    SelectedPaymentMethod = NotSelected
-                    DisplayItems = checkboxValue "displayItems"
-                    RecurringPayments =
-                        getValue "recurringPayments"
-                        |> stringToCheckboxState
-                    SmsNewsletterSubscription =
-                        getValue "smsNewsletterSubscription"
-                        |> stringToCheckboxState
-                    EmailNewsletterSubscription =
-                        getValue "emailNewsletterSubscription"
-                        |> stringToCheckboxState
-                    BackendNotification =
-                        getValue "completedNotificationUrl"
-                        |> stringToBackendNotificationState
-                    EnableB2BLink = checkboxValue "enableB2BLink"
-                    EnableCountrySelector = checkboxValue "enableCountrySelector"
-                    ShowThankYouPage = checkboxValue "showThankYouPage"
-                    AgeValidation = getValue "ageValidation" |> stringToAgeValidation }
+                { Language = getValue "language" |> stringToLanguage
+                  Mode = getValue "mode" |> stringToCheckoutMode
+                  DifferentDeliveryAddress = getValue "differentDeliveryAddress" |> stringToCheckboxState
+                  SelectedPaymentMethod = NotSelected
+                  DisplayItems = checkboxValue "displayItems"
+                  RecurringPayments = getValue "recurringPayments" |> stringToCheckboxState
+                  SmsNewsletterSubscription = getValue "smsNewsletterSubscription" |> stringToCheckboxState
+                  EmailNewsletterSubscription = getValue "emailNewsletterSubscription" |> stringToCheckboxState
+                  BackendNotification = getValue "completedNotificationUrl" |> stringToBackendNotificationState
+                  EnableB2BLink = checkboxValue "enableB2BLink"
+                  EnableCountrySelector = checkboxValue "enableCountrySelector"
+                  ShowThankYouPage = checkboxValue "showThankYouPage"
+                  AgeValidation = getValue "ageValidation" |> stringToAgeValidation }
               Market = getValue "market" |> stringToMarket
               OrderReference = getValue "orderReference"
-              PartPaymentWidgetSettings = { Enabled = checkboxValue "partPaymentWidgetEnabled"
-                                            CustomStyles = checkboxValue "partPaymentWidgetCustomStyles" } }
+              PartPaymentWidgetSettings =
+                { Enabled = checkboxValue "partPaymentWidgetEnabled"
+                  CustomStyles = checkboxValue "partPaymentWidgetCustomStyles" } }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx

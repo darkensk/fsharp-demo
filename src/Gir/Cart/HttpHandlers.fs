@@ -16,15 +16,14 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
     | Add p ->
         let currentItems = sessionCart.Items
 
-        let isInTheCart =
-            List.tryFind (fun i -> i.Id = p) currentItems
+        let isInTheCart = List.tryFind (fun i -> i.Id = p) currentItems
 
         match isInTheCart with
         | Some i ->
             let incrementQty changedItem currentItem =
                 if currentItem.Id = changedItem.Id then
                     { currentItem with
-                          Qty = currentItem.Qty + 1 }
+                        Qty = currentItem.Qty + 1 }
                 else
                     currentItem
 
@@ -41,7 +40,7 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
 
                 let newCart =
                     { sessionCart with
-                          Items = currentItems @ [ newItem ] }
+                        Items = currentItems @ [ newItem ] }
 
                 newCart
             | None -> sessionCart
@@ -49,15 +48,14 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
     | Remove p ->
         let currentItems = sessionCart.Items
 
-        let isInTheCart =
-            List.tryFind (fun i -> i.Id = p) currentItems
+        let isInTheCart = List.tryFind (fun i -> i.Id = p) currentItems
 
         match isInTheCart with
         | Some i ->
             let decrementQty changedItem currentItem =
                 if currentItem.Id = changedItem.Id then
                     { currentItem with
-                          Qty = currentItem.Qty - 1 }
+                        Qty = currentItem.Qty - 1 }
                 else
                     currentItem
 
@@ -68,7 +66,7 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
 
             let newCart =
                 { sessionCart with
-                      Items = newItemsWithoutZeroQ }
+                    Items = newItemsWithoutZeroQ }
 
             newCart
         | None -> sessionCart
@@ -88,12 +86,7 @@ let cartHandler
         let settings = Session.getSettings ctx
 
         if List.isEmpty cartState.Items then
-            return!
-                htmlView
-                    (cartView settings cartState checkoutFrontendBundleUrl ""
-                     <| getProducts ())
-                    next
-                    ctx
+            return! htmlView (cartView settings cartState checkoutFrontendBundleUrl "" <| getProducts ()) next ctx
         else
             let! partnerToken = getPartnerAccessToken settings.Market
 
