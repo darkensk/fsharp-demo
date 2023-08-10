@@ -15,7 +15,7 @@ type CompositionRoot =
       ApiPublicUrl: string
       EnabledMarkets: Market list
       PartPaymentWidgetBundle: string
-      GetPartPaymentWidgetToken: string -> Task<InitializePartPaymentWidgetResponse> }
+      GetPartPaymentWidgetToken: string -> Task<PartPaymentWidgetState> }
 
 let dummyProducts =
     let createProduct id name price img =

@@ -368,7 +368,7 @@ let rawCustomStyles =
 }
     """
 
-let partPaymentWidgetScriptView (partPaymentWidgetBundleUrl: string) (partPaymentWidgetSettings: PartPaymentWidgetSettings) (paymentWidgetState: InitializePartPaymentWidgetResponse option) = 
+let partPaymentWidgetScriptView (partPaymentWidgetBundleUrl: string) (partPaymentWidgetSettings: PartPaymentWidgetSettings) (paymentWidgetState: PartPaymentWidgetState option) = 
     match paymentWidgetState with
         | Some state -> 
                 let { PaymentId = paymentId; WidgetJwt = widgetJwt } = state
@@ -376,23 +376,20 @@ let partPaymentWidgetScriptView (partPaymentWidgetBundleUrl: string) (partPaymen
                 let bundleUrl = 
                     partPaymentWidgetBundleUrl + "?ts=" + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
                 
-                if isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl then
-                    if partPaymentWidgetSettings.CustomStyles then
-                        script [ _async 
-                                 _crossorigin "annonymous"
-                                 _src bundleUrl
-                                 _clientIdAttribute paymentId
-                                 _jwtTokenAttribute widgetJwt
-                                 _customStylesAttribute rawCustomStyles ] []
-                    else
-                        script [ _async 
-                                 _crossorigin "annonymous"
-                                 _src bundleUrl
-                                 _clientIdAttribute paymentId
-                                 _jwtTokenAttribute widgetJwt
-                                ] []
-                else 
-                    div [] []
+                if partPaymentWidgetSettings.CustomStyles then
+                    script [ _async 
+                             _crossorigin "annonymous"
+                             _src bundleUrl
+                             _clientIdAttribute paymentId
+                             _jwtTokenAttribute widgetJwt
+                             _customStylesAttribute rawCustomStyles ] []
+                else
+                    script [ _async 
+                             _crossorigin "annonymous"
+                             _src bundleUrl
+                             _clientIdAttribute paymentId
+                             _jwtTokenAttribute widgetJwt
+                            ] []
         | None -> 
             div [] []
 
@@ -453,7 +450,7 @@ let listView (settings: Settings) (cartState: CartState) (products: Product list
     [ listTemplate settings cartState products ]
     |> layout
 
-let detailTemplate (settings: Settings) (cartState: CartState) (product: Product) (partPaymentWidgetBundleUrl: string) (paymentWidgetState: InitializePartPaymentWidgetResponse option) =
+let detailTemplate (settings: Settings) (cartState: CartState) (product: Product) (partPaymentWidgetBundleUrl: string) (paymentWidgetState: PartPaymentWidgetState option) =
     div [] [
         div [ _class "main-content-wrapper d-flex clearfix" ] [
             div [ _class "mobile-nav" ] [
@@ -627,7 +624,7 @@ let detailTemplate (settings: Settings) (cartState: CartState) (product: Product
                                 if settings.PartPaymentWidgetSettings.Enabled then
                                     avardaPlacement [ _priceAttribute <| sprintf "%M" product.Price 
                                                       _currencyAttribute (marketToCurrency settings.Market)
-                                                      _languageAttribute "en" ] [str ""]
+                                                      _languageAttribute "en" ] [ str "" ]
                                 else 
                                     str ""
                             ]
@@ -641,5 +638,5 @@ let detailTemplate (settings: Settings) (cartState: CartState) (product: Product
         partPaymentWidgetScriptView partPaymentWidgetBundleUrl settings.PartPaymentWidgetSettings paymentWidgetState
     ]
 
-let productDetailView (settings: Settings) (cartState: CartState) (p: Product) (partPaymentWidgetBundleUrl: string) (paymentWidgetState: InitializePartPaymentWidgetResponse option) =
+let productDetailView (settings: Settings) (cartState: CartState) (p: Product) (partPaymentWidgetBundleUrl: string) (paymentWidgetState: PartPaymentWidgetState option) =
     [ detailTemplate settings cartState p partPaymentWidgetBundleUrl paymentWidgetState] |> layout

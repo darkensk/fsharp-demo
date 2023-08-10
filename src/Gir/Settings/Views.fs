@@ -152,7 +152,7 @@ let template (partPaymentWidgetBundleUrl: string) (enabledMarkets: Market list) 
         List.map (fun m -> (marketToString m, false)) enabledMarkets
 
     let partPaymentWidgetHelpText = 
-        if (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl) then None else Some "To enable Part Payment Widget add environment variable with PPW bundle url"
+        if (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl) then None else Some "Requires 'partPaymentWidgetBundleUrl' environment variable specified"
 
     div [] [
         div [ _class "search-wrapper section-padding-100" ] [

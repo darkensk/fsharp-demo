@@ -20,7 +20,7 @@ type CartState = { Items: CartItem list }
 
 type InitializePaymentResponse = { PurchaseId: string; Jwt: string }
 
-type InitializePartPaymentWidgetResponse = { PaymentId: string; WidgetJwt: string }
+type PartPaymentWidgetState = { PaymentId: string; WidgetJwt: string }
 
 type Language =
     | English

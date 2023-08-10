@@ -140,7 +140,7 @@ let settingsEncoder (settings: Settings) =
     |> Encode.toString 0
 
 
-let partPaymentWidgetStateEncoder (state: InitializePartPaymentWidgetResponse) =
+let partPaymentWidgetStateEncoder (state: PartPaymentWidgetState) =
     Encode.object [ "paymentId", Encode.string state.PaymentId
                     "widgetJwt", Encode.string state.WidgetJwt ]
     |> Encode.toString 0
