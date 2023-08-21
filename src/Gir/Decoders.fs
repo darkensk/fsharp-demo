@@ -148,4 +148,4 @@ let initPaymentWidgetDecoder (s: string) =
     | Ok v ->
         { PaymentId = v.PaymentId
           WidgetJwt = v.WidgetJwt }
-    | Error e -> failwithf "Cannot decode init part payment widget, error = %A" e
+    | Error e -> failwithf "Cannot decode init payment widget, error = %A" e
