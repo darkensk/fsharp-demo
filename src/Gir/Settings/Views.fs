@@ -125,7 +125,7 @@ let numberInput =
                         padding: 0 10px;"
 
 let template
-    (partPaymentWidgetBundleUrl: string)
+    (paymentWidgetBundleUrl: string)
     (enabledMarkets: Market list)
     (settings: Settings)
     (cartState: CartState)
@@ -135,16 +135,16 @@ let template
 
     let { ExtraInitSettings = initSettings
           ExtraCheckoutFlags = checkoutFlags
-          PartPaymentWidgetSettings = partPaymentWidgetSettings } =
+          PaymentWidgetSettings = paymentWidgetSettings } =
         settings
 
     let marketsOptions = List.map (fun m -> (marketToString m, false)) enabledMarkets
 
-    let partPaymentWidgetHelpText =
-        if (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl) then
+    let paymentWidgetHelpText =
+        if (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl) then
             None
         else
-            Some "Requires 'partPaymentWidgetBundleUrl' environment variable specified"
+            Some "Requires 'paymentWidgetBundleUrl' environment variable specified"
 
     div
         []
@@ -303,17 +303,17 @@ let template
                                             true
                                         div [] [ h3 [] [ str "Part Payment Widget" ] ]
                                         checkboxView
-                                            "partPaymentWidgetEnabled"
+                                            "paymentWidgetEnabled"
                                             "Enable Part Payment Widget"
-                                            partPaymentWidgetHelpText
-                                            partPaymentWidgetSettings.Enabled
-                                            (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl)
+                                            paymentWidgetHelpText
+                                            paymentWidgetSettings.Enabled
+                                            (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         checkboxView
-                                            "partPaymentWidgetCustomStyles"
+                                            "paymentWidgetCustomStyles"
                                             "Use Custom Styles in Part Payment Widget"
                                             None
-                                            partPaymentWidgetSettings.CustomStyles
-                                            (isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl)
+                                            paymentWidgetSettings.CustomStyles
+                                            (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         div
                                             [ _style
                                                   "display: flex; flex: 1; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 10px;" ]
@@ -331,10 +331,10 @@ let template
           footerView ]
 
 let settingsView
-    (partPaymentWidgetBundleUrl: string)
+    (paymentWidgetBundleUrl: string)
     (enabledMarkets: Market list)
     (settings: Settings)
     (cartState: CartState)
     =
-    [ template partPaymentWidgetBundleUrl enabledMarkets settings cartState ]
+    [ template paymentWidgetBundleUrl enabledMarkets settings cartState ]
     |> layout

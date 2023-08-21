@@ -1,4 +1,4 @@
-module Gir.Products.PartPaymentWidgetIntegration
+module Gir.Products.PaymentWidgetIntegration
 
 open FSharp.Data
 open FSharp.Control.Tasks
@@ -6,7 +6,7 @@ open Gir.Decoders
 open Gir.Utils
 
 
-let getPartPaymentWidgetToken (backendUrl: string) (partnerToken: string) =
+let getPaymentWidgetToken (backendUrl: string) (partnerToken: string) =
     task {
         let bearerString = "Bearer " + partnerToken
 
@@ -17,5 +17,5 @@ let getPartPaymentWidgetToken (backendUrl: string) (partnerToken: string) =
                 httpMethod = "GET"
             )
             |> Async.StartAsTask
-            |> Task.map initPartPaymentWidgetDecoder
+            |> Task.map initPaymentWidgetDecoder
     }

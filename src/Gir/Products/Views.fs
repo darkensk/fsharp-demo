@@ -368,10 +368,10 @@ let rawCustomStyles =
 }
     """
 
-let partPaymentWidgetScriptView
-    (partPaymentWidgetBundleUrl: string)
-    (partPaymentWidgetSettings: PartPaymentWidgetSettings)
-    (paymentWidgetState: PartPaymentWidgetState option)
+let paymentWidgetScriptView
+    (paymentWidgetBundleUrl: string)
+    (paymentWidgetSettings: PaymentWidgetSettings)
+    (paymentWidgetState: PaymentWidgetState option)
     =
     match paymentWidgetState with
     | Some state ->
@@ -380,11 +380,11 @@ let partPaymentWidgetScriptView
             state
 
         let bundleUrl =
-            partPaymentWidgetBundleUrl
+            paymentWidgetBundleUrl
             + "?ts="
             + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
 
-        if partPaymentWidgetSettings.CustomStyles then
+        if paymentWidgetSettings.CustomStyles then
             script
                 [ _async
                   _crossorigin "annonymous"
@@ -452,8 +452,8 @@ let detailTemplate
     (settings: Settings)
     (cartState: CartState)
     (product: Product)
-    (partPaymentWidgetBundleUrl: string)
-    (paymentWidgetState: PartPaymentWidgetState option)
+    (paymentWidgetBundleUrl: string)
+    (paymentWidgetState: PaymentWidgetState option)
     =
     div
         []
@@ -635,7 +635,7 @@ let detailTemplate
                                                           _class "btn amado-btn" ]
                                                         [ str "Add to cart" ] ]
                                               br []
-                                              if settings.PartPaymentWidgetSettings.Enabled then
+                                              if settings.PaymentWidgetSettings.Enabled then
                                                   avardaPlacement
                                                       [ _priceAttribute <| sprintf "%M" product.Price
                                                         _currencyAttribute (marketToCurrency settings.Market)
@@ -645,14 +645,14 @@ let detailTemplate
                                                   str "" ] ] ] ] ] ]
           subscribeSectionView
           footerView
-          partPaymentWidgetScriptView partPaymentWidgetBundleUrl settings.PartPaymentWidgetSettings paymentWidgetState ]
+          paymentWidgetScriptView paymentWidgetBundleUrl settings.PaymentWidgetSettings paymentWidgetState ]
 
 let productDetailView
     (settings: Settings)
     (cartState: CartState)
     (p: Product)
-    (partPaymentWidgetBundleUrl: string)
-    (paymentWidgetState: PartPaymentWidgetState option)
+    (paymentWidgetBundleUrl: string)
+    (paymentWidgetState: PaymentWidgetState option)
     =
-    [ detailTemplate settings cartState p partPaymentWidgetBundleUrl paymentWidgetState ]
+    [ detailTemplate settings cartState p paymentWidgetBundleUrl paymentWidgetState ]
     |> layout

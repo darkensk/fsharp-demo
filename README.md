@@ -16,7 +16,7 @@ Checkout 3.0 integration in F# + Giraffe
 
 - `checkoutFrontendBundleUrl` - Checkout 3.0 Frontend JS bundle url
 
-- `partPaymentWidgetBundleUrl` - ***NEW*** PartPayment Widget bundle url (optional)
+- `paymentWidgetBundleUrl` - ***NEW*** Payment Widget bundle url (optional)
 
 ### Available markets:
 

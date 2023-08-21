@@ -127,10 +127,10 @@ let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
           "customStyles", Encode.bool checkoutFlags.CustomStyles
           "includePaymentFeeInTotalPrice", Encode.bool checkoutFlags.IncludePaymentFeeInTotalPrice ]
 
-let partPaymentWidgetSettingsEncoder (partPaymentWidgetSettings: PartPaymentWidgetSettings) =
+let paymentWidgetSettingsEncoder (paymentWidgetSettings: PaymentWidgetSettings) =
     Encode.object
-        [ "enabled", Encode.bool partPaymentWidgetSettings.Enabled
-          "customStyles", Encode.bool partPaymentWidgetSettings.CustomStyles ]
+        [ "enabled", Encode.bool paymentWidgetSettings.Enabled
+          "customStyles", Encode.bool paymentWidgetSettings.CustomStyles ]
 
 let settingsEncoder (settings: Settings) =
     Encode.object
@@ -138,11 +138,11 @@ let settingsEncoder (settings: Settings) =
           "extraInitSettings", extraInitSettingsEncoderForSettings settings.ExtraInitSettings
           "market", settings.Market |> marketToString |> Encode.string
           "orderReference", Encode.string settings.OrderReference
-          "partPaymentWidgetSettings", partPaymentWidgetSettingsEncoder settings.PartPaymentWidgetSettings ]
+          "paymentWidgetSettings", paymentWidgetSettingsEncoder settings.PaymentWidgetSettings ]
     |> Encode.toString 0
 
 
-let partPaymentWidgetStateEncoder (state: PartPaymentWidgetState) =
+let paymentWidgetStateEncoder (state: PaymentWidgetState) =
     Encode.object
         [ "paymentId", Encode.string state.PaymentId
           "widgetJwt", Encode.string state.WidgetJwt ]

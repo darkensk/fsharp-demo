@@ -14,8 +14,8 @@ type CompositionRoot =
       ReclaimPurchaseToken: string -> string -> Task<string>
       ApiPublicUrl: string
       EnabledMarkets: Market list
-      PartPaymentWidgetBundle: string
-      GetPartPaymentWidgetToken: string -> Task<PartPaymentWidgetState> }
+      PaymentWidgetBundle: string
+      GetPaymentWidgetToken: string -> Task<PaymentWidgetState> }
 
 let dummyProducts =
     let createProduct id name price img =
@@ -96,6 +96,6 @@ module CompositionRoot =
           ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"]
           ApiPublicUrl = cfg.["apiPublicUrl"]
           EnabledMarkets = enabledMarkets
-          PartPaymentWidgetBundle = cfg.["partPaymentWidgetBundleUrl"]
-          GetPartPaymentWidgetToken =
-            Products.PartPaymentWidgetIntegration.getPartPaymentWidgetToken cfg.["checkoutBackendApiUrl"] }
+          PaymentWidgetBundle = cfg.["paymentWidgetBundleUrl"]
+          GetPaymentWidgetToken =
+            Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"] }

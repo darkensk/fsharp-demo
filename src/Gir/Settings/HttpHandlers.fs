@@ -9,7 +9,7 @@ open Views
 
 
 let settingsHandler
-    (partPaymentWidgetBundleUrl: string)
+    (paymentWidgetBundleUrl: string)
     (enabledMarkets: Market list)
     (next: HttpFunc)
     (ctx: HttpContext)
@@ -18,7 +18,7 @@ let settingsHandler
     let settings = Session.getSettings ctx
 
     (htmlView
-     <| settingsView partPaymentWidgetBundleUrl enabledMarkets settings cartState)
+     <| settingsView paymentWidgetBundleUrl enabledMarkets settings cartState)
         next
         ctx
 
@@ -56,9 +56,9 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                   AgeValidation = getValue "ageValidation" |> stringToAgeValidation }
               Market = getValue "market" |> stringToMarket
               OrderReference = getValue "orderReference"
-              PartPaymentWidgetSettings =
-                { Enabled = checkboxValue "partPaymentWidgetEnabled"
-                  CustomStyles = checkboxValue "partPaymentWidgetCustomStyles" } }
+              PaymentWidgetSettings =
+                { Enabled = checkboxValue "paymentWidgetEnabled"
+                  CustomStyles = checkboxValue "paymentWidgetCustomStyles" } }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx
