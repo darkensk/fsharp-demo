@@ -301,16 +301,16 @@ let template
                                             None
                                             checkoutFlags.IncludePaymentFeeInTotalPrice
                                             true
-                                        div [] [ h3 [] [ str "Part Payment Widget" ] ]
+                                        div [] [ h3 [] [ str "Payment Widget" ] ]
                                         checkboxView
                                             "paymentWidgetEnabled"
-                                            "Enable Part Payment Widget"
+                                            "Enable Payment Widget"
                                             paymentWidgetHelpText
                                             paymentWidgetSettings.Enabled
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         checkboxView
                                             "paymentWidgetCustomStyles"
-                                            "Use Custom Styles in Part Payment Widget"
+                                            "Use Custom Styles in Payment Widget"
                                             None
                                             paymentWidgetSettings.CustomStyles
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
