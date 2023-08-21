@@ -44,16 +44,16 @@ let webApp (root: CompositionRoot) =
                     root.GetPartnerAccessToken
                 >=> text "OK - Session Timed Out Callback Successfull"
                 route "/settings/"
-                >=> Settings.HttpHandlers.settingsHandler root.PartPaymentWidgetBundle root.EnabledMarkets
+                >=> Settings.HttpHandlers.settingsHandler root.PaymentWidgetBundle root.EnabledMarkets
                 subRoute
                     "/product"
                     (choose
                         [ subRoutef
                               "/%i"
                               (Products.HttpHandlers.detailHandler
-                                  root.GetPartPaymentWidgetToken
+                                  root.GetPaymentWidgetToken
                                   root.GetPartnerAccessToken
-                                  root.PartPaymentWidgetBundle
+                                  root.PaymentWidgetBundle
                                   root.GetProductById) ])
                 route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
                 subRoute

@@ -20,7 +20,7 @@ type CartState = { Items: CartItem list }
 
 type InitializePaymentResponse = { PurchaseId: string; Jwt: string }
 
-type PartPaymentWidgetState =
+type PaymentWidgetState =
     { PaymentId: string; WidgetJwt: string }
 
 type Language =
@@ -101,14 +101,14 @@ type Market =
     | Estonia
     | International
 
-type PartPaymentWidgetSettings = { Enabled: bool; CustomStyles: bool }
+type PaymentWidgetSettings = { Enabled: bool; CustomStyles: bool }
 
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
       ExtraInitSettings: ExtraInitSettings
       Market: Market
       OrderReference: string
-      PartPaymentWidgetSettings: PartPaymentWidgetSettings }
+      PaymentWidgetSettings: PaymentWidgetSettings }
 
 let languageToString =
     function
@@ -269,7 +269,7 @@ let defaultExtraInitSettings =
       ShowThankYouPage = true
       AgeValidation = Disabled }
 
-let defaultPartPaymentWidgetSettings: PartPaymentWidgetSettings =
+let defaultPaymentWidgetSettings: PaymentWidgetSettings =
     { Enabled = false
       CustomStyles = false }
 
@@ -278,7 +278,7 @@ let defaultSettings =
       ExtraInitSettings = defaultExtraInitSettings
       Market = Sweden
       OrderReference = "TEST-AVARDA-DEMO-SHOP"
-      PartPaymentWidgetSettings = defaultPartPaymentWidgetSettings }
+      PaymentWidgetSettings = defaultPaymentWidgetSettings }
 
 type ExtraIdentifiers = { OrderReference: string }
 

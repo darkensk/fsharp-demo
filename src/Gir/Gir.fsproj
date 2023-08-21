@@ -15,7 +15,7 @@
     <Compile Include="Utils.fs" />
     <Compile Include="Layout.fs" />
     <Compile Include="Products/Views.fs" />
-    <Compile Include="Products/PartPaymentWidgetIntegration.fs" />
+    <Compile Include="Products/PaymentWidgetIntegration.fs" />
     <Compile Include="Products/HttpHandlers.fs" />
     <Compile Include="Cart/Views.fs" />
     <Compile Include="Cart/CheckoutIntegration.fs" />

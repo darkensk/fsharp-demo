@@ -32,8 +32,8 @@ let productDiv (settings: Settings) (product: Product) =
                       p [] [ str <| sprintf "%M %s" product.Price (marketToCurrency settings.Market) ]
                       h4 [] [ str product.Name ] ] ] ]
 
-let isPartPaymentWidgetEnabledGlobally (partPaymentWidgetBundleUrl: string) =
-    match partPaymentWidgetBundleUrl with
+let isPaymentWidgetEnabledGlobally (paymentWidgetBundleUrl: string) =
+    match paymentWidgetBundleUrl with
     | null -> false
     | "" -> false
     | _ -> true
@@ -54,7 +54,7 @@ module Session =
     let private cartKey = "cart"
     let private purchaseKey = "purchaseId"
     let private settingsKey = "settings"
-    let private partPaymentWidgetStateKey = "partPaymentWidgetStateKey"
+    let private paymentWidgetStateKey = "paymentWidgetStateKey"
 
     let getCartState (ctx: HttpContext) =
         let currentCart =
@@ -79,13 +79,13 @@ module Session =
 
     let deletePurchaseId (ctx: HttpContext) = ctx.Session.Remove(purchaseKey)
 
-    let tryGetPartPaymentWidgeState (ctx: HttpContext) =
-        match ctx.Session.GetString(partPaymentWidgetStateKey) with
+    let tryGetPaymentWidgeState (ctx: HttpContext) =
+        match ctx.Session.GetString(paymentWidgetStateKey) with
         | null -> None
         | v -> Some v
 
-    let setPartPaymentWidgetState (ctx: HttpContext) (encodedPartPaymentWidgetState: string) =
-        ctx.Session.SetString(partPaymentWidgetStateKey, encodedPartPaymentWidgetState)
+    let setPaymentWidgetState (ctx: HttpContext) (encodedPaymentWidgetState: string) =
+        ctx.Session.SetString(paymentWidgetStateKey, encodedPaymentWidgetState)
 
     let getSettings (ctx: HttpContext) =
         match ctx.Session.GetString(settingsKey) with

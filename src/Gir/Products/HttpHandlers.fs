@@ -17,9 +17,9 @@ let listHandler (getProducts: unit -> Product list) (next: HttpFunc) (ctx: HttpC
     htmlView (listView settings cartState <| getProducts ()) next ctx
 
 let detailHandler
-    (getPartPaymentWidgetToken: string -> Task<PartPaymentWidgetState>)
+    (getPaymentWidgetToken: string -> Task<PaymentWidgetState>)
     (getPartnerAccessToken: Market -> Task<string>)
-    (partPaymentWidgetBundleUrl: string)
+    (paymentWidgetBundleUrl: string)
     (getProductById: int -> Product option)
     (id: int)
     (next: HttpFunc)
@@ -33,13 +33,13 @@ let detailHandler
         match getProductById id with
         | Some product ->
             if
-                isPartPaymentWidgetEnabledGlobally partPaymentWidgetBundleUrl
-                && settings.PartPaymentWidgetSettings.Enabled
+                isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl
+                && settings.PaymentWidgetSettings.Enabled
             then
-                match Session.tryGetPartPaymentWidgeState ctx with
-                | Some partPaymentWidgetState ->
-                    let decodedPartPaymentWidgetState =
-                        initPartPaymentWidgetDecoder partPaymentWidgetState
+                match Session.tryGetPaymentWidgeState ctx with
+                | Some paymentWidgetState ->
+                    let decodedPaymentWidgetState =
+                        initPaymentWidgetDecoder paymentWidgetState
 
                     return!
                         htmlView
@@ -47,16 +47,16 @@ let detailHandler
                                 settings
                                 cartState
                                 product
-                                partPaymentWidgetBundleUrl
-                                (Some decodedPartPaymentWidgetState))
+                                paymentWidgetBundleUrl
+                                (Some decodedPaymentWidgetState))
                             next
                             ctx
                 | None ->
                     let! partnerToken = getPartnerAccessToken settings.Market
 
-                    let! initPartPaymentWidgetResponse = getPartPaymentWidgetToken partnerToken
+                    let! initPaymentWidgetResponse = getPaymentWidgetToken partnerToken
 
-                    Session.setPartPaymentWidgetState ctx (partPaymentWidgetStateEncoder initPartPaymentWidgetResponse)
+                    Session.setPaymentWidgetState ctx (paymentWidgetStateEncoder initPaymentWidgetResponse)
 
                     return!
                         htmlView
@@ -64,11 +64,11 @@ let detailHandler
                                 settings
                                 cartState
                                 product
-                                partPaymentWidgetBundleUrl
-                                (Some initPartPaymentWidgetResponse))
+                                paymentWidgetBundleUrl
+                                (Some initPaymentWidgetResponse))
                             next
                             ctx
             else
-                return! htmlView (productDetailView settings cartState product partPaymentWidgetBundleUrl None) next ctx
+                return! htmlView (productDetailView settings cartState product paymentWidgetBundleUrl None) next ctx
         | None -> return! (setStatusCode 404 >=> text "Not Found") next ctx
     }

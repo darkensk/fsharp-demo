@@ -92,7 +92,7 @@ let extraInitSettingsDecoder =
           ShowThankYouPage = get.Required.Field "showThankYouPage" Decode.bool
           AgeValidation = (get.Required.Field "ageValidation" Decode.string) |> stringToAgeValidation })
 
-let partPaymentWidgetSettingsDecoder =
+let paymentWidgetSettingsDecoder =
     Decode.object (fun get ->
         { Enabled = get.Required.Field "enabled" Decode.bool
           CustomStyles = get.Required.Field "customStyles" Decode.bool })
@@ -105,7 +105,7 @@ let decodeSettings =
           OrderReference =
             (get.Optional.Field "orderReference" Decode.string)
             |> Option.defaultValue defaultSettings.OrderReference
-          PartPaymentWidgetSettings = get.Required.Field "partPaymentWidgetSettings" partPaymentWidgetSettingsDecoder })
+          PaymentWidgetSettings = get.Required.Field "paymentWidgetSettings" paymentWidgetSettingsDecoder })
 
 let settingsDecoder (s: string) =
     match Decode.fromString decodeSettings s with
@@ -114,7 +114,7 @@ let settingsDecoder (s: string) =
           ExtraInitSettings = v.ExtraInitSettings
           Market = v.Market
           OrderReference = v.OrderReference
-          PartPaymentWidgetSettings = v.PartPaymentWidgetSettings }
+          PaymentWidgetSettings = v.PaymentWidgetSettings }
     | Error e -> failwithf "Cannot decode settings, error = %A" e
 
 
@@ -138,13 +138,13 @@ let getPaymentStatusDecoder (s: string) =
     | Error e -> failwithf "Cannot decode get payment status, error = %A" e
 
 
-let initPartPaymentWidgetPayloadDecoder =
+let initPaymentWidgetPayloadDecoder =
     Decode.object (fun get ->
         { PaymentId = get.Required.Field "paymentId" Decode.string
           WidgetJwt = get.Required.Field "widgetJwt" Decode.string })
 
-let initPartPaymentWidgetDecoder (s: string) =
-    match Decode.fromString initPartPaymentWidgetPayloadDecoder s with
+let initPaymentWidgetDecoder (s: string) =
+    match Decode.fromString initPaymentWidgetPayloadDecoder s with
     | Ok v ->
         { PaymentId = v.PaymentId
           WidgetJwt = v.WidgetJwt }
