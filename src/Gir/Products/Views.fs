@@ -7,19 +7,17 @@ open Gir.Utils
 
 
 
-let avardaPlacement = tag "avarda-placement"
+let avardaPaymentWidget = tag "avarda-payment-widget"
 
 let _priceAttribute = attr "price"
 
-let _currencyAttribute = attr "currency"
-
 let _languageAttribute = attr "lang"
 
-let _jwtTokenAttribute = attr "jwt-token"
+let _widgetJwtAttribute = attr "data-widget-jwt"
 
-let _clientIdAttribute = attr "clientId"
+let _paymentIdAttribute = attr "data-payment-id"
 
-let _customStylesAttribute = attr "custom-styles"
+let _customStylesAttribute = attr "data-custom-styles"
 
 let rawCustomStyles =
     """
@@ -389,8 +387,8 @@ let paymentWidgetScriptView
                 [ _async
                   _crossorigin "annonymous"
                   _src bundleUrl
-                  _clientIdAttribute paymentId
-                  _jwtTokenAttribute widgetJwt
+                  _paymentIdAttribute paymentId
+                  _widgetJwtAttribute widgetJwt
                   _customStylesAttribute rawCustomStyles ]
                 []
         else
@@ -398,8 +396,8 @@ let paymentWidgetScriptView
                 [ _async
                   _crossorigin "annonymous"
                   _src bundleUrl
-                  _clientIdAttribute paymentId
-                  _jwtTokenAttribute widgetJwt ]
+                  _paymentIdAttribute paymentId
+                  _widgetJwtAttribute widgetJwt ]
                 []
     | None -> div [] []
 
@@ -636,9 +634,8 @@ let detailTemplate
                                                         [ str "Add to cart" ] ]
                                               br []
                                               if settings.PaymentWidgetSettings.Enabled then
-                                                  avardaPlacement
+                                                  avardaPaymentWidget
                                                       [ _priceAttribute <| sprintf "%M" product.Price
-                                                        _currencyAttribute (marketToCurrency settings.Market)
                                                         _languageAttribute "en" ]
                                                       [ str "" ]
                                               else
