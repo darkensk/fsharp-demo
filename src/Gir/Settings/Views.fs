@@ -336,5 +336,4 @@ let settingsView
     (settings: Settings)
     (cartState: CartState)
     =
-    [ template paymentWidgetBundleUrl enabledMarkets settings cartState ]
-    |> layout
+    [ template paymentWidgetBundleUrl enabledMarkets settings cartState ] |> layout

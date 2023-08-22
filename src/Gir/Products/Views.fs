@@ -446,6 +446,51 @@ let listTemplate (settings: Settings) (cartState: CartState) (productList: Produ
 let listView (settings: Settings) (cartState: CartState) (products: Product list) =
     [ listTemplate settings cartState products ] |> layout
 
+
+let languageSelectView =
+    details
+        []
+        [ summary [ _class "select-language-summary" ] [ str "Select language of Payment Widget" ]
+          div
+              [ _class "select-language-container" ]
+              [ button
+                    [ _class "select-flag"
+                      _id "flag-en"
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'en');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/gb.svg"
+                            _alt "English language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-se"
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'sv');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/se.svg"
+                            _alt "Swedish language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-no"
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'nb');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/no.svg"
+                            _alt "Norwegian language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-fi"
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'fi');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/fi.svg"
+                            _alt "Finnish language"
+                            _ariaHidden "true" ] ] ] ]
+
+
 let detailTemplate
     (settings: Settings)
     (cartState: CartState)
@@ -453,6 +498,9 @@ let detailTemplate
     (paymentWidgetBundleUrl: string)
     (paymentWidgetState: PaymentWidgetState option)
     =
+    let selectedLanguageIsoCode =
+        settings.ExtraInitSettings.Language |> languageToIsoCode
+
     div
         []
         [ div
@@ -634,10 +682,13 @@ let detailTemplate
                                                         [ str "Add to cart" ] ]
                                               br []
                                               if settings.PaymentWidgetSettings.Enabled then
-                                                  avardaPaymentWidget
-                                                      [ _priceAttribute <| sprintf "%M" product.Price
-                                                        _languageAttribute "en" ]
-                                                      [ str "" ]
+                                                  div
+                                                      []
+                                                      [ avardaPaymentWidget
+                                                            [ _priceAttribute <| sprintf "%M" product.Price
+                                                              _languageAttribute selectedLanguageIsoCode ]
+                                                            [ str "" ]
+                                                        languageSelectView ]
                                               else
                                                   str "" ] ] ] ] ] ]
           subscribeSectionView

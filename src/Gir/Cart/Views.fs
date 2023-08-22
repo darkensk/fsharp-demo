@@ -98,6 +98,50 @@ let cartSummaryView (settings: Settings) (cartState: CartState) =
                     [ a [ _href "#checkout-form"; _class "btn amado-btn mb-15" ] [ str "Checkout" ]
                       a [ _href "/cart/clear"; _class "btn amado-btn active mb-15" ] [ str "Clear Cart" ] ] ] ]
 
+let languageSelectView =
+    details
+        []
+        [ summary [ _class "select-language-summary" ] [ str "Select language of Checkout" ]
+          div
+              [ _class "select-language-container" ]
+              [ button
+                    [ _class "select-flag"
+                      _id "flag-en"
+                      _onclick "avardaCheckout.changeLanguage('English');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/gb.svg"
+                            _alt "English language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-se"
+                      _onclick "avardaCheckout.changeLanguage('Swedish');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/se.svg"
+                            _alt "Swedish language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-no"
+                      _onclick "avardaCheckout.changeLanguage('Norwegian');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/no.svg"
+                            _alt "Norwegian language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-fi"
+                      _onclick "avardaCheckout.changeLanguage('Finnish');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/fi.svg"
+                            _alt "Finnish language"
+                            _ariaHidden "true" ] ] ] ]
+
+
 let template
     (settings: Settings)
     (cartState: CartState)
@@ -180,7 +224,8 @@ let template
                                              cartSummaryView settings cartState
                                              div
                                                  [ _class "col-12 col-lg-8" ]
-                                                 [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
+                                                 [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken
+                                                   languageSelectView ] ]) ] ] ]
                 subscribeSectionView
                 footerView ] ]
 

@@ -38,8 +38,7 @@ let detailHandler
             then
                 match Session.tryGetPaymentWidgeState ctx with
                 | Some paymentWidgetState ->
-                    let decodedPaymentWidgetState =
-                        initPaymentWidgetDecoder paymentWidgetState
+                    let decodedPaymentWidgetState = initPaymentWidgetDecoder paymentWidgetState
 
                     return!
                         htmlView

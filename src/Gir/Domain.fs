@@ -123,6 +123,19 @@ let languageToString =
     | Polish -> "Polish"
     | Latvian -> "Latvian"
 
+let languageToIsoCode =
+    function
+    | English -> "en"
+    | Swedish -> "sv"
+    | Finnish -> "fi"
+    | Norwegian -> "nb"
+    | Estonian -> "et"
+    | Danish -> "da"
+    | Slovak -> "sk"
+    | Czech -> "cs"
+    | Polish -> "pl"
+    | Latvian -> "lv"
+
 
 let stringToLanguage =
     function

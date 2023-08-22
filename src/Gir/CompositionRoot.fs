@@ -97,5 +97,4 @@ module CompositionRoot =
           ApiPublicUrl = cfg.["apiPublicUrl"]
           EnabledMarkets = enabledMarkets
           PaymentWidgetBundle = cfg.["paymentWidgetBundleUrl"]
-          GetPaymentWidgetToken =
-            Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"] }
+          GetPaymentWidgetToken = Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"] }

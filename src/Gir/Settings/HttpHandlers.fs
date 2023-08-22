@@ -8,12 +8,7 @@ open Gir.Utils
 open Views
 
 
-let settingsHandler
-    (paymentWidgetBundleUrl: string)
-    (enabledMarkets: Market list)
-    (next: HttpFunc)
-    (ctx: HttpContext)
-    =
+let settingsHandler (paymentWidgetBundleUrl: string) (enabledMarkets: Market list) (next: HttpFunc) (ctx: HttpContext) =
     let cartState = Session.getCartState ctx
     let settings = Session.getSettings ctx
 
