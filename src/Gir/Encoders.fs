@@ -2,6 +2,7 @@ module Gir.Encoders
 
 open Thoth.Json.Net
 open Domain
+open System
 
 
 let getPartnerTokenPayloadEncoder (clientId: string) (clientSecret: string) =
@@ -28,12 +29,16 @@ let cartEncoder (cartState: CartState) =
     |> Encode.toString 0
 
 let paymentItemEncoder (productDetail: Product) =
+
+    let productTax = (productDetail.Price * 0.2M)
+    let roundedProductTax = Math.Round(productTax, 2)
+
     Encode.object
         [ "description", Encode.string productDetail.Name
           "notes", Encode.string "-"
           "amount", Encode.decimal productDetail.Price
           "taxCode", Encode.string "20%"
-          "taxAmount", Encode.decimal <| productDetail.Price * 0.2M ]
+          "taxAmount", Encode.decimal roundedProductTax ]
 
 let languageEncoder = languageToString >> Encode.string
 
@@ -125,7 +130,11 @@ let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
           "beforeSubmitCallbackEnabled", Encode.bool checkoutFlags.BeforeSubmitCallbackEnabled
           "deliveryAddressChangedCallbackEnabled", Encode.bool checkoutFlags.DeliveryAddressChangedCallbackEnabled
           "customStyles", Encode.bool checkoutFlags.CustomStyles
-          "includePaymentFeeInTotalPrice", Encode.bool checkoutFlags.IncludePaymentFeeInTotalPrice ]
+          "includePaymentFeeInTotalPrice", Encode.bool checkoutFlags.IncludePaymentFeeInTotalPrice
+          "shippingOptionChangedCallbackEnabled", Encode.bool checkoutFlags.ShippingOptionChangedCallbackEnabled
+          "paymentMethodChangedCallbackEnabled", Encode.bool checkoutFlags.PaymentMethodChangedCallbackEnabled
+          "modeChangedCallbackEnabled", Encode.bool checkoutFlags.ModeChangedCallbackEnabled
+          "hideAvardaLogo", Encode.bool checkoutFlags.HideAvardaLogo ]
 
 let paymentWidgetSettingsEncoder (paymentWidgetSettings: PaymentWidgetSettings) =
     Encode.object

@@ -87,7 +87,11 @@ type ExtraCheckoutFlags =
       BeforeSubmitCallbackEnabled: bool
       DeliveryAddressChangedCallbackEnabled: bool
       CustomStyles: bool
-      IncludePaymentFeeInTotalPrice: bool }
+      IncludePaymentFeeInTotalPrice: bool
+      ShippingOptionChangedCallbackEnabled: bool
+      PaymentMethodChangedCallbackEnabled: bool
+      ModeChangedCallbackEnabled: bool
+      HideAvardaLogo: bool }
 
 type Market =
     | Sweden
@@ -265,8 +269,26 @@ let defaultExtraCheckoutFlags =
       BeforeSubmitCallbackEnabled = false
       DeliveryAddressChangedCallbackEnabled = false
       CustomStyles = false
-      IncludePaymentFeeInTotalPrice = false }
+      IncludePaymentFeeInTotalPrice = false
+      ShippingOptionChangedCallbackEnabled = false
+      PaymentMethodChangedCallbackEnabled = false
+      ModeChangedCallbackEnabled = false
+      HideAvardaLogo = false }
 
+
+//  Email invoice - Checkbox
+//     "termsAndConditionsUrl": "string",
+// "integrityConditionsUrl": "string",
+// hideUnsupportedRecurringPaymentMethods bool
+// "smsNewsletterSubscriptionText": "string",
+// "emailNewsletterSubscriptionText": "string",
+// skipEmailZipEntry
+//     "invoicingCountries": [
+//   "AF"
+// ],
+// "deliveryCountries": [
+//   "AF"
+// ]
 let defaultExtraInitSettings =
     { Language = English
       Mode = B2C

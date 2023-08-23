@@ -301,6 +301,30 @@ let template
                                             None
                                             checkoutFlags.IncludePaymentFeeInTotalPrice
                                             true
+                                        checkboxView
+                                            "shippingOptionChangedCallbackEnabled"
+                                            "Shipping Option Changed Callback Enabled"
+                                            None
+                                            checkoutFlags.ShippingOptionChangedCallbackEnabled
+                                            true
+                                        checkboxView
+                                            "paymentMethodChangedCallbackEnabled"
+                                            "Payment Method Changed Callback Enabled"
+                                            None
+                                            checkoutFlags.PaymentMethodChangedCallbackEnabled
+                                            true
+                                        checkboxView
+                                            "modeChangedCallbackEnabled"
+                                            "Mode Changed Callback Enabled"
+                                            None
+                                            checkoutFlags.ModeChangedCallbackEnabled
+                                            true
+                                        checkboxView
+                                            "hideAvardaLogo"
+                                            "Hide Avarda logo"
+                                            None
+                                            checkoutFlags.HideAvardaLogo
+                                            true
                                         div [] [ h3 [] [ str "Payment Widget" ] ]
                                         checkboxView
                                             "paymentWidgetEnabled"

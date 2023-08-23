@@ -64,7 +64,11 @@ let extraCheckoutFlagsDecoder =
           DeliveryAddressChangedCallbackEnabled =
             get.Required.Field "deliveryAddressChangedCallbackEnabled" Decode.bool
           CustomStyles = get.Required.Field "customStyles" Decode.bool
-          IncludePaymentFeeInTotalPrice = get.Required.Field "includePaymentFeeInTotalPrice" Decode.bool })
+          IncludePaymentFeeInTotalPrice = get.Required.Field "includePaymentFeeInTotalPrice" Decode.bool
+          ShippingOptionChangedCallbackEnabled = get.Required.Field "shippingOptionChangedCallbackEnabled" Decode.bool
+          PaymentMethodChangedCallbackEnabled = get.Required.Field "paymentMethodChangedCallbackEnabled" Decode.bool
+          ModeChangedCallbackEnabled = get.Required.Field "modeChangedCallbackEnabled" Decode.bool
+          HideAvardaLogo = get.Required.Field "hideAvardaLogo" Decode.bool })
 
 let extraInitSettingsDecoder =
     Decode.object (fun get ->

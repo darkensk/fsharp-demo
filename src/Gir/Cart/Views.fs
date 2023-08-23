@@ -17,14 +17,18 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
                    [ _type "application/javascript" ]
                    [ rawText
                      <| sprintf
-                         """initCheckout("%s", "%s", %b, %b, %b, %b, %b);"""
+                         """initCheckout("%s", "%s", %b, %b, %b, %b, %b, %b, %b, %b, %b);"""
                          checkoutFrontendBundleUrl
                          purchaseToken
                          settings.ExtraCheckoutFlags.DisableFocus
                          settings.ExtraCheckoutFlags.CustomStyles
                          settings.ExtraCheckoutFlags.BeforeSubmitCallbackEnabled
                          settings.ExtraCheckoutFlags.DeliveryAddressChangedCallbackEnabled
-                         settings.ExtraCheckoutFlags.IncludePaymentFeeInTotalPrice ] ])
+                         settings.ExtraCheckoutFlags.IncludePaymentFeeInTotalPrice
+                         settings.ExtraCheckoutFlags.ShippingOptionChangedCallbackEnabled
+                         settings.ExtraCheckoutFlags.PaymentMethodChangedCallbackEnabled
+                         settings.ExtraCheckoutFlags.ModeChangedCallbackEnabled
+                         settings.ExtraCheckoutFlags.HideAvardaLogo ] ])
 
 let cartItemView (settings: Settings) (cartItem: CartItem) =
     tr
@@ -74,7 +78,7 @@ let cartSummaryView (settings: Settings) (cartState: CartState) =
     let subTotal =
         List.fold (fun acc x -> acc + (decimal x.Qty * x.ProductDetail.Price)) 0M cartState.Items
 
-    let subTotalString = sprintf "\"%M %s\"" subTotal (marketToCurrency settings.Market)
+    let subTotalString = sprintf "%M %s" subTotal (marketToCurrency settings.Market)
 
     div
         [ _class "col-12 col-lg-4" ]
