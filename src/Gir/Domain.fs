@@ -80,7 +80,20 @@ type ExtraInitSettings =
       EnableB2BLink: bool
       EnableCountrySelector: bool
       ShowThankYouPage: bool
-      AgeValidation: AgeValidation }
+      AgeValidation: AgeValidation
+      EmailInvoice: CheckboxState
+      UseCustomTermsAndConditionsUrl: bool
+      UseCustomIntegrityConditionsUrl: bool
+      HideUnsupportedRecurringPaymentMethods: bool
+      UseCustomSmsNewsletterSubscriptionText: bool
+      UseCustomEmailNewsletterSubscriptionText: bool
+      SkipEmailZipEntry: bool }
+//     "invoicingCountries": [
+//   "AF"
+// ],
+// "deliveryCountries": [
+//   "AF"
+// ]
 
 type ExtraCheckoutFlags =
     { DisableFocus: bool
@@ -276,19 +289,6 @@ let defaultExtraCheckoutFlags =
       HideAvardaLogo = false }
 
 
-//  Email invoice - Checkbox
-//     "termsAndConditionsUrl": "string",
-// "integrityConditionsUrl": "string",
-// hideUnsupportedRecurringPaymentMethods bool
-// "smsNewsletterSubscriptionText": "string",
-// "emailNewsletterSubscriptionText": "string",
-// skipEmailZipEntry
-//     "invoicingCountries": [
-//   "AF"
-// ],
-// "deliveryCountries": [
-//   "AF"
-// ]
 let defaultExtraInitSettings =
     { Language = English
       Mode = B2C
@@ -302,7 +302,14 @@ let defaultExtraInitSettings =
       EnableB2BLink = false
       EnableCountrySelector = false
       ShowThankYouPage = true
-      AgeValidation = Disabled }
+      AgeValidation = Disabled
+      EmailInvoice = Hidden
+      UseCustomTermsAndConditionsUrl = true
+      UseCustomIntegrityConditionsUrl = true
+      HideUnsupportedRecurringPaymentMethods = false
+      UseCustomSmsNewsletterSubscriptionText = false
+      UseCustomEmailNewsletterSubscriptionText = false
+      SkipEmailZipEntry = false }
 
 let defaultPaymentWidgetSettings: PaymentWidgetSettings =
     { Enabled = false

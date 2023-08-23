@@ -275,6 +275,50 @@ let template
                                             (initSettings.AgeValidation |> ageValidationToString)
                                             true
                                             (Some("0", "100"))
+                                        selectView
+                                            "emailInvoice"
+                                            "Email Invoice"
+                                            checkboxStateOptions
+                                            (checkboxStateToString initSettings.EmailInvoice)
+                                            true
+                                        checkboxView
+                                            "useCustomTermsAndConditionsUrl"
+                                            "Use custom Terms and Conditions url"
+                                            None
+                                            initSettings.UseCustomTermsAndConditionsUrl
+                                            true
+                                        checkboxView
+                                            "useCustomIntegrityConditionsUrl"
+                                            "Use custom Integrity Policy url"
+                                            None
+                                            initSettings.UseCustomIntegrityConditionsUrl
+                                            true
+                                        checkboxView
+                                            "hideUnsupportedRecurringPaymentMethods"
+                                            "Hide payment methods that are not eligible for recurring payments"
+                                            None
+                                            initSettings.HideUnsupportedRecurringPaymentMethods
+                                            false
+                                        checkboxView
+                                            "useCustomSmsNewsletterSubscriptionText"
+                                            "Replace label for SMS newsletter"
+                                            (Some
+                                                "Requires SMS newsletter displayed. Label will be replaced with 'Custom SMS Subscription label'")
+                                            initSettings.UseCustomSmsNewsletterSubscriptionText
+                                            true
+                                        checkboxView
+                                            "useCustomEmailNewsletterSubscriptionText"
+                                            "Raplace label for email newsletter"
+                                            (Some
+                                                "Requires Email newsletter displayed. Label will be replaced with 'Custom Email Subscription label'")
+                                            initSettings.UseCustomEmailNewsletterSubscriptionText
+                                            true
+                                        checkboxView
+                                            "skipEmailZipEntry"
+                                            "Skip email zip entry step"
+                                            None
+                                            initSettings.SkipEmailZipEntry
+                                            true
                                         div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
                                         checkboxView "disableFocus" "Disable Focus" None checkoutFlags.DisableFocus true
                                         checkboxView
