@@ -61,13 +61,7 @@ let headerView (cartState: CartState) =
                             _src "/img/core-img/settings.png"
                             _alt "" ]
                       str "Settings" ]
-                a [ _href "#"; _class "search-nav" ] [ img [ _src "/img/core-img/search.png"; _alt "" ]; str "Search" ] ]
-          div
-              [ _class "social-info d-flex justify-content-between" ]
-              [ a [ _href "#" ] [ i [ _class "fa fa-pinterest"; _ariaHidden "true" ] [] ]
-                a [ _href "#" ] [ i [ _class "fa fa-instagram"; _ariaHidden "true" ] [] ]
-                a [ _href "#" ] [ i [ _class "fa fa-facebook"; _ariaHidden "true" ] [] ]
-                a [ _href "#" ] [ i [ _class "fa fa-twitter"; _ariaHidden "true" ] [] ] ] ]
+                a [ _href "#"; _class "search-nav" ] [ img [ _src "/img/core-img/search.png"; _alt "" ]; str "Search" ] ] ]
 
 let footerView =
     footer

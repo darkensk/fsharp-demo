@@ -8,12 +8,7 @@ open Gir.Utils
 open Views
 
 
-let settingsHandler
-    (paymentWidgetBundleUrl: string)
-    (enabledMarkets: Market list)
-    (next: HttpFunc)
-    (ctx: HttpContext)
-    =
+let settingsHandler (paymentWidgetBundleUrl: string) (enabledMarkets: Market list) (next: HttpFunc) (ctx: HttpContext) =
     let cartState = Session.getCartState ctx
     let settings = Session.getSettings ctx
 
@@ -39,7 +34,11 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                   BeforeSubmitCallbackEnabled = checkboxValue "beforeSubmitCallbackEnabled"
                   DeliveryAddressChangedCallbackEnabled = checkboxValue "deliveryAddressChangedCallbackEnabled"
                   CustomStyles = checkboxValue "customStyles"
-                  IncludePaymentFeeInTotalPrice = checkboxValue "includePaymentFeeInTotalPrice" }
+                  IncludePaymentFeeInTotalPrice = checkboxValue "includePaymentFeeInTotalPrice"
+                  ShippingOptionChangedCallbackEnabled = checkboxValue "shippingOptionChangedCallbackEnabled"
+                  PaymentMethodChangedCallbackEnabled = checkboxValue "paymentMethodChangedCallbackEnabled"
+                  ModeChangedCallbackEnabled = checkboxValue "modeChangedCallbackEnabled"
+                  HideAvardaLogo = checkboxValue "hideAvardaLogo" }
               ExtraInitSettings =
                 { Language = getValue "language" |> stringToLanguage
                   Mode = getValue "mode" |> stringToCheckoutMode
@@ -53,7 +52,14 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                   EnableB2BLink = checkboxValue "enableB2BLink"
                   EnableCountrySelector = checkboxValue "enableCountrySelector"
                   ShowThankYouPage = checkboxValue "showThankYouPage"
-                  AgeValidation = getValue "ageValidation" |> stringToAgeValidation }
+                  AgeValidation = getValue "ageValidation" |> stringToAgeValidation
+                  EmailInvoice = getValue "emailInvoice" |> stringToCheckboxState
+                  UseCustomTermsAndConditionsUrl = checkboxValue "useCustomTermsAndConditionsUrl"
+                  UseCustomIntegrityConditionsUrl = checkboxValue "useCustomIntegrityConditionsUrl"
+                  HideUnsupportedRecurringPaymentMethods = checkboxValue "hideUnsupportedRecurringPaymentMethods"
+                  UseCustomSmsNewsletterSubscriptionText = checkboxValue "useCustomSmsNewsletterSubscriptionText"
+                  UseCustomEmailNewsletterSubscriptionText = checkboxValue "useCustomEmailNewsletterSubscriptionText"
+                  SkipEmailZipEntry = checkboxValue "skipEmailZipEntry" }
               Market = getValue "market" |> stringToMarket
               OrderReference = getValue "orderReference"
               PaymentWidgetSettings =

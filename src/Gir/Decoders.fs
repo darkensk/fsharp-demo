@@ -64,7 +64,11 @@ let extraCheckoutFlagsDecoder =
           DeliveryAddressChangedCallbackEnabled =
             get.Required.Field "deliveryAddressChangedCallbackEnabled" Decode.bool
           CustomStyles = get.Required.Field "customStyles" Decode.bool
-          IncludePaymentFeeInTotalPrice = get.Required.Field "includePaymentFeeInTotalPrice" Decode.bool })
+          IncludePaymentFeeInTotalPrice = get.Required.Field "includePaymentFeeInTotalPrice" Decode.bool
+          ShippingOptionChangedCallbackEnabled = get.Required.Field "shippingOptionChangedCallbackEnabled" Decode.bool
+          PaymentMethodChangedCallbackEnabled = get.Required.Field "paymentMethodChangedCallbackEnabled" Decode.bool
+          ModeChangedCallbackEnabled = get.Required.Field "modeChangedCallbackEnabled" Decode.bool
+          HideAvardaLogo = get.Required.Field "hideAvardaLogo" Decode.bool })
 
 let extraInitSettingsDecoder =
     Decode.object (fun get ->
@@ -90,7 +94,17 @@ let extraInitSettingsDecoder =
           EnableB2BLink = get.Required.Field "enableB2BLink" Decode.bool
           EnableCountrySelector = get.Required.Field "enableCountrySelector" Decode.bool
           ShowThankYouPage = get.Required.Field "showThankYouPage" Decode.bool
-          AgeValidation = (get.Required.Field "ageValidation" Decode.string) |> stringToAgeValidation })
+          AgeValidation = (get.Required.Field "ageValidation" Decode.string) |> stringToAgeValidation
+          EmailInvoice = (get.Required.Field "emailInvoice" Decode.string) |> stringToCheckboxState
+          UseCustomTermsAndConditionsUrl = get.Required.Field "useCustomTermsAndConditionsUrl" Decode.bool
+          UseCustomIntegrityConditionsUrl = get.Required.Field "useCustomIntegrityConditionsUrl" Decode.bool
+          HideUnsupportedRecurringPaymentMethods =
+            get.Required.Field "hideUnsupportedRecurringPaymentMethods" Decode.bool
+          UseCustomSmsNewsletterSubscriptionText =
+            get.Required.Field "useCustomSmsNewsletterSubscriptionText" Decode.bool
+          UseCustomEmailNewsletterSubscriptionText =
+            get.Required.Field "useCustomEmailNewsletterSubscriptionText" Decode.bool
+          SkipEmailZipEntry = get.Required.Field "skipEmailZipEntry" Decode.bool })
 
 let paymentWidgetSettingsDecoder =
     Decode.object (fun get ->

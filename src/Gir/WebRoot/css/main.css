@@ -33,3 +33,33 @@ input[type="number"] {
 #cart-main-content-wrapper {
   z-index: 100;
 }
+
+.flag {
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
+}
+
+.select-flag {
+  all: unset;
+  cursor: pointer;
+}
+
+.select-language-container {
+  display: flex;
+  padding-top: 2em;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.select-language-summary {
+  color: #6b6b6b;
+  line-height: 2.1;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: helveticaneuemedium;
+}
+
+details:not([open])>div {
+  display: none;
+}

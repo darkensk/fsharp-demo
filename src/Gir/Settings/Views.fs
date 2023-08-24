@@ -275,6 +275,50 @@ let template
                                             (initSettings.AgeValidation |> ageValidationToString)
                                             true
                                             (Some("0", "100"))
+                                        selectView
+                                            "emailInvoice"
+                                            "Email Invoice"
+                                            checkboxStateOptions
+                                            (checkboxStateToString initSettings.EmailInvoice)
+                                            true
+                                        checkboxView
+                                            "useCustomTermsAndConditionsUrl"
+                                            "Use custom Terms and Conditions url"
+                                            None
+                                            initSettings.UseCustomTermsAndConditionsUrl
+                                            true
+                                        checkboxView
+                                            "useCustomIntegrityConditionsUrl"
+                                            "Use custom Integrity Policy url"
+                                            None
+                                            initSettings.UseCustomIntegrityConditionsUrl
+                                            true
+                                        checkboxView
+                                            "hideUnsupportedRecurringPaymentMethods"
+                                            "Hide payment methods that are not eligible for recurring payments"
+                                            None
+                                            initSettings.HideUnsupportedRecurringPaymentMethods
+                                            false
+                                        checkboxView
+                                            "useCustomSmsNewsletterSubscriptionText"
+                                            "Replace label for SMS newsletter"
+                                            (Some
+                                                "Requires SMS newsletter displayed. Label will be replaced with 'Custom SMS Subscription label'")
+                                            initSettings.UseCustomSmsNewsletterSubscriptionText
+                                            true
+                                        checkboxView
+                                            "useCustomEmailNewsletterSubscriptionText"
+                                            "Raplace label for email newsletter"
+                                            (Some
+                                                "Requires Email newsletter displayed. Label will be replaced with 'Custom Email Subscription label'")
+                                            initSettings.UseCustomEmailNewsletterSubscriptionText
+                                            true
+                                        checkboxView
+                                            "skipEmailZipEntry"
+                                            "Skip email zip entry step"
+                                            None
+                                            initSettings.SkipEmailZipEntry
+                                            true
                                         div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
                                         checkboxView "disableFocus" "Disable Focus" None checkoutFlags.DisableFocus true
                                         checkboxView
@@ -300,6 +344,30 @@ let template
                                             "Include Payment Fees in Total Price"
                                             None
                                             checkoutFlags.IncludePaymentFeeInTotalPrice
+                                            true
+                                        checkboxView
+                                            "shippingOptionChangedCallbackEnabled"
+                                            "Shipping Option Changed Callback Enabled"
+                                            None
+                                            checkoutFlags.ShippingOptionChangedCallbackEnabled
+                                            true
+                                        checkboxView
+                                            "paymentMethodChangedCallbackEnabled"
+                                            "Payment Method Changed Callback Enabled"
+                                            None
+                                            checkoutFlags.PaymentMethodChangedCallbackEnabled
+                                            true
+                                        checkboxView
+                                            "modeChangedCallbackEnabled"
+                                            "Mode Changed Callback Enabled"
+                                            None
+                                            checkoutFlags.ModeChangedCallbackEnabled
+                                            true
+                                        checkboxView
+                                            "hideAvardaLogo"
+                                            "Hide Avarda logo"
+                                            None
+                                            checkoutFlags.HideAvardaLogo
                                             true
                                         div [] [ h3 [] [ str "Payment Widget" ] ]
                                         checkboxView
@@ -336,5 +404,4 @@ let settingsView
     (settings: Settings)
     (cartState: CartState)
     =
-    [ template paymentWidgetBundleUrl enabledMarkets settings cartState ]
-    |> layout
+    [ template paymentWidgetBundleUrl enabledMarkets settings cartState ] |> layout

@@ -2,6 +2,7 @@ module Gir.Encoders
 
 open Thoth.Json.Net
 open Domain
+open System
 
 
 let getPartnerTokenPayloadEncoder (clientId: string) (clientSecret: string) =
@@ -28,12 +29,16 @@ let cartEncoder (cartState: CartState) =
     |> Encode.toString 0
 
 let paymentItemEncoder (productDetail: Product) =
+
+    let productTax = (productDetail.Price * 0.2M)
+    let roundedProductTax = Math.Round(productTax, 2)
+
     Encode.object
         [ "description", Encode.string productDetail.Name
           "notes", Encode.string "-"
           "amount", Encode.decimal productDetail.Price
           "taxCode", Encode.string "20%"
-          "taxAmount", Encode.decimal <| productDetail.Price * 0.2M ]
+          "taxAmount", Encode.decimal roundedProductTax ]
 
 let languageEncoder = languageToString >> Encode.string
 
@@ -60,6 +65,9 @@ let ageValidationEncoderExternal =
     | Disabled -> Encode.nil
     | Enabled limit -> Encode.int limit
 
+let stringOrNullDecoder (condition: bool) (stringValue) =
+    if condition then Encode.string stringValue else Encode.nil
+
 let extraInitSettingsEncoderForInitPayment (apiPublicUrl: string) (initSettings: ExtraInitSettings) =
     Encode.object
         [ "language", languageEncoder initSettings.Language
@@ -74,7 +82,18 @@ let extraInitSettingsEncoderForInitPayment (apiPublicUrl: string) (initSettings:
           "enableB2BLink", Encode.bool initSettings.EnableB2BLink
           "enableCountrySelector", Encode.bool initSettings.EnableCountrySelector
           "showThankYouPage", Encode.bool initSettings.ShowThankYouPage
-          "ageValidation", ageValidationEncoderExternal initSettings.AgeValidation ]
+          "ageValidation", ageValidationEncoderExternal initSettings.AgeValidation
+          "emailInvoice", checkboxStateEncoder initSettings.EmailInvoice
+          "termsAndConditionsUrl",
+          stringOrNullDecoder initSettings.UseCustomTermsAndConditionsUrl (apiPublicUrl + "/docs/terms_conditions.pdf")
+          "integrityConditionsUrl",
+          stringOrNullDecoder initSettings.UseCustomIntegrityConditionsUrl (apiPublicUrl + "/docs/integrity_policy.pdf")
+          "hideUnsupportedRecurringPaymentMethods", Encode.bool initSettings.HideUnsupportedRecurringPaymentMethods
+          "smsNewsletterSubscriptionText",
+          stringOrNullDecoder initSettings.UseCustomSmsNewsletterSubscriptionText "Custom SMS Subscription label"
+          "emailNewsletterSubscriptionText",
+          stringOrNullDecoder initSettings.UseCustomEmailNewsletterSubscriptionText "Custom Email Subscription label"
+          "skipEmailZipEntry", Encode.bool initSettings.SkipEmailZipEntry ]
 
 let extraInitSettingsEncoderForSettings (initSettings: ExtraInitSettings) =
     Encode.object
@@ -93,7 +112,14 @@ let extraInitSettingsEncoderForSettings (initSettings: ExtraInitSettings) =
           "enableB2BLink", Encode.bool initSettings.EnableB2BLink
           "enableCountrySelector", Encode.bool initSettings.EnableCountrySelector
           "showThankYouPage", Encode.bool initSettings.ShowThankYouPage
-          "ageValidation", ageValidationEncoder initSettings.AgeValidation ]
+          "ageValidation", ageValidationEncoder initSettings.AgeValidation
+          "emailInvoice", checkboxStateEncoder initSettings.EmailInvoice
+          "useCustomTermsAndConditionsUrl", Encode.bool initSettings.UseCustomTermsAndConditionsUrl
+          "useCustomIntegrityConditionsUrl", Encode.bool initSettings.UseCustomIntegrityConditionsUrl
+          "hideUnsupportedRecurringPaymentMethods", Encode.bool initSettings.HideUnsupportedRecurringPaymentMethods
+          "useCustomSmsNewsletterSubscriptionText", Encode.bool initSettings.UseCustomSmsNewsletterSubscriptionText
+          "useCustomEmailNewsletterSubscriptionText", Encode.bool initSettings.UseCustomEmailNewsletterSubscriptionText
+          "skipEmailZipEntry", Encode.bool initSettings.SkipEmailZipEntry ]
 
 let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: CartItem list) =
     if List.isEmpty items then
@@ -125,7 +151,11 @@ let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
           "beforeSubmitCallbackEnabled", Encode.bool checkoutFlags.BeforeSubmitCallbackEnabled
           "deliveryAddressChangedCallbackEnabled", Encode.bool checkoutFlags.DeliveryAddressChangedCallbackEnabled
           "customStyles", Encode.bool checkoutFlags.CustomStyles
-          "includePaymentFeeInTotalPrice", Encode.bool checkoutFlags.IncludePaymentFeeInTotalPrice ]
+          "includePaymentFeeInTotalPrice", Encode.bool checkoutFlags.IncludePaymentFeeInTotalPrice
+          "shippingOptionChangedCallbackEnabled", Encode.bool checkoutFlags.ShippingOptionChangedCallbackEnabled
+          "paymentMethodChangedCallbackEnabled", Encode.bool checkoutFlags.PaymentMethodChangedCallbackEnabled
+          "modeChangedCallbackEnabled", Encode.bool checkoutFlags.ModeChangedCallbackEnabled
+          "hideAvardaLogo", Encode.bool checkoutFlags.HideAvardaLogo ]
 
 let paymentWidgetSettingsEncoder (paymentWidgetSettings: PaymentWidgetSettings) =
     Encode.object

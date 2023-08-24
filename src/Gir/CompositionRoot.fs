@@ -33,7 +33,7 @@ let dummyProducts =
       createProduct 7 "Rocking Chair" 100M "/img/bg-img/8.jpg"
       createProduct 8 "Modern Chair" 50M "/img/bg-img/1.jpg"
       createProduct 9 "Minimalistic Plant Pot" 5M "/img/bg-img/2.jpg"
-      createProduct 10 "Home Deco" 30M "/img/bg-img/9.jpg" ]
+      createProduct 10 "Home Deco" 30.50M "/img/bg-img/9.jpg" ]
 
 module CompositionRoot =
     let compose (cfg: IConfigurationRoot) : CompositionRoot =
@@ -97,5 +97,4 @@ module CompositionRoot =
           ApiPublicUrl = cfg.["apiPublicUrl"]
           EnabledMarkets = enabledMarkets
           PaymentWidgetBundle = cfg.["paymentWidgetBundleUrl"]
-          GetPaymentWidgetToken =
-            Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"] }
+          GetPaymentWidgetToken = Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"] }

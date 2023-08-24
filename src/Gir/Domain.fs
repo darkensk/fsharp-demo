@@ -80,14 +80,25 @@ type ExtraInitSettings =
       EnableB2BLink: bool
       EnableCountrySelector: bool
       ShowThankYouPage: bool
-      AgeValidation: AgeValidation }
+      AgeValidation: AgeValidation
+      EmailInvoice: CheckboxState
+      UseCustomTermsAndConditionsUrl: bool
+      UseCustomIntegrityConditionsUrl: bool
+      HideUnsupportedRecurringPaymentMethods: bool
+      UseCustomSmsNewsletterSubscriptionText: bool
+      UseCustomEmailNewsletterSubscriptionText: bool
+      SkipEmailZipEntry: bool }
 
 type ExtraCheckoutFlags =
     { DisableFocus: bool
       BeforeSubmitCallbackEnabled: bool
       DeliveryAddressChangedCallbackEnabled: bool
       CustomStyles: bool
-      IncludePaymentFeeInTotalPrice: bool }
+      IncludePaymentFeeInTotalPrice: bool
+      ShippingOptionChangedCallbackEnabled: bool
+      PaymentMethodChangedCallbackEnabled: bool
+      ModeChangedCallbackEnabled: bool
+      HideAvardaLogo: bool }
 
 type Market =
     | Sweden
@@ -122,6 +133,19 @@ let languageToString =
     | Czech -> "Czech"
     | Polish -> "Polish"
     | Latvian -> "Latvian"
+
+let languageToIsoCode =
+    function
+    | English -> "en"
+    | Swedish -> "sv"
+    | Finnish -> "fi"
+    | Norwegian -> "nb"
+    | Estonian -> "et"
+    | Danish -> "da"
+    | Slovak -> "sk"
+    | Czech -> "cs"
+    | Polish -> "pl"
+    | Latvian -> "lv"
 
 
 let stringToLanguage =
@@ -252,7 +276,12 @@ let defaultExtraCheckoutFlags =
       BeforeSubmitCallbackEnabled = false
       DeliveryAddressChangedCallbackEnabled = false
       CustomStyles = false
-      IncludePaymentFeeInTotalPrice = false }
+      IncludePaymentFeeInTotalPrice = false
+      ShippingOptionChangedCallbackEnabled = false
+      PaymentMethodChangedCallbackEnabled = false
+      ModeChangedCallbackEnabled = false
+      HideAvardaLogo = false }
+
 
 let defaultExtraInitSettings =
     { Language = English
@@ -267,7 +296,14 @@ let defaultExtraInitSettings =
       EnableB2BLink = false
       EnableCountrySelector = false
       ShowThankYouPage = true
-      AgeValidation = Disabled }
+      AgeValidation = Disabled
+      EmailInvoice = Hidden
+      UseCustomTermsAndConditionsUrl = true
+      UseCustomIntegrityConditionsUrl = true
+      HideUnsupportedRecurringPaymentMethods = false
+      UseCustomSmsNewsletterSubscriptionText = false
+      UseCustomEmailNewsletterSubscriptionText = false
+      SkipEmailZipEntry = false }
 
 let defaultPaymentWidgetSettings: PaymentWidgetSettings =
     { Enabled = false

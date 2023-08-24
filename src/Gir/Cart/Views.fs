@@ -17,14 +17,18 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
                    [ _type "application/javascript" ]
                    [ rawText
                      <| sprintf
-                         """initCheckout("%s", "%s", %b, %b, %b, %b, %b);"""
+                         """initCheckout("%s", "%s", %b, %b, %b, %b, %b, %b, %b, %b, %b);"""
                          checkoutFrontendBundleUrl
                          purchaseToken
                          settings.ExtraCheckoutFlags.DisableFocus
                          settings.ExtraCheckoutFlags.CustomStyles
                          settings.ExtraCheckoutFlags.BeforeSubmitCallbackEnabled
                          settings.ExtraCheckoutFlags.DeliveryAddressChangedCallbackEnabled
-                         settings.ExtraCheckoutFlags.IncludePaymentFeeInTotalPrice ] ])
+                         settings.ExtraCheckoutFlags.IncludePaymentFeeInTotalPrice
+                         settings.ExtraCheckoutFlags.ShippingOptionChangedCallbackEnabled
+                         settings.ExtraCheckoutFlags.PaymentMethodChangedCallbackEnabled
+                         settings.ExtraCheckoutFlags.ModeChangedCallbackEnabled
+                         settings.ExtraCheckoutFlags.HideAvardaLogo ] ])
 
 let cartItemView (settings: Settings) (cartItem: CartItem) =
     tr
@@ -74,7 +78,7 @@ let cartSummaryView (settings: Settings) (cartState: CartState) =
     let subTotal =
         List.fold (fun acc x -> acc + (decimal x.Qty * x.ProductDetail.Price)) 0M cartState.Items
 
-    let subTotalString = sprintf "\"%M %s\"" subTotal (marketToCurrency settings.Market)
+    let subTotalString = sprintf "%M %s" subTotal (marketToCurrency settings.Market)
 
     div
         [ _class "col-12 col-lg-4" ]
@@ -97,6 +101,50 @@ let cartSummaryView (settings: Settings) (cartState: CartState) =
                       _style "display: flex; flex-direction: column; justify-content: space-evenly;" ]
                     [ a [ _href "#checkout-form"; _class "btn amado-btn mb-15" ] [ str "Checkout" ]
                       a [ _href "/cart/clear"; _class "btn amado-btn active mb-15" ] [ str "Clear Cart" ] ] ] ]
+
+let languageSelectView =
+    details
+        []
+        [ summary [ _class "select-language-summary" ] [ str "Select language of Checkout" ]
+          div
+              [ _class "select-language-container" ]
+              [ button
+                    [ _class "select-flag"
+                      _id "flag-en"
+                      _onclick "avardaCheckout.changeLanguage('English');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/gb.svg"
+                            _alt "English language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-se"
+                      _onclick "avardaCheckout.changeLanguage('Swedish');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/se.svg"
+                            _alt "Swedish language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-no"
+                      _onclick "avardaCheckout.changeLanguage('Norwegian');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/no.svg"
+                            _alt "Norwegian language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
+                      _id "flag-fi"
+                      _onclick "avardaCheckout.changeLanguage('Finnish');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/fi.svg"
+                            _alt "Finnish language"
+                            _ariaHidden "true" ] ] ] ]
+
 
 let template
     (settings: Settings)
@@ -180,7 +228,8 @@ let template
                                              cartSummaryView settings cartState
                                              div
                                                  [ _class "col-12 col-lg-8" ]
-                                                 [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken ] ]) ] ] ]
+                                                 [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken
+                                                   languageSelectView ] ]) ] ] ]
                 subscribeSectionView
                 footerView ] ]
 
