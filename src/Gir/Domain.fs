@@ -88,12 +88,6 @@ type ExtraInitSettings =
       UseCustomSmsNewsletterSubscriptionText: bool
       UseCustomEmailNewsletterSubscriptionText: bool
       SkipEmailZipEntry: bool }
-//     "invoicingCountries": [
-//   "AF"
-// ],
-// "deliveryCountries": [
-//   "AF"
-// ]
 
 type ExtraCheckoutFlags =
     { DisableFocus: bool
