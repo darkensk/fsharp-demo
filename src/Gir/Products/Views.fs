@@ -487,7 +487,7 @@ let languageSelectView =
                             _ariaHidden "true" ] ]
                 button
                     [ _class "select-flag"
-                      _id "flag-no"
+                      _id "flag-dk"
                       _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'da');" ]
                     [ img
                           [ _class "flag"
