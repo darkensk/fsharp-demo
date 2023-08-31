@@ -19,8 +19,9 @@ let _paymentIdAttribute = attr "data-payment-id"
 
 let _customStylesAttribute = attr "data-custom-styles"
 
-let rawCustomStyles =
-    """
+let rawCustomStyles (apiPublicUrl: string) =
+    let styles =
+        """
     {
   "buttons": {
     "primary": {
@@ -252,7 +253,7 @@ let rawCustomStyles =
       "height": 24
     },
     "loanPayment": {
-      "color": "#fbb710",
+      "backgroundUrl": "[apiPublicUrl]/img/core-img/logo.png",
       "width": 30,
       "height": 30
     },
@@ -262,7 +263,7 @@ let rawCustomStyles =
       "height": 30
     },
     "invoice": {
-      "color": "#fbb710",
+      "backgroundUrl": "[apiPublicUrl]/img/core-img/logo.png",
       "width": 30,
       "height": 30
     },
@@ -366,10 +367,14 @@ let rawCustomStyles =
 }
     """
 
+    styles.Replace("[apiPublicUrl]", apiPublicUrl)
+
+
 let paymentWidgetScriptView
     (paymentWidgetBundleUrl: string)
     (paymentWidgetSettings: PaymentWidgetSettings)
     (paymentWidgetState: PaymentWidgetState option)
+    (apiPublicUrl: string)
     =
     match paymentWidgetState with
     | Some state ->
@@ -389,7 +394,7 @@ let paymentWidgetScriptView
                   _src bundleUrl
                   _paymentIdAttribute paymentId
                   _widgetJwtAttribute widgetJwt
-                  _customStylesAttribute rawCustomStyles ]
+                  _customStylesAttribute (rawCustomStyles apiPublicUrl) ]
                 []
         else
             script
@@ -482,6 +487,15 @@ let languageSelectView =
                             _ariaHidden "true" ] ]
                 button
                     [ _class "select-flag"
+                      _id "flag-dk"
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'da');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/dk.svg"
+                            _alt "Danish language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
                       _id "flag-fi"
                       _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'fi');" ]
                     [ img
@@ -497,6 +511,7 @@ let detailTemplate
     (product: Product)
     (paymentWidgetBundleUrl: string)
     (paymentWidgetState: PaymentWidgetState option)
+    (apiPublicUrl: string)
     =
     let selectedLanguageIsoCode =
         settings.ExtraInitSettings.Language |> languageToIsoCode
@@ -693,14 +708,15 @@ let detailTemplate
                                                   str "" ] ] ] ] ] ]
           subscribeSectionView
           footerView
-          paymentWidgetScriptView paymentWidgetBundleUrl settings.PaymentWidgetSettings paymentWidgetState ]
+          paymentWidgetScriptView paymentWidgetBundleUrl settings.PaymentWidgetSettings paymentWidgetState apiPublicUrl ]
 
 let productDetailView
     (settings: Settings)
     (cartState: CartState)
-    (p: Product)
+    (product: Product)
     (paymentWidgetBundleUrl: string)
     (paymentWidgetState: PaymentWidgetState option)
+    (apiPublicUrl: string)
     =
-    [ detailTemplate settings cartState p paymentWidgetBundleUrl paymentWidgetState ]
+    [ detailTemplate settings cartState product paymentWidgetBundleUrl paymentWidgetState apiPublicUrl ]
     |> layout
