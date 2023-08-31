@@ -21,6 +21,7 @@ let detailHandler
     (getPartnerAccessToken: Market -> Task<string>)
     (paymentWidgetBundleUrl: string)
     (getProductById: int -> Product option)
+    (apiPublicUrl: string)
     (id: int)
     (next: HttpFunc)
     (ctx: HttpContext)
@@ -47,7 +48,8 @@ let detailHandler
                                 cartState
                                 product
                                 paymentWidgetBundleUrl
-                                (Some decodedPaymentWidgetState))
+                                (Some decodedPaymentWidgetState)
+                                apiPublicUrl)
                             next
                             ctx
                 | None ->
@@ -64,10 +66,15 @@ let detailHandler
                                 cartState
                                 product
                                 paymentWidgetBundleUrl
-                                (Some initPaymentWidgetResponse))
+                                (Some initPaymentWidgetResponse)
+                                apiPublicUrl)
                             next
                             ctx
             else
-                return! htmlView (productDetailView settings cartState product paymentWidgetBundleUrl None) next ctx
+                return!
+                    htmlView
+                        (productDetailView settings cartState product paymentWidgetBundleUrl None apiPublicUrl)
+                        next
+                        ctx
         | None -> return! (setStatusCode 404 >=> text "Not Found") next ctx
     }

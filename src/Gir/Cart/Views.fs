@@ -137,6 +137,15 @@ let languageSelectView =
                             _ariaHidden "true" ] ]
                 button
                     [ _class "select-flag"
+                      _id "flag-no"
+                      _onclick "avardaCheckout.changeLanguage('Danish');" ]
+                    [ img
+                          [ _class "flag"
+                            _src "/img/flags/dk.svg"
+                            _alt "Danish language"
+                            _ariaHidden "true" ] ]
+                button
+                    [ _class "select-flag"
                       _id "flag-fi"
                       _onclick "avardaCheckout.changeLanguage('Finnish');" ]
                     [ img

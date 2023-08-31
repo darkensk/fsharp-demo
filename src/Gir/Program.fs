@@ -54,7 +54,8 @@ let webApp (root: CompositionRoot) =
                                   root.GetPaymentWidgetToken
                                   root.GetPartnerAccessToken
                                   root.PaymentWidgetBundle
-                                  root.GetProductById) ])
+                                  root.GetProductById
+                                  root.ApiPublicUrl) ])
                 route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
                 subRoute
                     "/test"
