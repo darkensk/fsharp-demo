@@ -34,6 +34,8 @@ type Language =
     | Czech
     | Polish
     | Latvian
+    | German
+    | Austrian
 
 type CheckoutMode =
     | B2C
@@ -111,6 +113,8 @@ type Market =
     | Latvia
     | Estonia
     | International
+    | Germany
+    | Austria
 
 type PaymentWidgetSettings = { Enabled: bool; CustomStyles: bool }
 
@@ -133,6 +137,8 @@ let languageToString =
     | Czech -> "Czech"
     | Polish -> "Polish"
     | Latvian -> "Latvian"
+    | German -> "German"
+    | Austrian -> "Austrian"
 
 let languageToIsoCode =
     function
@@ -146,6 +152,8 @@ let languageToIsoCode =
     | Czech -> "cs"
     | Polish -> "pl"
     | Latvian -> "lv"
+    | German -> "de"
+    | Austrian -> "de"
 
 
 let stringToLanguage =
@@ -160,6 +168,8 @@ let stringToLanguage =
     | "Czech" -> Czech
     | "Polish" -> Polish
     | "Latvian" -> Latvian
+    | "German" -> German
+    | "Austrian" -> Austrian
     | _ -> English
 
 let checkoutModeToString =
@@ -239,6 +249,8 @@ let marketToString =
     | Latvia -> "Latvia"
     | Estonia -> "Estonia"
     | International -> "International"
+    | Germany -> "Germany"
+    | Austria -> "Austria"
 
 
 let stringToMarket =
@@ -253,6 +265,8 @@ let stringToMarket =
     | "Latvia" -> Latvia
     | "Estonia" -> Estonia
     | "International" -> International
+    | "Germany" -> Germany
+    | "Austria" -> Austria
     | _ -> Sweden
 
 let stringToAgeValidation (limit: string) =

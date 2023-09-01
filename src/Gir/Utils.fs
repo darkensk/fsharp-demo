@@ -19,6 +19,8 @@ let marketToCurrency (market: Market) =
     | Latvia -> "€"
     | Estonia -> "€"
     | International -> "€"
+    | Germany -> "€"
+    | Austria -> "€"
 
 let productDiv (settings: Settings) (product: Product) =
     div
