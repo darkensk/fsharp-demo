@@ -18,6 +18,7 @@ Checkout 3.0 integration in F# + Giraffe
 
 - `paymentWidgetBundleUrl` - ***NEW*** Payment Widget bundle url (optional)
 
+
 ### Available markets:
 
 In order to test different markets set up following `clientId`/`clientSecret` values based on market. Market will be available in the `/settings/` page when credentials are set up.
@@ -50,10 +51,39 @@ Latvia:
 Estonia:
     "estoniaClientId"
     "estoniaClientSecret"
+Germany:
+    "germanyClientId"
+    "germanyClientSecret"
+Austria:
+    "austriaClientId"
+    "austriaClientSecret"
+International*:
+    "internationalClientId"
+    "internationalClientSecret"
 ```
 
 Please refer to articles [How to get started](https://docs.avarda.com/checkout-3/how-to-get-started/) and
 [Embed Checkout](https://docs.avarda.com/checkout-3/embed-checkout/) for more info.
+
+One way of adding the env variables is adding a "launchSettings.json" `src/Gir/Properties/launchSettings.json`:
+```json
+{
+    "profiles": {
+        "Gir": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "apiPublicUrl": "https://localhost:5001",
+                "swedenClientId": "<clientId>",
+                "swedenClientSecret": "<clientSecret>",
+                "checkoutBackendApiUrl": "<checkoutApiUrl>",
+                "checkoutFrontendBundleUrl": "<checkoutBundleUrl>",
+                "paymentWidgetBundleUrl": "<paymentWidgetUrl>"
+            }
+        }
+    }
+}
+```
+
 
 Run following commands:
 

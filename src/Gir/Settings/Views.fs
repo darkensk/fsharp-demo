@@ -211,11 +211,13 @@ let template
                                               ("Finnish", false)
                                               ("Norwegian", false)
                                               ("Danish", false)
-                                              ("Slovak", true)
-                                              ("Czech", true)
-                                              ("Latvian", true)
-                                              ("Polish", true)
-                                              ("Estonian", true) ]
+                                              ("Slovak", false)
+                                              ("Czech", false)
+                                              ("Latvian", false)
+                                              ("Polish", false)
+                                              ("Estonian", false)
+                                              ("German", false)
+                                              ("Austrian", false) ]
                                             (languageToString initSettings.Language)
                                             true
                                         selectView "mode" "Mode" [ ("b2c", false); ("b2b", false) ] "b2c" true

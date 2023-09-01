@@ -47,7 +47,9 @@ module CompositionRoot =
               Poland
               Latvia
               Estonia
-              International ]
+              International
+              Germany
+              Austria ]
 
         let credentialsByMarket market =
             match market with
@@ -61,6 +63,8 @@ module CompositionRoot =
             | Latvia -> ("latviaClientId", "latviaClientSecret")
             | Estonia -> ("estoniaClientId", "estoniaClientSecret")
             | International -> ("internationalClientId", "internationalClientSecret")
+            | Germany -> ("germanyClientId", "germanyClientSecret")
+            | Austria -> ("austriaClientId", "austriaClientSecret")
 
         let hasCredentials market =
             market
@@ -85,6 +89,8 @@ module CompositionRoot =
             | Latvia -> getCachedToken cfg.["latviaClientId"] cfg.["latviaClientSecret"]
             | Estonia -> getCachedToken cfg.["estoniaClientId"] cfg.["estoniaClientSecret"]
             | International -> getCachedToken cfg.["internationalClientId"] cfg.["internationalClientSecret"]
+            | Germany -> getCachedToken cfg.["germanyClientId"] cfg.["germanyClientSecret"]
+            | Austria -> getCachedToken cfg.["austriaClientId"] cfg.["austriaClientSecret"]
 
         { CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
           CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
