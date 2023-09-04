@@ -231,7 +231,7 @@ let rawCustomStyles (apiPublicUrl: string) =
   },
   "labels": {
     "active": {
-      "color": "#fbb710"
+      "color": "#4c4c4c"
     },
     "disabled": {
       "color": "#aeaeae"
