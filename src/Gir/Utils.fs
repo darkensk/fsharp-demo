@@ -81,13 +81,16 @@ module Session =
 
     let deletePurchaseId (ctx: HttpContext) = ctx.Session.Remove(purchaseKey)
 
-    let tryGetPaymentWidgeState (ctx: HttpContext) =
+    let tryGetPaymentWidgetState (ctx: HttpContext) =
         match ctx.Session.GetString(paymentWidgetStateKey) with
         | null -> None
         | v -> Some v
 
     let setPaymentWidgetState (ctx: HttpContext) (encodedPaymentWidgetState: string) =
         ctx.Session.SetString(paymentWidgetStateKey, encodedPaymentWidgetState)
+
+    let deletePaymentWidgetState (ctx: HttpContext) =
+        ctx.Session.Remove(paymentWidgetStateKey)
 
     let getSettings (ctx: HttpContext) =
         match ctx.Session.GetString(settingsKey) with
