@@ -69,5 +69,6 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
         Session.setSettings ctx formData
         Session.deleteCartState ctx
         Session.deletePurchaseId ctx
+        Session.deletePaymentWidgetState ctx
         return! next ctx
     }

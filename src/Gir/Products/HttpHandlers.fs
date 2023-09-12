@@ -37,7 +37,7 @@ let detailHandler
                 isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl
                 && settings.PaymentWidgetSettings.Enabled
             then
-                match Session.tryGetPaymentWidgeState ctx with
+                match Session.tryGetPaymentWidgetState ctx with
                 | Some paymentWidgetState ->
                     let decodedPaymentWidgetState = initPaymentWidgetDecoder paymentWidgetState
 
