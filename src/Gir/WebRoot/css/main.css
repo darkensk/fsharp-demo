@@ -14,6 +14,7 @@ input::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
   text-align: center;
 }
 
@@ -62,4 +63,32 @@ input[type="number"] {
 
 details:not([open])>div {
   display: none;
+}
+
+.settings-container {
+  background-color: #f8f9fa;
+  border: 1px solid #F1EDF2;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1024px;
+}
+
+.settings-heading {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.settings-row {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+
+.settings-row:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+
+.settings-row:nth-child(even) {
+  background-color: #F1EDF2;
 }
