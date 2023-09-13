@@ -6,15 +6,13 @@ open Gir.Domain
 open Gir.Utils
 
 let rowStyles =
-    _style
-        "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 10px 0px 0px; height: 50px;"
+    _style "display: flex; flex-direction: row; align-items: center; justify-content: space-between; height: 50px;"
 
 let helpTextRowStyles =
     _style
         "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 20px 10px 20px; height: 20px; color: grey; font-size: 12px; font-weight: 100;"
 
-let columnStyles =
-    _style "display: flex; flex-direction: column; padding: 20px 0px 0px 20px;"
+let columnStyles = _style "display: flex; flex-direction: column;"
 
 let labelStyles = "text-overflow: ellipsis; overflow: hidden; margin: 0px;"
 
@@ -26,7 +24,7 @@ let checkboxView (inputId: string) (inputLabel: string) (helpText: string option
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
 
     div
-        []
+        [ _class "settings-row" ]
         [ div
               [ rowStyles ]
               [ label [ _for inputId; _style checkboxLabelStyles ] [ str inputLabel ]
@@ -47,7 +45,7 @@ let checkboxView (inputId: string) (inputLabel: string) (helpText: string option
 
 let textareaView (areaId: string) (areaLabel: string) =
     div
-        [ rowStyles ]
+        [ rowStyles; _class "settings-row" ]
         [ label [ _for areaId; _style labelStyles ] [ str areaLabel ]
           textarea [ _id areaId; _name areaId; _value ""; _form "settings" ] [] ]
 
@@ -64,7 +62,7 @@ let selectView
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
 
     div
-        [ rowStyles ]
+        [ rowStyles; _class "settings-row" ]
         [ label [ _for selectId; _style labelStyles ] [ str selectLabel ]
           select
               ([ _name selectId; _id selectId ] @ disabledAttribute)
@@ -87,7 +85,7 @@ let inputView inputType inputStyle inputId inputLabel helpText value isEnabled m
         | None -> []
 
     div
-        []
+        [ _class "settings-row" ]
         [ div
               [ rowStyles ]
               [ label [ _for inputId; _style labelStyles ] [ str inputLabel ]
@@ -119,7 +117,7 @@ let numberInput =
                         height: 50px;
                         background-color: #fff;
                         color: #000;
-                        font-size: 14px;
+                        font-size: 16px;
                         border: 1px solid #e8e8e8;
                         border-radius: 5px;
                         padding: 0 10px;"
@@ -181,20 +179,20 @@ let template
                 div
                     [ _class "single-product-area section-padding-100 clearfix" ]
                     [ div
-                          [ _class "container-fluid" ]
+                          [ _class "settings-container" ]
                           [ div
                                 [ columnStyles ]
-                                [ h1 [] [ str "Settings Page" ]
+                                [ h1 [ _class "settings-heading" ] [ str "Settings Page" ]
                                   form
                                       [ _id "settings"; _action "/settings/save"; _method "POST" ]
-                                      [ div [] [ h3 [] [ str "Market" ] ]
+                                      [ div [] [ h3 [ _class "settings-heading" ] [ str "Market" ] ]
                                         selectView
                                             "market"
                                             "Market"
                                             marketsOptions
                                             (marketToString settings.Market)
                                             true
-                                        div [] [ h3 [] [ str "Extra Identifiers" ] ]
+                                        div [] [ h3 [ _class "settings-heading" ] [ str "Extra Identifiers" ] ]
                                         textInput
                                             "orderReference"
                                             "Order Reference"
@@ -202,7 +200,7 @@ let template
                                             settings.OrderReference
                                             true
                                             None
-                                        div [] [ h3 [] [ str "Extra Init Options" ] ]
+                                        div [] [ h3 [ _class "settings-heading" ] [ str "Extra Init Options" ] ]
                                         selectView
                                             "language"
                                             "Language"
@@ -321,7 +319,7 @@ let template
                                             None
                                             initSettings.SkipEmailZipEntry
                                             true
-                                        div [] [ h3 [] [ str "Extra Checkout Flags" ] ]
+                                        div [] [ h3 [ _class "settings-heading" ] [ str "Extra Checkout Flags" ] ]
                                         checkboxView "disableFocus" "Disable Focus" None checkoutFlags.DisableFocus true
                                         checkboxView
                                             "beforeSubmitCallbackEnabled"
@@ -371,7 +369,7 @@ let template
                                             None
                                             checkoutFlags.HideAvardaLogo
                                             true
-                                        div [] [ h3 [] [ str "Payment Widget" ] ]
+                                        div [] [ h3 [ _class "settings-heading" ] [ str "Payment Widget" ] ]
                                         checkboxView
                                             "paymentWidgetEnabled"
                                             "Enable Payment Widget"
