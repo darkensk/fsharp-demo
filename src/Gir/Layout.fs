@@ -80,7 +80,7 @@ let footerView =
                                   p
                                       [ _class "copywrite" ]
                                       [ str "Copyright ©"
-                                        script [] [ str "document.write(new Date().getFullYear());" ]
+                                        span [ _id "current-year" ] []
                                         str " All rights reserved | This template is made with "
                                         i [ _class "fa fa-heart-o"; _ariaHidden "true" ] []
                                         str " by "
@@ -122,7 +122,15 @@ let footerView =
                                                               [ _class "nav-item" ]
                                                               [ a
                                                                     [ _class "nav-link"; _href "/cart/" ]
-                                                                    [ str "Checkout" ] ] ] ] ] ] ] ] ] ] ]
+                                                                    [ str "Checkout" ] ] ] ] ] ] ] ] ] ]
+          script
+              [ _type "application/javascript" ]
+              [ rawText
+                    """
+                    const currentYearElement = document.getElementById('current-year');
+                    const currentYear = new Date().getFullYear();
+                    currentYearElement.textContent = currentYear;
+            """ ] ]
 
 let subscribeSectionView =
     section
@@ -187,7 +195,7 @@ let layout (content: XmlNode List) =
           body
               []
               (content
-               @ [ script [ _src "/js/jquery/jquery-2.2.4.min.js" ] []
+               @ [ script [ _src "/js/jquery/jquery-3.7.1.min.js" ] []
                    script [ _src "/js/popper.min.js" ] []
                    script [ _src "/js/bootstrap.min.js" ] []
                    script [ _src "/js/plugins.js" ] []
