@@ -546,7 +546,7 @@ let detailTemplate
                                                     li [ _class "breadcrumb-item" ] [ a [ _href "#" ] [ str "Chairs" ] ]
                                                     li
                                                         [ _class "breadcrumb-item active"; _ariaCurrent "page" ]
-                                                        [ str "white modern chair" ] ] ] ] ]
+                                                        [ str product.Name ] ] ] ] ]
                             div
                                 [ _class "row" ]
                                 [ div
@@ -563,8 +563,9 @@ let detailTemplate
                                                               [ _class "active"
                                                                 _dataTarget "#product_details_slider"
                                                                 _dataSlideTo "0"
-                                                                _style
-                                                                    "background-image: url(/img/product-img/pro-big-1.jpg)" ]
+                                                                _style (
+                                                                    sprintf "background-image: url(%s)" product.BigImg
+                                                                ) ]
                                                               []
                                                           li
                                                               [ _dataTarget "#product_details_slider"
@@ -589,11 +590,10 @@ let detailTemplate
                                                         [ div
                                                               [ _class "carousel-item active" ]
                                                               [ a
-                                                                    [ _class "gallery_img"
-                                                                      _href "/img/product-img/pro-big-1.jpg" ]
+                                                                    [ _class "gallery_img"; _href product.BigImg ]
                                                                     [ img
                                                                           [ _class "d-block w-100"
-                                                                            _src "/img/product-img/pro-big-1.jpg"
+                                                                            _src product.BigImg
                                                                             _alt "First slide" ] ] ]
                                                           div
                                                               [ _class "carousel-item" ]
