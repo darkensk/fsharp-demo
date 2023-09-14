@@ -16,7 +16,8 @@ let productEncoder (product: Product) =
         [ "productId", Encode.int product.ProductId
           "name", Encode.string product.Name
           "price", Encode.decimal product.Price
-          "img", Encode.string product.Img ]
+          "img", Encode.string product.Img
+          "bigImg", Encode.string product.BigImg ]
 
 let cartItemEncoder (cartItem: CartItem) =
     Encode.object
@@ -135,7 +136,8 @@ let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: Ca
                             { ProductId = x.ProductDetail.ProductId
                               Name = x.ProductDetail.Name
                               Price = x.ProductDetail.Price
-                              Img = x.ProductDetail.Img } ])
+                              Img = x.ProductDetail.Img
+                              BigImg = x.ProductDetail.BigImg } ])
                 []
                 items
 

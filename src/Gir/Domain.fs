@@ -4,7 +4,8 @@ type Product =
     { ProductId: int
       Name: string
       Price: decimal
-      Img: string }
+      Img: string
+      BigImg: string }
 
 type CartEvent =
     | Add of productId: int
