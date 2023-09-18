@@ -58,6 +58,9 @@ let initPaymentDecoder (s: string) =
           Jwt = v.Jwt }
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
 
+let extrasDecoder =
+    Decode.object (fun get -> { ExtraTermsAndConditions = get.Optional.Field "extraTermsAndConditions" Decode.string })
+
 let extraCheckoutFlagsDecoder =
     Decode.object (fun get ->
         { DisableFocus = get.Required.Field "disableFocus" Decode.bool
@@ -69,7 +72,8 @@ let extraCheckoutFlagsDecoder =
           ShippingOptionChangedCallbackEnabled = get.Required.Field "shippingOptionChangedCallbackEnabled" Decode.bool
           PaymentMethodChangedCallbackEnabled = get.Required.Field "paymentMethodChangedCallbackEnabled" Decode.bool
           ModeChangedCallbackEnabled = get.Required.Field "modeChangedCallbackEnabled" Decode.bool
-          HideAvardaLogo = get.Required.Field "hideAvardaLogo" Decode.bool })
+          HideAvardaLogo = get.Required.Field "hideAvardaLogo" Decode.bool
+          Extras = get.Required.Field "extras" extrasDecoder })
 
 let extraInitSettingsDecoder =
     Decode.object (fun get ->

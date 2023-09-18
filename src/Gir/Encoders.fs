@@ -147,6 +147,10 @@ let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: Ca
               "extraIdentifiers", Encode.object [ "orderReference", Encode.string settings.OrderReference ] ]
         |> Encode.toString 0
 
+let extrasEncoder (extras: Extras) =
+    Encode.object [ "extraTermsAndConditions", Encode.option Encode.string extras.ExtraTermsAndConditions ]
+
+
 let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
     Encode.object
         [ "disableFocus", Encode.bool checkoutFlags.DisableFocus
@@ -157,7 +161,8 @@ let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
           "shippingOptionChangedCallbackEnabled", Encode.bool checkoutFlags.ShippingOptionChangedCallbackEnabled
           "paymentMethodChangedCallbackEnabled", Encode.bool checkoutFlags.PaymentMethodChangedCallbackEnabled
           "modeChangedCallbackEnabled", Encode.bool checkoutFlags.ModeChangedCallbackEnabled
-          "hideAvardaLogo", Encode.bool checkoutFlags.HideAvardaLogo ]
+          "hideAvardaLogo", Encode.bool checkoutFlags.HideAvardaLogo
+          "extras", extrasEncoder checkoutFlags.Extras ]
 
 let paymentWidgetSettingsEncoder (paymentWidgetSettings: PaymentWidgetSettings) =
     Encode.object

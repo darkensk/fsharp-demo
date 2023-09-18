@@ -357,7 +357,8 @@ const initCheckout = (
   isShippingOptionChangedCallbackEnabled,
   isPaymentMethodChangedCallbackEnabled,
   isModeChangedCallbackEnabled,
-  hideAvardaLogo
+  hideAvardaLogo,
+  extraTermsAndConditions
 ) => {
   (function (e, t, n, a, s, c, o, i, r) {
     e[a] =
@@ -459,14 +460,20 @@ const initCheckout = (
     }
   };
 
-  var shippingOptionChangedCallback = function ({ price, currency }, avardaCheckoutInstance) {
+  var shippingOptionChangedCallback = function (
+    { price, currency },
+    avardaCheckoutInstance
+  ) {
     console.log("Price: ", price);
     console.log("Currency: ", currency);
 
     // Use data for your business logic
   };
 
-  var paymentMethodChangedCallback = function ({ paymentMethod, paymentFee }, avardaCheckoutInstance) {
+  var paymentMethodChangedCallback = function (
+    { paymentMethod, paymentFee },
+    avardaCheckoutInstance
+  ) {
     console.log("PaymentMethod: ", paymentMethod, "paymentFee: ", paymentFee);
 
     // Use data for your business logic
@@ -503,6 +510,11 @@ const initCheckout = (
     modeChangedCallback: isModeChangedCallbackEnabled
       ? modeChangedCallback
       : false,
-    hideAvardaLogo: hideAvardaLogo
+    hideAvardaLogo: hideAvardaLogo,
+    extras: {
+      extraTermsAndConditions: extraTermsAndConditions
+        ? extraTermsAndConditions
+        : null,
+    },
   });
 };
