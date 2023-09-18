@@ -46,7 +46,7 @@ let cartItemView (settings: Settings) (cartItem: CartItem) =
               [ a [ _href "#" ] [ img [ _src cartItem.ProductDetail.Img; _alt "Product" ] ] ]
           td [ _class "cart_product_desc" ] [ h5 [] [ str cartItem.ProductDetail.Name ] ]
           td
-              [ _class "price" ]
+              [ _class "price"; _style "max-width: 100px;" ]
               [ span
                     []
                     [ str
@@ -74,13 +74,20 @@ let cartItemView (settings: Settings) (cartItem: CartItem) =
                                         _id "qty"
                                         _step "1"
                                         _min "1"
-                                        _max "300"
+                                        _style "max-width: 40px"
                                         _name "quantity"
                                         _value (string cartItem.Qty)
                                         _disabled ]
                                   button
                                       [ _class "qty-plus qtyButtons"; _type "submit" ]
-                                      [ i [ _class "fa fa-plus" ] [] ] ] ] ] ] ]
+                                      [ i [ _class "fa fa-plus" ] [] ]
+                                  button
+                                      [ _class "qty-plus qtyButtons"
+                                        _type "submit"
+                                        _formaction (
+                                            sprintf "/product/%s/removeAll" <| string cartItem.ProductDetail.ProductId
+                                        ) ]
+                                      [ i [ _class "fa fa-trash" ] [] ] ] ] ] ] ]
 
 let cartSummaryView (settings: Settings) (cartState: CartState) =
     let subTotal =
@@ -235,9 +242,11 @@ let template
                                                                    []
                                                                    [ tr
                                                                          []
-                                                                         [ th [] []
+                                                                         [ th [ _class "cart_product_img" ] []
                                                                            th [] [ str "Name" ]
-                                                                           th [] [ str "Price" ]
+                                                                           th
+                                                                               [ _style "max-width: 100px;" ]
+                                                                               [ str "Price" ]
                                                                            th [] [ str "Quantity" ] ] ]
                                                                tbody
                                                                    []

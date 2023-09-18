@@ -680,7 +680,6 @@ let detailTemplate
                                                                       _id "qty"
                                                                       _step "1"
                                                                       _min "1"
-                                                                      _max "10"
                                                                       _name "quantity"
                                                                       _value "1" ]
                                                                 span
@@ -690,10 +689,7 @@ let detailTemplate
                                                                             _ariaHidden "true" ]
                                                                           [] ] ] ]
                                                     button
-                                                        [ _type "submit"
-                                                          _name "addtocart"
-                                                          _value "5"
-                                                          _class "btn amado-btn" ]
+                                                        [ _type "submit"; _class "btn amado-btn" ]
                                                         [ str "Add to cart" ] ]
                                               br []
                                               if settings.PaymentWidgetSettings.Enabled then

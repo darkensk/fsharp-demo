@@ -23,6 +23,7 @@ input[type="number"] {
   padding: 10px;
   font-size: 100%;
   font-family: inherit;
+  cursor: pointer;
 }
 
 #quantityForm {
@@ -91,4 +92,10 @@ details:not([open])>div {
 
 .settings-row:nth-child(even) {
   background-color: #F1EDF2;
+}
+
+@media (max-width: 600px) {
+  .cart_product_img {
+    display: none;
+  }
 }

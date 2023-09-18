@@ -13,29 +13,30 @@ open Views
 
 let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEvent: CartEvent) =
     match cartEvent with
-    | Add p ->
+    | Add(productId, quantity) ->
         let currentItems = sessionCart.Items
 
-        let isInTheCart = List.tryFind (fun i -> i.Id = p) currentItems
+        let itemMatchingAddedProductId =
+            List.tryFind (fun item -> item.Id = productId) currentItems
 
-        match isInTheCart with
-        | Some i ->
+        match itemMatchingAddedProductId with
+        | Some item ->
             let incrementQty changedItem currentItem =
                 if currentItem.Id = changedItem.Id then
                     { currentItem with
-                        Qty = currentItem.Qty + 1 }
+                        Qty = currentItem.Qty + quantity }
                 else
                     currentItem
 
-            let newItems = List.map (incrementQty i) currentItems
+            let newItems = List.map (incrementQty item) currentItems
             let newCart = { sessionCart with Items = newItems }
             newCart
         | None ->
-            match List.tryFind (fun prod -> prod.ProductId = p) products with
+            match List.tryFind (fun product -> product.ProductId = productId) products with
             | Some product ->
                 let newItem =
-                    { Id = p
-                      Qty = 1
+                    { Id = productId
+                      Qty = quantity
                       ProductDetail = product }
 
                 let newCart =
@@ -45,13 +46,14 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
                 newCart
             | None -> sessionCart
 
-    | Remove p ->
+    | Remove productId ->
         let currentItems = sessionCart.Items
 
-        let isInTheCart = List.tryFind (fun i -> i.Id = p) currentItems
+        let itemMatchingRemovedProductId =
+            List.tryFind (fun item -> item.Id = productId) currentItems
 
-        match isInTheCart with
-        | Some i ->
+        match itemMatchingRemovedProductId with
+        | Some item ->
             let decrementQty changedItem currentItem =
                 if currentItem.Id = changedItem.Id then
                     { currentItem with
@@ -59,10 +61,10 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
                 else
                     currentItem
 
-            let newItems = List.map (decrementQty i) currentItems
+            let newItems = List.map (decrementQty item) currentItems
 
             let newItemsWithoutZeroQ =
-                List.fold (fun acc x -> if x.Qty = 0 then acc else acc @ [ x ]) [] newItems
+                List.fold (fun acc item -> if item.Qty = 0 then acc else acc @ [ item ]) [] newItems
 
             let newCart =
                 { sessionCart with
@@ -70,6 +72,14 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
 
             newCart
         | None -> sessionCart
+    | RemoveAll productId ->
+        let currentItems = sessionCart.Items
+
+        let newItems = currentItems |> List.filter (fun item -> item.Id <> productId)
+
+        let newCart = { sessionCart with Items = newItems }
+
+        newCart
     | Clear -> { Items = [] }
 
 let cartHandler
@@ -118,10 +128,16 @@ let encodeAndSaveCart (ctx: HttpContext) = cartEncoder >> Session.setCartState c
 let addToCartHandler (productId: int) (getProducts: unit -> Product list) next (ctx: HttpContext) =
     task {
         let sessionCart = Session.getCartState ctx
+        let quantityString = ctx.Request.Form.Item("quantity").ToString()
+
+        let quantity =
+            try
+                int quantityString
+            with :? System.FormatException ->
+                1
 
         do
-            productId
-            |> CartEvent.Add
+            CartEvent.Add(productId, quantity)
             |> cartEventHandler sessionCart (getProducts ())
             |> encodeAndSaveCart ctx
 
@@ -135,6 +151,19 @@ let removeFromCartHandler (productId: int) (getProducts: unit -> Product list) n
         do
             productId
             |> CartEvent.Remove
+            |> cartEventHandler sessionCart (getProducts ())
+            |> encodeAndSaveCart ctx
+
+        return! next ctx
+    }
+
+let removeAllFromCartHandler (productId: int) (getProducts: unit -> Product list) next (ctx: HttpContext) =
+    task {
+        let sessionCart = Session.getCartState ctx
+
+        do
+            productId
+            |> CartEvent.RemoveAll
             |> cartEventHandler sessionCart (getProducts ())
             |> encodeAndSaveCart ctx
 
