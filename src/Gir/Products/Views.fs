@@ -215,13 +215,13 @@ let rawCustomStyles (apiPublicUrl: string) =
       "backgroundColor": "#ffffff",
       "color": "#4b4b4b",
       "borderColor": "#b2b2b2",
-      "selectArrowUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/default_selectArrow.svg"
+      "selectArrowUrl": "https://avdab0p0documentation.blob.core.windows.net/static/default_selectArrow.svg"
     },
     "disabled": {
       "backgroundColor": "#f5f5f5",
       "color": "#aeaeae",
       "borderColor": "#aeaeae",
-      "selectArrowUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/default_selectArrow.svg"
+      "selectArrowUrl": "https://avdab0p0documentation.blob.core.windows.net/static/default_selectArrow.svg"
     },
     "fontSize": 16,
     "lineHeight": 30,
@@ -318,22 +318,22 @@ let rawCustomStyles (apiPublicUrl: string) =
       "width": 20,
       "height": 20,
       "checked": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryChecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryChecked.svg"
       },
       "unchecked": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUnchecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUnchecked.svg"
       },
       "checkedDisabled": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryCheckedDisabled.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryCheckedDisabled.svg"
       },
       "uncheckedDisabled": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUncheckedDisabled.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxPrimaryUncheckedDisabled.svg"
       },
       "checkedInvalid": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg"
       },
       "uncheckedInvalid": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg"
       },
       "focusOutlineColor": "#fbb710",
       "checkedLabelColor": "#fbb710"
@@ -342,22 +342,22 @@ let rawCustomStyles (apiPublicUrl: string) =
       "width": 20,
       "height": 20,
       "checked": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryChecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryChecked.svg"
       },
       "unchecked": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUnchecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUnchecked.svg"
       },
       "checkedDisabled": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryCheckedDisabled.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryCheckedDisabled.svg"
       },
       "uncheckedDisabled": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUncheckedDisabled.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxSecondaryUncheckedDisabled.svg"
       },
       "checkedInvalid": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedChecked.svg"
       },
       "uncheckedInvalid": {
-        "backgroundUrl": "https://avdonl0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg"
+        "backgroundUrl": "https://avdab0p0documentation.blob.core.windows.net/static/custom_giraffe_CheckboxRedUnchecked.svg"
       },
       "focusOutlineColor": "#fbb710",
       "checkedLabelColor": "#fbb710"
