@@ -43,11 +43,42 @@ let checkboxView (inputId: string) (inputLabel: string) (helpText: string option
            |> Option.map (fun ht -> div [ helpTextRowStyles ] [ str ht ])
            |> Option.defaultValue (div [] [])) ]
 
-let textareaView (areaId: string) (areaLabel: string) =
+let textareaView
+    (areaId: string)
+    (areaLabel: string)
+    (helpText: string option)
+    (value: string option)
+    (isEnabled: bool)
+    =
+    let textareaStyles =
+        "resize: none; width: 50%; border: 1px solid #ccc; padding: 5px; font-size: 16px;"
+
+    let textareaRowStyles =
+        _style "display: flex; flex-direction: row; align-items: center; justify-content: space-between; height: 100px;"
+
+    let initValue =
+        match value with
+        | None -> ""
+        | Some value_ -> value_
+
     div
-        [ rowStyles; _class "settings-row" ]
-        [ label [ _for areaId; _style labelStyles ] [ str areaLabel ]
-          textarea [ _id areaId; _name areaId; _value ""; _form "settings" ] [] ]
+        [ _class "settings-row" ]
+        [ div
+              [ textareaRowStyles ]
+              [ label [ _for areaId; _style labelStyles ] [ str areaLabel ]
+                textarea
+                    [ _id areaId
+                      _name areaId
+                      _value initValue
+                      _form "settings"
+                      _style textareaStyles
+                      if not isEnabled then
+                          _disabled ]
+                    [ str initValue ] ]
+          (helpText
+           |> Option.map (fun ht -> div [ helpTextRowStyles ] [ str ht ])
+           |> Option.defaultValue (div [] [])) ]
+
 
 let selectView
     (selectId: string)
@@ -368,6 +399,13 @@ let template
                                             "Hide Avarda logo"
                                             None
                                             checkoutFlags.HideAvardaLogo
+                                            true
+                                        textareaView
+                                            "extraTermsAndConditions"
+                                            "Extra Terms&Conditions"
+                                            (Some
+                                                "Make sure you enable either SMS or Email newsletter checkbox in order to display extra t&c")
+                                            checkoutFlags.Extras.ExtraTermsAndConditions
                                             true
                                         div [] [ h3 [ _class "settings-heading" ] [ str "Payment Widget" ] ]
                                         checkboxView

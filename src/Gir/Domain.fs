@@ -92,6 +92,9 @@ type ExtraInitSettings =
       UseCustomEmailNewsletterSubscriptionText: bool
       SkipEmailZipEntry: bool }
 
+type Extras =
+    { ExtraTermsAndConditions: string option }
+
 type ExtraCheckoutFlags =
     { DisableFocus: bool
       BeforeSubmitCallbackEnabled: bool
@@ -101,7 +104,8 @@ type ExtraCheckoutFlags =
       ShippingOptionChangedCallbackEnabled: bool
       PaymentMethodChangedCallbackEnabled: bool
       ModeChangedCallbackEnabled: bool
-      HideAvardaLogo: bool }
+      HideAvardaLogo: bool
+      Extras: Extras }
 
 type Market =
     | Sweden
@@ -295,7 +299,8 @@ let defaultExtraCheckoutFlags =
       ShippingOptionChangedCallbackEnabled = false
       PaymentMethodChangedCallbackEnabled = false
       ModeChangedCallbackEnabled = false
-      HideAvardaLogo = false }
+      HideAvardaLogo = false
+      Extras = { ExtraTermsAndConditions = None } }
 
 
 let defaultExtraInitSettings =

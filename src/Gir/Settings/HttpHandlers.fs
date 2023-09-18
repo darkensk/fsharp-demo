@@ -28,6 +28,12 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
 
         let getValue s = ctx.Request.Form.Item(s).ToString()
 
+        let getTextAreaValue s =
+            match getValue s with
+            | "" -> None
+            | " " -> None
+            | value -> Some value
+
         let formData =
             { ExtraCheckoutFlags =
                 { DisableFocus = checkboxValue "disableFocus"
@@ -38,7 +44,8 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                   ShippingOptionChangedCallbackEnabled = checkboxValue "shippingOptionChangedCallbackEnabled"
                   PaymentMethodChangedCallbackEnabled = checkboxValue "paymentMethodChangedCallbackEnabled"
                   ModeChangedCallbackEnabled = checkboxValue "modeChangedCallbackEnabled"
-                  HideAvardaLogo = checkboxValue "hideAvardaLogo" }
+                  HideAvardaLogo = checkboxValue "hideAvardaLogo"
+                  Extras = { ExtraTermsAndConditions = getTextAreaValue "extraTermsAndConditions" } }
               ExtraInitSettings =
                 { Language = getValue "language" |> stringToLanguage
                   Mode = getValue "mode" |> stringToCheckoutMode

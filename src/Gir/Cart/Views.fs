@@ -7,6 +7,13 @@ open Gir.Utils
 
 
 let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
+    let flags = settings.ExtraCheckoutFlags
+
+    let extraTermsAndConditions =
+        match flags.Extras.ExtraTermsAndConditions with
+        | Some value -> value
+        | None -> ""
+
     div
         [ _id "checkout-form"; _style "padding-top: 50px;" ]
         (match purchaseToken with
@@ -17,18 +24,19 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
                    [ _type "application/javascript" ]
                    [ rawText
                      <| sprintf
-                         """initCheckout("%s", "%s", %b, %b, %b, %b, %b, %b, %b, %b, %b);"""
+                         """initCheckout("%s", "%s", %b, %b, %b, %b, %b, %b, %b, %b, %b, "%s");"""
                          checkoutFrontendBundleUrl
                          purchaseToken
-                         settings.ExtraCheckoutFlags.DisableFocus
-                         settings.ExtraCheckoutFlags.CustomStyles
-                         settings.ExtraCheckoutFlags.BeforeSubmitCallbackEnabled
-                         settings.ExtraCheckoutFlags.DeliveryAddressChangedCallbackEnabled
-                         settings.ExtraCheckoutFlags.IncludePaymentFeeInTotalPrice
-                         settings.ExtraCheckoutFlags.ShippingOptionChangedCallbackEnabled
-                         settings.ExtraCheckoutFlags.PaymentMethodChangedCallbackEnabled
-                         settings.ExtraCheckoutFlags.ModeChangedCallbackEnabled
-                         settings.ExtraCheckoutFlags.HideAvardaLogo ] ])
+                         flags.DisableFocus
+                         flags.CustomStyles
+                         flags.BeforeSubmitCallbackEnabled
+                         flags.DeliveryAddressChangedCallbackEnabled
+                         flags.IncludePaymentFeeInTotalPrice
+                         flags.ShippingOptionChangedCallbackEnabled
+                         flags.PaymentMethodChangedCallbackEnabled
+                         flags.ModeChangedCallbackEnabled
+                         flags.HideAvardaLogo
+                         extraTermsAndConditions ] ])
 
 let cartItemView (settings: Settings) (cartItem: CartItem) =
     tr
