@@ -78,6 +78,13 @@ let webApp (root: CompositionRoot) =
                         root.ApiPublicUrl
                         root.GetPartnerAccessToken
                     >=> redirectHandler)
+                routef "/product/%i/removeAll" (fun i ->
+                    Cart.HttpHandlers.removeAllFromCartHandler i root.GetAllProducts
+                    >=> Cart.HttpHandlers.updateItemsHandler
+                        root.CheckoutBackendApiUrl
+                        root.ApiPublicUrl
+                        root.GetPartnerAccessToken
+                    >=> redirectHandler)
                 route "/test/" >=> Test.HttpHandlers.easterEggHandler
                 route "/settings/save"
                 >=> Settings.HttpHandlers.saveSettingsHandler

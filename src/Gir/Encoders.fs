@@ -29,17 +29,17 @@ let cartEncoder (cartState: CartState) =
     Encode.object [ "items", Encode.list <| List.map (cartItemEncoder) cartState.Items ]
     |> Encode.toString 0
 
-let paymentItemEncoder (productDetail: Product) =
-
-    let productTax = (productDetail.Price * 0.2M)
+let checkoutItemEncoder (checkoutItem: CheckoutItem) =
+    let productTax = (checkoutItem.Price * 0.2M)
     let roundedProductTax = Math.Round(productTax, 2)
 
     Encode.object
-        [ "description", Encode.string productDetail.Name
+        [ "description", Encode.string checkoutItem.Name
           "notes", Encode.string "-"
-          "amount", Encode.decimal productDetail.Price
+          "amount", Encode.decimal checkoutItem.Price
           "taxCode", Encode.string "20%"
-          "taxAmount", Encode.decimal roundedProductTax ]
+          "taxAmount", Encode.decimal roundedProductTax
+          "quantity", Encode.int checkoutItem.Quantity ]
 
 let languageEncoder = languageToString >> Encode.string
 
@@ -126,24 +126,17 @@ let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: Ca
     if List.isEmpty items then
         ""
     else
-        let productsList =
-            // Checkout 3 will soon allow quantity
-            // - remove this fold and send quantity in init payment instead
-            List.fold
-                (fun acc x ->
-                    acc
-                    @ [ for i in 1 .. x.Qty do
-                            { ProductId = x.ProductDetail.ProductId
-                              Name = x.ProductDetail.Name
-                              Price = x.ProductDetail.Price
-                              Img = x.ProductDetail.Img
-                              BigImg = x.ProductDetail.BigImg } ])
-                []
+        let checkoutItems =
+            List.map
+                (fun cartItem ->
+                    { Name = cartItem.ProductDetail.Name
+                      Price = cartItem.ProductDetail.Price
+                      Quantity = cartItem.Qty })
                 items
 
         Encode.object
             [ "checkoutSetup", extraInitSettingsEncoderForInitPayment apiPublicUrl settings.ExtraInitSettings
-              "items", Encode.list <| List.map (paymentItemEncoder) productsList
+              "items", Encode.list <| List.map (checkoutItemEncoder) checkoutItems
               "extraIdentifiers", Encode.object [ "orderReference", Encode.string settings.OrderReference ] ]
         |> Encode.toString 0
 

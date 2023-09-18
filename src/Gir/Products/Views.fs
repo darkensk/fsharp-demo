@@ -668,32 +668,16 @@ let detailTemplate
                                                         [ p [] [ str "Qty" ]
                                                           div
                                                               [ _class "quantity" ]
-                                                              [ span
-                                                                    [ _class "qty-minus"; _onclick "" ]
-                                                                    [ i
-                                                                          [ _class "fa fa-caret-down"
-                                                                            _ariaHidden "true" ]
-                                                                          [] ]
-                                                                input
+                                                              [ input
                                                                     [ _type "number"
                                                                       _class "qty-text"
                                                                       _id "qty"
                                                                       _step "1"
                                                                       _min "1"
-                                                                      _max "10"
                                                                       _name "quantity"
-                                                                      _value "1" ]
-                                                                span
-                                                                    [ _class "qty-plus"; _onclick "" ]
-                                                                    [ i
-                                                                          [ _class "fa fa-caret-up"
-                                                                            _ariaHidden "true" ]
-                                                                          [] ] ] ]
+                                                                      _value "1" ] ] ]
                                                     button
-                                                        [ _type "submit"
-                                                          _name "addtocart"
-                                                          _value "5"
-                                                          _class "btn amado-btn" ]
+                                                        [ _type "submit"; _class "btn amado-btn" ]
                                                         [ str "Add to cart" ] ]
                                               br []
                                               if settings.PaymentWidgetSettings.Enabled then

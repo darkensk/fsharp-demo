@@ -7,9 +7,15 @@ type Product =
       Img: string
       BigImg: string }
 
+type CheckoutItem =
+    { Name: string
+      Price: decimal
+      Quantity: int }
+
 type CartEvent =
-    | Add of productId: int
+    | Add of productId: int * quantity: int
     | Remove of productId: int
+    | RemoveAll of productId: int
     | Clear
 
 type CartItem =
