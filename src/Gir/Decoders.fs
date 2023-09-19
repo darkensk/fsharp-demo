@@ -115,6 +115,10 @@ let paymentWidgetSettingsDecoder =
         { Enabled = get.Required.Field "enabled" Decode.bool
           CustomStyles = get.Required.Field "customStyles" Decode.bool })
 
+let additionalFeaturesDecoder =
+    Decode.object (fun (get: Decode.IGetters) ->
+        { PartnerShippingEnabled = get.Required.Field "partnerShippingEnabled" Decode.bool })
+
 let decodeSettings =
     Decode.object (fun (get: Decode.IGetters) ->
         { ExtraCheckoutFlags = get.Required.Field "extraCheckoutFlags" extraCheckoutFlagsDecoder
@@ -123,7 +127,8 @@ let decodeSettings =
           OrderReference =
             (get.Optional.Field "orderReference" Decode.string)
             |> Option.defaultValue defaultSettings.OrderReference
-          PaymentWidgetSettings = get.Required.Field "paymentWidgetSettings" paymentWidgetSettingsDecoder })
+          PaymentWidgetSettings = get.Required.Field "paymentWidgetSettings" paymentWidgetSettingsDecoder
+          AdditionalFeatures = get.Required.Field "additionalFeatures" additionalFeaturesDecoder })
 
 let settingsDecoder (settingsString: string) =
     match Decode.fromString decodeSettings settingsString with

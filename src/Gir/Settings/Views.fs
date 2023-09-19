@@ -4,6 +4,7 @@ open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
 open Gir.Utils
+open System
 
 let rowStyles: XmlAttribute =
     _style "display: flex; flex-direction: row; align-items: center; justify-content: space-between; height: 50px;"
@@ -167,13 +168,15 @@ let template
     (enabledMarkets: Market list)
     (settings: Settings)
     (cartState: CartState)
+    (partnerShippingBundleUrl: string)
     =
     let checkboxStateOptions =
         [ ("Hidden", false); ("Checked", false); ("Unchecked", false) ]
 
     let { ExtraInitSettings = initSettings
           ExtraCheckoutFlags = checkoutFlags
-          PaymentWidgetSettings = paymentWidgetSettings } =
+          PaymentWidgetSettings = paymentWidgetSettings
+          AdditionalFeatures = additionalFeatures } =
         settings
 
     let marketsOptions =
@@ -430,6 +433,14 @@ let template
                                             None
                                             paymentWidgetSettings.CustomStyles
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
+                                        div [] [ h3 [ _class "settings-heading" ] [ str "Additional Features" ] ]
+                                        checkboxView
+                                            "partnerShippingEnabled"
+                                            "Enable Partner Shipping Module"
+                                            (Some
+                                                "`partnerShippingBundleUrl` has to be provided and shipping module has to be setup on current partner in order to be used")
+                                            additionalFeatures.PartnerShippingEnabled
+                                            (String.IsNullOrEmpty partnerShippingBundleUrl |> not)
                                         div
                                             [ _style
                                                   "display: flex; flex: 1; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 10px;" ]
@@ -451,5 +462,7 @@ let settingsView
     (enabledMarkets: Market list)
     (settings: Settings)
     (cartState: CartState)
+    (partnerShippingBundleUrl: string)
     =
-    [ template paymentWidgetBundleUrl enabledMarkets settings cartState ] |> layout
+    [ template paymentWidgetBundleUrl enabledMarkets settings cartState partnerShippingBundleUrl ]
+    |> layout

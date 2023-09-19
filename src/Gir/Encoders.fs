@@ -162,13 +162,17 @@ let paymentWidgetSettingsEncoder (paymentWidgetSettings: PaymentWidgetSettings) 
         [ "enabled", Encode.bool paymentWidgetSettings.Enabled
           "customStyles", Encode.bool paymentWidgetSettings.CustomStyles ]
 
+let additionalFeaturesEncoder (additionalFeatures: AdditionalFeatures) =
+    Encode.object [ "partnerShippingEnabled", Encode.bool additionalFeatures.PartnerShippingEnabled ]
+
 let settingsEncoder (settings: Settings) =
     Encode.object
         [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
           "extraInitSettings", extraInitSettingsEncoderForSettings settings.ExtraInitSettings
           "market", settings.Market |> marketToString |> Encode.string
           "orderReference", Encode.string settings.OrderReference
-          "paymentWidgetSettings", paymentWidgetSettingsEncoder settings.PaymentWidgetSettings ]
+          "paymentWidgetSettings", paymentWidgetSettingsEncoder settings.PaymentWidgetSettings
+          "additionalFeatures", additionalFeaturesEncoder settings.AdditionalFeatures ]
     |> Encode.toString 0
 
 

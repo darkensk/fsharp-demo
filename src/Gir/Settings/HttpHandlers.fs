@@ -8,12 +8,18 @@ open Gir.Utils
 open Views
 
 
-let settingsHandler (paymentWidgetBundleUrl: string) (enabledMarkets: Market list) (next: HttpFunc) (ctx: HttpContext) =
+let settingsHandler
+    (paymentWidgetBundleUrl: string)
+    (enabledMarkets: Market list)
+    (partnerShippingBundleUrl: string)
+    (next: HttpFunc)
+    (ctx: HttpContext)
+    =
     let cartState = Session.getCartState ctx
     let settings = Session.getSettings ctx
 
     (htmlView
-     <| settingsView paymentWidgetBundleUrl enabledMarkets settings cartState)
+     <| settingsView paymentWidgetBundleUrl enabledMarkets settings cartState partnerShippingBundleUrl)
         next
         ctx
 
@@ -72,7 +78,8 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
               OrderReference = getValue "orderReference"
               PaymentWidgetSettings =
                 { Enabled = checkboxValue "paymentWidgetEnabled"
-                  CustomStyles = checkboxValue "paymentWidgetCustomStyles" } }
+                  CustomStyles = checkboxValue "paymentWidgetCustomStyles" }
+              AdditionalFeatures = { PartnerShippingEnabled = checkboxValue "partnerShippingEnabled" } }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx
