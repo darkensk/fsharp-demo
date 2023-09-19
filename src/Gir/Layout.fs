@@ -23,7 +23,8 @@ let _dataSlideTo = attr "data-slide-to"
 let _dataRide = attr "data-ride"
 
 let headerView (cartState: CartState) =
-    let cartSize = List.fold (fun acc x -> acc + x.Qty) 0 cartState.Items
+    let cartSize =
+        List.fold (fun (acc: int) (item: CartItem) -> acc + item.Qty) 0 cartState.Items
 
     let cartSizeString = "\"" + (string cartSize) + "\""
 
@@ -63,7 +64,7 @@ let headerView (cartState: CartState) =
                       str "Settings" ]
                 a [ _href "#"; _class "search-nav" ] [ img [ _src "/img/core-img/search.png"; _alt "" ]; str "Search" ] ] ]
 
-let footerView =
+let footerView: XmlNode =
     footer
         [ _class "footer_area clearfix" ]
         [ div
@@ -132,7 +133,7 @@ let footerView =
                     currentYearElement.textContent = currentYear;
             """ ] ]
 
-let subscribeSectionView =
+let subscribeSectionView: XmlNode =
     section
         [ _class "newsletter-area section-padding-100-0" ]
         [ div

@@ -55,10 +55,10 @@ let backendNotificationStateEncoder (apiPublicUrl: string) =
 
 let selectedPaymentMethodEncoder =
     function
-    | Selected pm -> pm |> paymentMethodsToString |> Encode.string
+    | Selected paymentMethod -> paymentMethod |> paymentMethodsToString |> Encode.string
     | NotSelected -> "" |> Encode.string
 
-let ageValidationEncoder ageValidation =
+let ageValidationEncoder (ageValidation: AgeValidation) =
     ageValidation |> ageValidationToString |> Encode.string
 
 let ageValidationEncoderExternal =
@@ -66,7 +66,7 @@ let ageValidationEncoderExternal =
     | Disabled -> Encode.nil
     | Enabled limit -> Encode.int limit
 
-let stringOrNullDecoder (condition: bool) (stringValue) =
+let stringOrNullDecoder (condition: bool) (stringValue: string) =
     if condition then Encode.string stringValue else Encode.nil
 
 let extraInitSettingsEncoderForInitPayment (apiPublicUrl: string) (initSettings: ExtraInitSettings) =
@@ -128,7 +128,7 @@ let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: Ca
     else
         let checkoutItems =
             List.map
-                (fun cartItem ->
+                (fun (cartItem: CartItem) ->
                     { Name = cartItem.ProductDetail.Name
                       Price = cartItem.ProductDetail.Price
                       Quantity = cartItem.Qty })

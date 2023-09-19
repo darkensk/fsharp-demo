@@ -17,7 +17,7 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
         let currentItems = sessionCart.Items
 
         let itemMatchingAddedProductId =
-            List.tryFind (fun item -> item.Id = productId) currentItems
+            List.tryFind (fun (item: CartItem) -> item.Id = productId) currentItems
 
         match itemMatchingAddedProductId with
         | Some item ->
@@ -32,7 +32,7 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
             let newCart = { sessionCart with Items = newItems }
             newCart
         | None ->
-            match List.tryFind (fun product -> product.ProductId = productId) products with
+            match List.tryFind (fun (product: Product) -> product.ProductId = productId) products with
             | Some product ->
                 let newItem =
                     { Id = productId
@@ -50,7 +50,7 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
         let currentItems = sessionCart.Items
 
         let itemMatchingRemovedProductId =
-            List.tryFind (fun item -> item.Id = productId) currentItems
+            List.tryFind (fun (item: CartItem) -> item.Id = productId) currentItems
 
         match itemMatchingRemovedProductId with
         | Some item ->
@@ -64,7 +64,10 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
             let newItems = List.map (decrementQty item) currentItems
 
             let newItemsWithoutZeroQ =
-                List.fold (fun acc item -> if item.Qty = 0 then acc else acc @ [ item ]) [] newItems
+                List.fold
+                    (fun (acc: CartItem list) (item: CartItem) -> if item.Qty = 0 then acc else acc @ [ item ])
+                    []
+                    newItems
 
             let newCart =
                 { sessionCart with
@@ -75,7 +78,8 @@ let cartEventHandler (sessionCart: CartState) (products: Product list) (cartEven
     | RemoveAll productId ->
         let currentItems = sessionCart.Items
 
-        let newItems = currentItems |> List.filter (fun item -> item.Id <> productId)
+        let newItems =
+            currentItems |> List.filter (fun (item: CartItem) -> item.Id <> productId)
 
         let newCart = { sessionCart with Items = newItems }
 
@@ -101,8 +105,8 @@ let cartHandler
             let! partnerToken = getPartnerAccessToken settings.Market
 
             match Session.tryGetPurchaseId ctx with
-            | Some v ->
-                let! purchaseToken = getReclaimToken partnerToken v
+            | Some purchaseId ->
+                let! purchaseToken = getReclaimToken partnerToken purchaseId
 
                 return!
                     htmlView
@@ -201,7 +205,7 @@ let updateItemsHandler
             let sessionPurchaseId = Session.tryGetPurchaseId ctx
 
             match sessionPurchaseId with
-            | Some v -> do! updateItems backendUrl apiPublicUrl settings cartState partnerToken v
+            | Some purchaseId -> do! updateItems backendUrl apiPublicUrl settings cartState partnerToken purchaseId
             | None ->
                 let! initPaymentResponse = getPurchaseToken backendUrl apiPublicUrl cartState partnerToken settings
                 Session.setPurchaseId ctx initPaymentResponse.PurchaseId
@@ -217,7 +221,10 @@ let completedHandler (backendUrl: string) (getPartnerAccessToken: Market -> Task
         match purchaseId with
         | Some id ->
             let! partnerToken = getPartnerAccessToken settings.Market
-            let! getPaymentStatusResponse = getPaymentStatus backendUrl partnerToken id
+            // Call getPaymentStatus
+            // We should check if the payment status is indeed Completed
+            // For demo purposes - call it to get the data logged on the Checkout side
+            let! _ = getPaymentStatus backendUrl partnerToken id
             Session.deleteCartState ctx
             Session.deletePurchaseId ctx
 

@@ -53,16 +53,16 @@ module Task =
 
 [<RequireQualifiedAccess>]
 module Session =
-    let private cartKey = "cart"
-    let private purchaseKey = "purchaseId"
-    let private settingsKey = "settings"
-    let private paymentWidgetStateKey = "paymentWidgetStateKey"
+    let private cartKey: string = "cart"
+    let private purchaseKey: string = "purchaseId"
+    let private settingsKey: string = "settings"
+    let private paymentWidgetStateKey: string = "paymentWidgetStateKey"
 
     let getCartState (ctx: HttpContext) =
         let currentCart =
             match ctx.Session.GetString(cartKey) with
             | null -> "{'items': []}"
-            | v -> v
+            | cart -> cart
 
         cartDecoder currentCart
 
@@ -74,7 +74,7 @@ module Session =
     let tryGetPurchaseId (ctx: HttpContext) =
         match ctx.Session.GetString(purchaseKey) with
         | null -> None
-        | v -> Some v
+        | purchaseId -> Some purchaseId
 
     let setPurchaseId (ctx: HttpContext) (purchaseId: string) =
         ctx.Session.SetString(purchaseKey, purchaseId)
@@ -84,7 +84,7 @@ module Session =
     let tryGetPaymentWidgetState (ctx: HttpContext) =
         match ctx.Session.GetString(paymentWidgetStateKey) with
         | null -> None
-        | v -> Some v
+        | paymentWidgetState -> Some paymentWidgetState
 
     let setPaymentWidgetState (ctx: HttpContext) (encodedPaymentWidgetState: string) =
         ctx.Session.SetString(paymentWidgetStateKey, encodedPaymentWidgetState)
