@@ -11,7 +11,7 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
 
     let extraTermsAndConditions =
         match flags.Extras.ExtraTermsAndConditions with
-        | Some value -> value
+        | Some termsAndConditions -> termsAndConditions
         | None -> ""
 
     div
@@ -91,7 +91,10 @@ let cartItemView (settings: Settings) (cartItem: CartItem) =
 
 let cartSummaryView (settings: Settings) (cartState: CartState) =
     let subTotal =
-        List.fold (fun acc x -> acc + (decimal x.Qty * x.ProductDetail.Price)) 0M cartState.Items
+        List.fold
+            (fun (acc: decimal) (item: CartItem) -> acc + (decimal item.Qty * item.ProductDetail.Price))
+            0M
+            cartState.Items
 
     let subTotalString = sprintf "%M %s" subTotal (marketToCurrency settings.Market)
 

@@ -5,18 +5,18 @@ open Gir.Layout
 open Gir.Domain
 open Gir.Utils
 
-let rowStyles =
+let rowStyles: XmlAttribute =
     _style "display: flex; flex-direction: row; align-items: center; justify-content: space-between; height: 50px;"
 
-let helpTextRowStyles =
+let helpTextRowStyles: XmlAttribute =
     _style
         "display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0px 20px 10px 20px; height: 20px; color: grey; font-size: 12px; font-weight: 100;"
 
-let columnStyles = _style "display: flex; flex-direction: column;"
+let columnStyles: XmlAttribute = _style "display: flex; flex-direction: column;"
 
-let labelStyles = "text-overflow: ellipsis; overflow: hidden; margin: 0px;"
+let labelStyles: string = "text-overflow: ellipsis; overflow: hidden; margin: 0px;"
 
-let checkboxLabelStyles =
+let checkboxLabelStyles: string =
     "text-overflow: ellipsis; overflow: hidden; margin: 0px; cursor: pointer;"
 
 let checkboxView (inputId: string) (inputLabel: string) (helpText: string option) (isChecked: bool) (isEnabled: bool) =
@@ -40,7 +40,7 @@ let checkboxView (inputId: string) (inputLabel: string) (helpText: string option
                           @ disabledAttribute
                       ) ] ]
           (helpText
-           |> Option.map (fun ht -> div [ helpTextRowStyles ] [ str ht ])
+           |> Option.map (fun (helpText: string) -> div [ helpTextRowStyles ] [ str helpText ])
            |> Option.defaultValue (div [] [])) ]
 
 let textareaView
@@ -76,7 +76,7 @@ let textareaView
                           _disabled ]
                     [ str initValue ] ]
           (helpText
-           |> Option.map (fun ht -> div [ helpTextRowStyles ] [ str ht ])
+           |> Option.map (fun (helpText: string) -> div [ helpTextRowStyles ] [ str helpText ])
            |> Option.defaultValue (div [] [])) ]
 
 
@@ -87,7 +87,7 @@ let selectView
     (selectedOption: string)
     (isEnabled: bool)
     =
-    let selectedOptionAttribute option =
+    let selectedOptionAttribute (option: string) =
         if option = selectedOption then [ _selected ] else []
 
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
@@ -98,21 +98,30 @@ let selectView
           select
               ([ _name selectId; _id selectId ] @ disabledAttribute)
               (List.map
-                  (fun (o, isDisabled) ->
+                  (fun (option_: string, isDisabled: bool) ->
                       option
-                          ([ _value o
+                          ([ _value option_
                              if isDisabled then
                                  _disabled ]
-                           @ selectedOptionAttribute o)
-                          [ str o ])
+                           @ selectedOptionAttribute option_)
+                          [ str option_ ])
                   selectOptions) ]
 
-let inputView inputType inputStyle inputId inputLabel helpText value isEnabled minMax =
+let inputView
+    (inputType: string)
+    (inputStyle: string)
+    (inputId: string)
+    (inputLabel: string)
+    (helpText: string option)
+    (value: string)
+    (isEnabled: bool)
+    (minMax: (string * string) option)
+    =
     let disabledAttribute = if isEnabled then [] else [ _disabled ]
 
     let minMaxAttributes =
         match minMax with
-        | Some(min, max) -> [ _min min; _max max ]
+        | Some(min: string, max: string) -> [ _min min; _max max ]
         | None -> []
 
     div
@@ -126,7 +135,7 @@ let inputView inputType inputStyle inputId inputLabel helpText value isEnabled m
                     @ minMaxAttributes
                 ) ]
           (helpText
-           |> Option.map (fun ht -> div [ helpTextRowStyles ] [ str ht ])
+           |> Option.map (fun (helpText: string) -> div [ helpTextRowStyles ] [ str helpText ])
            |> Option.defaultValue (div [] [])) ]
 
 let textInput =
@@ -167,7 +176,8 @@ let template
           PaymentWidgetSettings = paymentWidgetSettings } =
         settings
 
-    let marketsOptions = List.map (fun m -> (marketToString m, false)) enabledMarkets
+    let marketsOptions =
+        List.map (fun (market: Market) -> (marketToString market, false)) enabledMarkets
 
     let paymentWidgetHelpText =
         if (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl) then

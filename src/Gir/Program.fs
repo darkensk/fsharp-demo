@@ -60,26 +60,26 @@ let webApp (root: CompositionRoot) =
                 subRoute
                     "/test"
                     (choose
-                        [ subRoutef "/%s" (fun purchaseToken ->
+                        [ subRoutef "/%s" (fun (purchaseToken: string) ->
                               Test.HttpHandlers.testCheckoutHandler root.CheckoutFrontendBundle purchaseToken) ]) ]
           POST
           >=> choose
-              [ routef "/product/%i/add" (fun i ->
-                    Cart.HttpHandlers.addToCartHandler i root.GetAllProducts
+              [ routef "/product/%i/add" (fun (productId: int) ->
+                    Cart.HttpHandlers.addToCartHandler productId root.GetAllProducts
                     >=> Cart.HttpHandlers.updateItemsHandler
                         root.CheckoutBackendApiUrl
                         root.ApiPublicUrl
                         root.GetPartnerAccessToken
                     >=> redirectHandler)
-                routef "/product/%i/remove" (fun i ->
-                    Cart.HttpHandlers.removeFromCartHandler i root.GetAllProducts
+                routef "/product/%i/remove" (fun (productId: int) ->
+                    Cart.HttpHandlers.removeFromCartHandler productId root.GetAllProducts
                     >=> Cart.HttpHandlers.updateItemsHandler
                         root.CheckoutBackendApiUrl
                         root.ApiPublicUrl
                         root.GetPartnerAccessToken
                     >=> redirectHandler)
-                routef "/product/%i/removeAll" (fun i ->
-                    Cart.HttpHandlers.removeAllFromCartHandler i root.GetAllProducts
+                routef "/product/%i/removeAll" (fun (productId: int) ->
+                    Cart.HttpHandlers.removeAllFromCartHandler productId root.GetAllProducts
                     >=> Cart.HttpHandlers.updateItemsHandler
                         root.CheckoutBackendApiUrl
                         root.ApiPublicUrl
@@ -143,7 +143,10 @@ let configureServices (services: IServiceCollection) =
     services.ConfigureApplicationCookie(Action<_> cookieOptions) |> ignore
 
 let configureLogging (builder: ILoggingBuilder) =
-    builder.AddFilter(fun l -> l.Equals LogLevel.Error).AddConsole().AddDebug()
+    builder
+        .AddFilter(fun (logLevel: LogLevel) -> logLevel.Equals LogLevel.Error)
+        .AddConsole()
+        .AddDebug()
     |> ignore
 
 [<EntryPoint>]

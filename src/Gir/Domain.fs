@@ -296,7 +296,7 @@ let ageValidationToString =
     | Enabled limit -> limit |> string
     | Disabled -> ""
 
-let defaultExtraCheckoutFlags =
+let defaultExtraCheckoutFlags: ExtraCheckoutFlags =
     { DisableFocus = false
       BeforeSubmitCallbackEnabled = false
       DeliveryAddressChangedCallbackEnabled = false
@@ -309,7 +309,7 @@ let defaultExtraCheckoutFlags =
       Extras = { ExtraTermsAndConditions = None } }
 
 
-let defaultExtraInitSettings =
+let defaultExtraInitSettings: ExtraInitSettings =
     { Language = English
       Mode = B2C
       DifferentDeliveryAddress = Hidden
@@ -335,7 +335,7 @@ let defaultPaymentWidgetSettings: PaymentWidgetSettings =
     { Enabled = false
       CustomStyles = false }
 
-let defaultSettings =
+let defaultSettings: Settings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
       ExtraInitSettings = defaultExtraInitSettings
       Market = Sweden

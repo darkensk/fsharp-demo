@@ -19,17 +19,18 @@ let settingsHandler (paymentWidgetBundleUrl: string) (enabledMarkets: Market lis
 
 let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
     task {
-        let tryGetValue s = ctx.Request.Form.TryGetValue(s)
+        let tryGetValue fieldName = ctx.Request.Form.TryGetValue(fieldName)
 
-        let checkboxValue s =
-            match tryGetValue s with
+        let checkboxValue fieldName =
+            match tryGetValue fieldName with
             | (true, _) -> true
             | (false, _) -> false
 
-        let getValue s = ctx.Request.Form.Item(s).ToString()
+        let getValue fieldName =
+            ctx.Request.Form.Item(fieldName).ToString()
 
-        let getTextAreaValue s =
-            match getValue s with
+        let getTextAreaValue fieldName =
+            match getValue fieldName with
             | "" -> None
             | " " -> None
             | value -> Some value

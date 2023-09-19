@@ -28,12 +28,12 @@ let getRequestPartnerAccessToken (url: string) (clientId: string) (clientSecret:
             |> Task.map decodePartnerAccessToken
     }
 
-let isValid (t: string) =
+let isValid (tokenString: string) =
     let handler = JsonWebTokenHandler()
-    let jwt = handler.ReadJsonWebToken(t)
+    let jwt = handler.ReadJsonWebToken(tokenString)
 
     if jwt.ValidTo > System.DateTime.UtcNow then
-        (Some t)
+        (Some tokenString)
     else
         None
 
@@ -50,7 +50,7 @@ let getCachedToken (url: string) (market: Market) (clientId: string) (clientSecr
             let validToken = partnerAccessTokenCache |> Option.bind isValid
 
             match validToken with
-            | Some v -> return v
+            | Some token -> return token
             | None ->
                 let! token = getRequestPartnerAccessToken url clientId clientSecret
                 partnerAccessTokenCache <- Some token

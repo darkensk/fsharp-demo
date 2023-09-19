@@ -10,7 +10,7 @@ let partnerAccessTokenDecoder =
 let purchaseTokenDecoder = Decode.field "jwt" Decode.string |> Decode.fromString
 
 let productDecoder =
-    Decode.object (fun get ->
+    Decode.object (fun (get: Decode.IGetters) ->
         { ProductId = get.Required.Field "productId" Decode.int
           Name = get.Required.Field "name" Decode.string
           Price = get.Required.Field "price" Decode.decimal
@@ -18,51 +18,50 @@ let productDecoder =
           BigImg = get.Required.Field "bigImg" Decode.string })
 
 let cartItemDecoder =
-    Decode.object (fun get ->
+    Decode.object (fun (get: Decode.IGetters) ->
         { Id = get.Required.Field "id" Decode.int
           Qty = get.Required.Field "qty" Decode.int
           ProductDetail = get.Required.Field "product" productDecoder })
 
-let cartDecoder (s: string) =
+let cartDecoder (cartString: string) =
     let decoder =
-        Decode.object (fun get ->
+        Decode.object (fun (get: Decode.IGetters) ->
             { Items =
                 get.Optional.Field "items" (Decode.list cartItemDecoder)
                 |> Option.defaultValue [] })
 
-    match Decode.fromString decoder s with
-    | Ok i -> i
+    match Decode.fromString decoder cartString with
+    | Ok cartState -> cartState
     | Error e -> failwithf "Cannot decode cart, error = %A" e
 
 let decodePartnerAccessToken =
     partnerAccessTokenDecoder
     >> function
-        | Ok v -> v
+        | Ok partnerAccessToken -> partnerAccessToken
         | Error e -> failwithf "Cannot decode partner access token, error = %A" e
 
 let decodePurchaseToken =
     purchaseTokenDecoder
     >> function
-        | Ok v -> v
+        | Ok purchaseToken -> purchaseToken
         | Error e -> failwithf "Cannot decode purchase token, error = %A" e
 
-let initPaymentPayloadDecoder =
-    Decode.object (fun get ->
+let initPaymentResponseDecoder =
+    Decode.object (fun (get: Decode.IGetters) ->
         { PurchaseId = get.Required.Field "purchaseId" Decode.string
           Jwt = get.Required.Field "jwt" Decode.string })
 
-let initPaymentDecoder (s: string) =
-    match Decode.fromString initPaymentPayloadDecoder s with
-    | Ok v ->
-        { PurchaseId = v.PurchaseId
-          Jwt = v.Jwt }
+let initPaymentDecoder (initPaymentResponseString: string) =
+    match Decode.fromString initPaymentResponseDecoder initPaymentResponseString with
+    | Ok initPaymentResponse -> initPaymentResponse
     | Error e -> failwithf "Cannot decode init payment, error = %A" e
 
 let extrasDecoder =
-    Decode.object (fun get -> { ExtraTermsAndConditions = get.Optional.Field "extraTermsAndConditions" Decode.string })
+    Decode.object (fun (get: Decode.IGetters) ->
+        { ExtraTermsAndConditions = get.Optional.Field "extraTermsAndConditions" Decode.string })
 
 let extraCheckoutFlagsDecoder =
-    Decode.object (fun get ->
+    Decode.object (fun (get: Decode.IGetters) ->
         { DisableFocus = get.Required.Field "disableFocus" Decode.bool
           BeforeSubmitCallbackEnabled = get.Required.Field "beforeSubmitCallbackEnabled" Decode.bool
           DeliveryAddressChangedCallbackEnabled =
@@ -76,7 +75,7 @@ let extraCheckoutFlagsDecoder =
           Extras = get.Required.Field "extras" extrasDecoder })
 
 let extraInitSettingsDecoder =
-    Decode.object (fun get ->
+    Decode.object (fun (get: Decode.IGetters) ->
         { Language = (get.Required.Field "language" Decode.string) |> stringToLanguage
           Mode = (get.Required.Field "mode" Decode.string) |> stringToCheckoutMode
           DifferentDeliveryAddress =
@@ -112,12 +111,12 @@ let extraInitSettingsDecoder =
           SkipEmailZipEntry = get.Required.Field "skipEmailZipEntry" Decode.bool })
 
 let paymentWidgetSettingsDecoder =
-    Decode.object (fun get ->
+    Decode.object (fun (get: Decode.IGetters) ->
         { Enabled = get.Required.Field "enabled" Decode.bool
           CustomStyles = get.Required.Field "customStyles" Decode.bool })
 
 let decodeSettings =
-    Decode.object (fun get ->
+    Decode.object (fun (get: Decode.IGetters) ->
         { ExtraCheckoutFlags = get.Required.Field "extraCheckoutFlags" extraCheckoutFlagsDecoder
           ExtraInitSettings = get.Required.Field "extraInitSettings" extraInitSettingsDecoder
           Market = get.Required.Field "market" Decode.string |> stringToMarket
@@ -126,45 +125,35 @@ let decodeSettings =
             |> Option.defaultValue defaultSettings.OrderReference
           PaymentWidgetSettings = get.Required.Field "paymentWidgetSettings" paymentWidgetSettingsDecoder })
 
-let settingsDecoder (s: string) =
-    match Decode.fromString decodeSettings s with
-    | Ok v ->
-        { ExtraCheckoutFlags = v.ExtraCheckoutFlags
-          ExtraInitSettings = v.ExtraInitSettings
-          Market = v.Market
-          OrderReference = v.OrderReference
-          PaymentWidgetSettings = v.PaymentWidgetSettings }
+let settingsDecoder (settingsString: string) =
+    match Decode.fromString decodeSettings settingsString with
+    | Ok settings -> settings
     | Error e -> failwithf "Cannot decode settings, error = %A" e
 
 
 let decodeExtraIdentifiers =
-    Decode.object (fun get -> { OrderReference = get.Required.Field "orderReference" Decode.string })
+    Decode.object (fun (get: Decode.IGetters) -> { OrderReference = get.Required.Field "orderReference" Decode.string })
 
 
 let decodePaymentStatus =
-    Decode.object (fun get ->
+    Decode.object (fun (get: Decode.IGetters) ->
         { PurchaseId = get.Required.Field "purchaseId" Decode.string
           ExtraIdentifiers = get.Required.Field "extraIdentifiers" decodeExtraIdentifiers
           Mode = get.Required.Field "mode" Decode.string })
 
 
-let getPaymentStatusDecoder (s: string) =
-    match Decode.fromString decodePaymentStatus s with
-    | Ok v ->
-        { PurchaseId = v.PurchaseId
-          ExtraIdentifiers = v.ExtraIdentifiers
-          Mode = v.Mode }
+let getPaymentStatusDecoder (paymentStatusString: string) =
+    match Decode.fromString decodePaymentStatus paymentStatusString with
+    | Ok paymentStatus -> paymentStatus
     | Error e -> failwithf "Cannot decode get payment status, error = %A" e
 
 
-let initPaymentWidgetPayloadDecoder =
-    Decode.object (fun get ->
+let initPaymentWidgetStateDecoder =
+    Decode.object (fun (get: Decode.IGetters) ->
         { PaymentId = get.Required.Field "paymentId" Decode.string
           WidgetJwt = get.Required.Field "widgetJwt" Decode.string })
 
-let initPaymentWidgetDecoder (s: string) =
-    match Decode.fromString initPaymentWidgetPayloadDecoder s with
-    | Ok v ->
-        { PaymentId = v.PaymentId
-          WidgetJwt = v.WidgetJwt }
+let initPaymentWidgetDecoder (paymentWidgetStateString: string) =
+    match Decode.fromString initPaymentWidgetStateDecoder paymentWidgetStateString with
+    | Ok paymentWidgetState -> paymentWidgetState
     | Error e -> failwithf "Cannot decode init payment widget, error = %A" e

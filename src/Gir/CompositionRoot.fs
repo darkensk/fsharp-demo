@@ -17,7 +17,7 @@ type CompositionRoot =
       PaymentWidgetBundle: string
       GetPaymentWidgetToken: string -> Task<PaymentWidgetState> }
 
-let dummyProducts =
+let dummyProducts: Product list =
     let createProduct id name price img bigImg =
         { ProductId = id
           Name = name
@@ -77,7 +77,8 @@ module CompositionRoot =
         let hasCredentials market =
             market
             |> credentialsByMarket
-            |> (fun (clientId, clientSecret) -> (cfg.[clientId] = null || cfg.[clientSecret] = null) |> not)
+            |> (fun (clientId: string, clientSecret: string) ->
+                (cfg.[clientId] = null || cfg.[clientSecret] = null) |> not)
 
         let enabledMarkets = List.filter hasCredentials allMarkets
 
@@ -106,7 +107,10 @@ module CompositionRoot =
           GetPurchaseToken =
             Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] cfg.["apiPublicUrl"]
           GetAllProducts = fun _ -> dummyProducts
-          GetProductById = fun productId -> dummyProducts |> List.tryFind (fun product -> product.ProductId = productId)
+          GetProductById =
+            fun (productId: int) ->
+                dummyProducts
+                |> List.tryFind (fun (product: Product) -> product.ProductId = productId)
           ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"]
           ApiPublicUrl = cfg.["apiPublicUrl"]
           EnabledMarkets = enabledMarkets
