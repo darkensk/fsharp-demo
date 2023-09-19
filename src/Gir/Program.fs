@@ -31,6 +31,7 @@ let webApp (root: CompositionRoot) =
                     root.GetAllProducts
                     root.GetPartnerAccessToken
                     root.ReclaimPurchaseToken
+                    root.PartnerShippingBundle
                 route "/cart/clear"
                 >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
                 >=> redirectTo false "/cart/"
@@ -44,7 +45,10 @@ let webApp (root: CompositionRoot) =
                     root.GetPartnerAccessToken
                 >=> text "OK - Session Timed Out Callback Successfull"
                 route "/settings/"
-                >=> Settings.HttpHandlers.settingsHandler root.PaymentWidgetBundle root.EnabledMarkets
+                >=> Settings.HttpHandlers.settingsHandler
+                    root.PaymentWidgetBundle
+                    root.EnabledMarkets
+                    root.PartnerShippingBundle
                 subRoute
                     "/product"
                     (choose

@@ -4,7 +4,7 @@ open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
 open Gir.Utils
-
+open System
 
 let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     let flags = settings.ExtraCheckoutFlags
@@ -173,12 +173,24 @@ let languageSelectView =
                             _ariaHidden "true" ] ] ] ]
 
 
+let partnerShippingScriptView (partnerShippingBundleUrl: string) (isPartnerShippingEnabled: bool) =
+    if isPartnerShippingEnabled && not (String.IsNullOrEmpty partnerShippingBundleUrl) then
+        script
+            [ _src partnerShippingBundleUrl
+              _type "module"
+              _async
+              _crossorigin "annonymous" ]
+            []
+    else
+        div [] []
+
 let template
     (settings: Settings)
     (cartState: CartState)
     (products: Product list)
     (checkoutFrontendBundleUrl: string)
     (purchaseToken: string)
+    (partnerShippingBundleUrl: string)
     =
     let products = products |> List.map (productDiv settings)
 
@@ -259,6 +271,7 @@ let template
                                                  [ _class "col-12 col-lg-8" ]
                                                  [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken
                                                    languageSelectView ] ]) ] ] ]
+                partnerShippingScriptView partnerShippingBundleUrl settings.AdditionalFeatures.PartnerShippingEnabled
                 subscribeSectionView
                 footerView ] ]
 
@@ -267,7 +280,8 @@ let cartView
     (cartState: CartState)
     (checkoutFrontendBundleUrl: string)
     (purchaseToken: string)
+    (partnerShippingBundleUrl: string)
     (products: Product list)
     =
-    [ template settings cartState products checkoutFrontendBundleUrl purchaseToken ]
+    [ template settings cartState products checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl ]
     |> layout

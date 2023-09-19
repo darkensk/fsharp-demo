@@ -92,6 +92,7 @@ let cartHandler
     (getProducts: unit -> Product list)
     (getPartnerAccessToken: Market -> Task<string>)
     (getReclaimToken: string -> string -> Task<string>)
+    (partnerShippingBundleUrl: string)
     (next: HttpFunc)
     (ctx: HttpContext)
     =
@@ -100,7 +101,12 @@ let cartHandler
         let settings = Session.getSettings ctx
 
         if List.isEmpty cartState.Items then
-            return! htmlView (cartView settings cartState checkoutFrontendBundleUrl "" <| getProducts ()) next ctx
+            return!
+                htmlView
+                    (cartView settings cartState checkoutFrontendBundleUrl "" partnerShippingBundleUrl
+                     <| getProducts ())
+                    next
+                    ctx
         else
             let! partnerToken = getPartnerAccessToken settings.Market
 
@@ -110,7 +116,7 @@ let cartHandler
 
                 return!
                     htmlView
-                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
+                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl
                          <| getProducts ())
                         next
                         ctx
@@ -121,7 +127,7 @@ let cartHandler
 
                 return!
                     htmlView
-                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken
+                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl
                          <| getProducts ())
                         next
                         ctx

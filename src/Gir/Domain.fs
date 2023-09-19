@@ -129,12 +129,16 @@ type Market =
 
 type PaymentWidgetSettings = { Enabled: bool; CustomStyles: bool }
 
+
+type AdditionalFeatures = { PartnerShippingEnabled: bool }
+
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
       ExtraInitSettings: ExtraInitSettings
       Market: Market
       OrderReference: string
-      PaymentWidgetSettings: PaymentWidgetSettings }
+      PaymentWidgetSettings: PaymentWidgetSettings
+      AdditionalFeatures: AdditionalFeatures }
 
 let languageToString =
     function
@@ -335,12 +339,16 @@ let defaultPaymentWidgetSettings: PaymentWidgetSettings =
     { Enabled = false
       CustomStyles = false }
 
+let defaultAdditionalFeatures: AdditionalFeatures =
+    { PartnerShippingEnabled = false }
+
 let defaultSettings: Settings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
       ExtraInitSettings = defaultExtraInitSettings
       Market = Sweden
       OrderReference = "TEST-AVARDA-DEMO-SHOP"
-      PaymentWidgetSettings = defaultPaymentWidgetSettings }
+      PaymentWidgetSettings = defaultPaymentWidgetSettings
+      AdditionalFeatures = defaultAdditionalFeatures }
 
 type ExtraIdentifiers = { OrderReference: string }
 
