@@ -254,8 +254,8 @@ let rawCustomStyles (apiPublicUrl: string) =
     },
     "loanPayment": {
       "backgroundUrl": "[apiPublicUrl]/img/core-img/logo.png",
-      "width": 30,
-      "height": 30
+      "width": 100,
+      "height": 40
     },
     "partPayment": {
       "color": "#fbb710",
@@ -264,8 +264,8 @@ let rawCustomStyles (apiPublicUrl: string) =
     },
     "invoice": {
       "backgroundUrl": "[apiPublicUrl]/img/core-img/logo.png",
-      "width": 30,
-      "height": 30
+      "width": 100,
+      "height": 40
     },
     "directBank": {
       "color": "#fbb710",
