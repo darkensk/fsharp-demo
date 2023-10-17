@@ -1,17 +1,25 @@
 module Gir.Products.Views
 
+
 open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
 open Gir.Utils
+open System.Xml
 
 
 
 let avardaPaymentWidget = tag "avarda-payment-widget"
 
+let aprWidget = tag "avarda-apr-widget"
+
 let _priceAttribute = attr "price"
 
 let _languageAttribute = attr "lang"
+
+let _accountClass = attr "account-class"
+
+let _paymentMethod = attr "payment-method"
 
 let _widgetJwtAttribute = attr "data-widget-jwt"
 
@@ -451,7 +459,6 @@ let listTemplate (settings: Settings) (cartState: CartState) (productList: Produ
 let listView (settings: Settings) (cartState: CartState) (products: Product list) =
     [ listTemplate settings cartState products ] |> layout
 
-
 let languageSelectView =
     details
         []
@@ -461,7 +468,7 @@ let languageSelectView =
               [ button
                     [ _class "select-flag"
                       _id "flag-en"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'en');" ]
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'en'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'en');" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/gb.svg"
@@ -470,7 +477,7 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-se"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'sv');" ]
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'sv'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'sv');" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/se.svg"
@@ -479,7 +486,7 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-no"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'nb');" ]
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'nb'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'nb');" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/no.svg"
@@ -488,7 +495,7 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-dk"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'da');" ]
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'da'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'da');" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/dk.svg"
@@ -497,13 +504,12 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-fi"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'fi');" ]
+                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'fi'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'fi');" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/fi.svg"
                             _alt "Finnish language"
                             _ariaHidden "true" ] ] ] ]
-
 
 let detailTemplate
     (settings: Settings)
@@ -687,7 +693,13 @@ let detailTemplate
                                                             [ _priceAttribute <| sprintf "%M" product.Price
                                                               _languageAttribute selectedLanguageIsoCode ]
                                                             [ str "" ]
-                                                        languageSelectView ]
+                                                        aprWidget
+                                                            [ _languageAttribute selectedLanguageIsoCode
+                                                              _paymentMethod "Invoice" 
+                                                              _accountClass "214124124" ]
+                                                            [ str "" ]
+                                                        languageSelectView
+                                                      ]  
                                               else
                                                   str "" ] ] ] ] ] ]
           subscribeSectionView
