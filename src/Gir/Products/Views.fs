@@ -5,7 +5,6 @@ open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
 open Gir.Utils
-open System.Xml
 
 
 
