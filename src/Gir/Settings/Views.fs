@@ -176,7 +176,9 @@ let template
     let { ExtraInitSettings = initSettings
           ExtraCheckoutFlags = checkoutFlags
           PaymentWidgetSettings = paymentWidgetSettings
-          AdditionalFeatures = additionalFeatures } =
+          AdditionalFeatures = additionalFeatures
+          AprWidgetSettings = aprWidgetSettings
+          SharedWidgetSettings = sharedWidgetSettings } =
         settings
 
     let marketsOptions =
@@ -420,18 +422,26 @@ let template
                                                 "Make sure you enable either SMS or Email newsletter checkbox in order to display extra t&c")
                                             checkoutFlags.Extras.ExtraTermsAndConditions
                                             true
-                                        div [] [ h3 [ _class "settings-heading" ] [ str "Payment Widget" ] ]
+                                        div [] [ h3 [ _class "settings-heading" ] [ str "Payment and APR Widget" ] ]
                                         checkboxView
                                             "paymentWidgetEnabled"
                                             "Enable Payment Widget"
                                             paymentWidgetHelpText
                                             paymentWidgetSettings.Enabled
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
+                                        textareaView
+                                            "aprWidgetEnabled"
+                                            "Enable APR Widget"
+                                            (Some
+                                                "To enable the APR widget, please enter the account class in the text area field. If you need to enable multiple widgets, enter the numbers separated by semicolons, like this: 1;2;3."
+                                            )
+                                            aprWidgetSettings.AccountClass
+                                            (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         checkboxView
-                                            "paymentWidgetCustomStyles"
-                                            "Use Custom Styles in Payment Widget"
+                                            "sharedWidgetCustomStyles"
+                                            "Use Custom Styles in Widgets"
                                             None
-                                            paymentWidgetSettings.CustomStyles
+                                            sharedWidgetSettings.CustomStyles
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         div [] [ h3 [ _class "settings-heading" ] [ str "Additional Features" ] ]
                                         checkboxView

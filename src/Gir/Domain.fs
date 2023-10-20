@@ -127,10 +127,13 @@ type Market =
     | Germany
     | Austria
 
-type PaymentWidgetSettings = { Enabled: bool; CustomStyles: bool }
-
+type PaymentWidgetSettings = { Enabled: bool }
 
 type AdditionalFeatures = { PartnerShippingEnabled: bool }
+
+type AprWidgetSettings = { AccountClass: string option }
+
+type SharedWidgetSettings = { CustomStyles: bool }
 
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
@@ -138,7 +141,10 @@ type Settings =
       Market: Market
       OrderReference: string
       PaymentWidgetSettings: PaymentWidgetSettings
-      AdditionalFeatures: AdditionalFeatures }
+      AdditionalFeatures: AdditionalFeatures
+      AprWidgetSettings: AprWidgetSettings 
+      SharedWidgetSettings: SharedWidgetSettings
+    }
 
 let languageToString =
     function
@@ -336,11 +342,16 @@ let defaultExtraInitSettings: ExtraInitSettings =
       SkipEmailZipEntry = false }
 
 let defaultPaymentWidgetSettings: PaymentWidgetSettings =
-    { Enabled = false
-      CustomStyles = false }
+    { Enabled = false }
+
+let defaultAprWidgetSettings: AprWidgetSettings =
+    { AccountClass = None }
 
 let defaultAdditionalFeatures: AdditionalFeatures =
     { PartnerShippingEnabled = false }
+
+let defaultSharedWidgetSettings: SharedWidgetSettings =
+    { CustomStyles = false }
 
 let defaultSettings: Settings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
@@ -348,7 +359,10 @@ let defaultSettings: Settings =
       Market = Sweden
       OrderReference = "TEST-AVARDA-DEMO-SHOP"
       PaymentWidgetSettings = defaultPaymentWidgetSettings
-      AdditionalFeatures = defaultAdditionalFeatures }
+      AdditionalFeatures = defaultAdditionalFeatures
+      AprWidgetSettings = defaultAprWidgetSettings
+      SharedWidgetSettings = defaultSharedWidgetSettings 
+    }
 
 type ExtraIdentifiers = { OrderReference: string }
 

@@ -112,12 +112,19 @@ let extraInitSettingsDecoder =
 
 let paymentWidgetSettingsDecoder =
     Decode.object (fun (get: Decode.IGetters) ->
-        { Enabled = get.Required.Field "enabled" Decode.bool
-          CustomStyles = get.Required.Field "customStyles" Decode.bool })
+        { Enabled = get.Required.Field "enabled" Decode.bool })
 
 let additionalFeaturesDecoder =
     Decode.object (fun (get: Decode.IGetters) ->
         { PartnerShippingEnabled = get.Required.Field "partnerShippingEnabled" Decode.bool })
+
+let aprWidgetSettingsDecoder =
+    Decode.object (fun (get: Decode.IGetters) ->
+        { AccountClass = get.Optional.Field "accountClass" Decode.string })
+
+let sharedWidgetSettingsDecoder =
+    Decode.object (fun (get: Decode.IGetters) -> 
+        { CustomStyles = get.Required.Field "customStyles" Decode.bool })
 
 let decodeSettings =
     Decode.object (fun (get: Decode.IGetters) ->
@@ -128,8 +135,11 @@ let decodeSettings =
             (get.Optional.Field "orderReference" Decode.string)
             |> Option.defaultValue defaultSettings.OrderReference
           PaymentWidgetSettings = get.Required.Field "paymentWidgetSettings" paymentWidgetSettingsDecoder
-          AdditionalFeatures = get.Required.Field "additionalFeatures" additionalFeaturesDecoder })
-
+          AdditionalFeatures = get.Required.Field "additionalFeatures" additionalFeaturesDecoder
+          AprWidgetSettings = get.Required.Field "aprWidgetSettings" aprWidgetSettingsDecoder
+          SharedWidgetSettings = get.Required.Field "sharedWidgetCustomStyles" sharedWidgetSettingsDecoder
+        })
+          
 let settingsDecoder (settingsString: string) =
     match Decode.fromString decodeSettings settingsString with
     | Ok settings -> settings

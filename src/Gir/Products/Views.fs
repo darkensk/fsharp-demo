@@ -379,7 +379,7 @@ let rawCustomStyles (apiPublicUrl: string) =
 
 let paymentWidgetScriptView
     (paymentWidgetBundleUrl: string)
-    (paymentWidgetSettings: PaymentWidgetSettings)
+    (sharedWidgetCustomStyles: SharedWidgetSettings)
     (paymentWidgetState: PaymentWidgetState option)
     (apiPublicUrl: string)
     =
@@ -394,7 +394,7 @@ let paymentWidgetScriptView
             + "?ts="
             + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()
 
-        if paymentWidgetSettings.CustomStyles then
+        if sharedWidgetCustomStyles.CustomStyles then
             script
                 [ _async
                   _crossorigin "annonymous"
@@ -458,16 +458,22 @@ let listTemplate (settings: Settings) (cartState: CartState) (productList: Produ
 let listView (settings: Settings) (cartState: CartState) (products: Product list) =
     [ listTemplate settings cartState products ] |> layout
 
-let languageSelectView =
+let languageSelectView (widgetName: string) =
+    let widgetHeader =
+      match widgetName with
+        | "avarda-payment-widget" -> "Payment Widget"
+        | "avarda-apr-widget" -> "APR Widget"
+        | _ -> "Widget"
+
     details
         []
-        [ summary [ _class "select-language-summary" ] [ str "Select language of Payment Widget" ]
+        [ summary [ _class "select-language-summary" ] [ str $"Select language of {widgetHeader}" ]
           div
               [ _class "select-language-container" ]
               [ button
                     [ _class "select-flag"
                       _id "flag-en"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'en'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'en');" ]
+                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'en')" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/gb.svg"
@@ -476,7 +482,7 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-se"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'sv'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'sv');" ]
+                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'sv')" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/se.svg"
@@ -485,7 +491,7 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-no"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'nb'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'nb');" ]
+                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'nb')" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/no.svg"
@@ -494,7 +500,7 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-dk"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'da'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'da');" ]
+                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'da')" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/dk.svg"
@@ -503,7 +509,7 @@ let languageSelectView =
                 button
                     [ _class "select-flag"
                       _id "flag-fi"
-                      _onclick "document.querySelector('avarda-payment-widget').setAttribute('lang', 'fi'); document.querySelector('avarda-apr-widget').setAttribute('lang', 'fi');" ]
+                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'fi');" ]
                     [ img
                           [ _class "flag"
                             _src "/img/flags/fi.svg"
@@ -520,6 +526,31 @@ let detailTemplate
     =
     let selectedLanguageIsoCode =
         settings.ExtraInitSettings.Language |> languageToIsoCode
+
+    
+    let aprWidgetView (accountClassString: string) =
+      aprWidget
+        [ _languageAttribute selectedLanguageIsoCode
+          _paymentMethod "Invoice" 
+          _accountClass accountClassString ] 
+        [ str "" ]    
+          
+
+    let aprWidgetsView (test: string option) =
+      match test with
+      | Some str ->
+          let accountClassListFromString = 
+              str.Split([|';'|], System.StringSplitOptions.RemoveEmptyEntries)
+                |> Array.map (fun s -> s.Trim())
+                |> Array.toList
+
+          let aprWidgetElementView =
+            [languageSelectView "avarda-apr-widget"]
+            |> List.append (accountClassListFromString |> List.map aprWidgetView)
+
+          div [] aprWidgetElementView
+
+      | None -> div [] []
 
     div
         []
@@ -692,18 +723,15 @@ let detailTemplate
                                                             [ _priceAttribute <| sprintf "%M" product.Price
                                                               _languageAttribute selectedLanguageIsoCode ]
                                                             [ str "" ]
-                                                        aprWidget
-                                                            [ _languageAttribute selectedLanguageIsoCode
-                                                              _paymentMethod "Invoice" 
-                                                              _accountClass "214124124" ]
-                                                            [ str "" ]
-                                                        languageSelectView
+                                                        languageSelectView "avarda-payment-widget"
                                                       ]  
                                               else
-                                                  str "" ] ] ] ] ] ]
+                                                 str "" 
+                                              aprWidgetsView settings.AprWidgetSettings.AccountClass
+                                              ] ] ] ] ] ]
           subscribeSectionView
           footerView
-          paymentWidgetScriptView paymentWidgetBundleUrl settings.PaymentWidgetSettings paymentWidgetState apiPublicUrl ]
+          paymentWidgetScriptView paymentWidgetBundleUrl settings.SharedWidgetSettings paymentWidgetState apiPublicUrl ]
 
 let productDetailView
     (settings: Settings)
