@@ -131,7 +131,9 @@ type PaymentWidgetSettings = { Enabled: bool }
 
 type AdditionalFeatures = { PartnerShippingEnabled: bool }
 
-type AprWidgetSettings = { AccountClass: string option }
+type AprWidgetSettings =
+    { AccountClass: string option
+      Enabled: bool }
 
 type SharedWidgetSettings = { CustomStyles: bool }
 
@@ -142,9 +144,8 @@ type Settings =
       OrderReference: string
       PaymentWidgetSettings: PaymentWidgetSettings
       AdditionalFeatures: AdditionalFeatures
-      AprWidgetSettings: AprWidgetSettings 
-      SharedWidgetSettings: SharedWidgetSettings
-    }
+      AprWidgetSettings: AprWidgetSettings
+      SharedWidgetSettings: SharedWidgetSettings }
 
 let languageToString =
     function
@@ -341,17 +342,15 @@ let defaultExtraInitSettings: ExtraInitSettings =
       UseCustomEmailNewsletterSubscriptionText = false
       SkipEmailZipEntry = false }
 
-let defaultPaymentWidgetSettings: PaymentWidgetSettings =
-    { Enabled = false }
+let defaultPaymentWidgetSettings: PaymentWidgetSettings = { Enabled = false }
 
 let defaultAprWidgetSettings: AprWidgetSettings =
-    { AccountClass = None }
+    { AccountClass = None; Enabled = false }
 
 let defaultAdditionalFeatures: AdditionalFeatures =
     { PartnerShippingEnabled = false }
 
-let defaultSharedWidgetSettings: SharedWidgetSettings =
-    { CustomStyles = false }
+let defaultSharedWidgetSettings: SharedWidgetSettings = { CustomStyles = false }
 
 let defaultSettings: Settings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
@@ -361,8 +360,7 @@ let defaultSettings: Settings =
       PaymentWidgetSettings = defaultPaymentWidgetSettings
       AdditionalFeatures = defaultAdditionalFeatures
       AprWidgetSettings = defaultAprWidgetSettings
-      SharedWidgetSettings = defaultSharedWidgetSettings 
-    }
+      SharedWidgetSettings = defaultSharedWidgetSettings }
 
 type ExtraIdentifiers = { OrderReference: string }
 

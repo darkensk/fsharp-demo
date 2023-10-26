@@ -76,14 +76,12 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
                   SkipEmailZipEntry = checkboxValue "skipEmailZipEntry" }
               Market = getValue "market" |> stringToMarket
               OrderReference = getValue "orderReference"
-              PaymentWidgetSettings =
-                { Enabled = checkboxValue "paymentWidgetEnabled" }
-              AdditionalFeatures = { PartnerShippingEnabled = checkboxValue "partnerShippingEnabled" } 
+              PaymentWidgetSettings = { Enabled = checkboxValue "paymentWidgetEnabled" }
+              AdditionalFeatures = { PartnerShippingEnabled = checkboxValue "partnerShippingEnabled" }
               AprWidgetSettings =
-                { AccountClass = getTextAreaValue "aprWidgetEnabled" }
-              SharedWidgetSettings =
-                { CustomStyles = checkboxValue "sharedWidgetCustomStyles" }
-            }
+                { AccountClass = getTextAreaValue "aprWidgetAccountClass"
+                  Enabled = checkboxValue "aprWidgetEnabled" }
+              SharedWidgetSettings = { CustomStyles = checkboxValue "sharedWidgetCustomStyles" } }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx

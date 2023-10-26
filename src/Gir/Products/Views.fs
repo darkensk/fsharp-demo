@@ -460,7 +460,7 @@ let listView (settings: Settings) (cartState: CartState) (products: Product list
 
 let languageSelectView (widgetName: string) =
     let widgetHeader =
-      match widgetName with
+        match widgetName with
         | "avarda-payment-widget" -> "Payment Widget"
         | "avarda-apr-widget" -> "APR Widget"
         | _ -> "Widget"
@@ -527,30 +527,34 @@ let detailTemplate
     let selectedLanguageIsoCode =
         settings.ExtraInitSettings.Language |> languageToIsoCode
 
-    
-    let aprWidgetView (accountClassString: string) =
-      aprWidget
-        [ _languageAttribute selectedLanguageIsoCode
-          _paymentMethod "Invoice" 
-          _accountClass accountClassString ] 
-        [ str "" ]    
-          
 
-    let aprWidgetsView (test: string option) =
-      match test with
-      | Some str ->
-          let accountClassListFromString = 
-              str.Split([|';'|], System.StringSplitOptions.RemoveEmptyEntries)
+    let aprWidgetView (accountClassString: string) =
+        aprWidget
+            [ _languageAttribute selectedLanguageIsoCode
+              _paymentMethod "Invoice"
+              _accountClass accountClassString ]
+            [ str "" ]
+
+    let aprWidgetsView (accountClassSettings: string option) =
+        match accountClassSettings with
+        | Some str ->
+            let accountClassListFromString =
+                str.Split([| ';' |], System.StringSplitOptions.RemoveEmptyEntries)
                 |> Array.map (fun s -> s.Trim())
                 |> Array.toList
 
-          let aprWidgetElementView =
-            [languageSelectView "avarda-apr-widget"]
-            |> List.append (accountClassListFromString |> List.map aprWidgetView)
+            let aprWidgetElementView =
+                [ languageSelectView "avarda-apr-widget" ]
+                |> List.append (accountClassListFromString |> List.map aprWidgetView)
 
-          div [] aprWidgetElementView
+            div [] aprWidgetElementView
 
-      | None -> div [] []
+        | None ->
+            div
+                []
+                [ aprWidget [ _languageAttribute selectedLanguageIsoCode; _paymentMethod "Invoice" ] [ str "" ]
+                  (languageSelectView "avarda-apr-widget") ]
+
 
     div
         []
@@ -723,12 +727,13 @@ let detailTemplate
                                                             [ _priceAttribute <| sprintf "%M" product.Price
                                                               _languageAttribute selectedLanguageIsoCode ]
                                                             [ str "" ]
-                                                        languageSelectView "avarda-payment-widget"
-                                                      ]  
+                                                        languageSelectView "avarda-payment-widget" ]
                                               else
-                                                 str "" 
-                                              aprWidgetsView settings.AprWidgetSettings.AccountClass
-                                              ] ] ] ] ] ]
+                                                  str ""
+                                              if settings.AprWidgetSettings.Enabled then
+                                                  aprWidgetsView settings.AprWidgetSettings.AccountClass
+                                              else
+                                                  str "" ] ] ] ] ] ]
           subscribeSectionView
           footerView
           paymentWidgetScriptView paymentWidgetBundleUrl settings.SharedWidgetSettings paymentWidgetState apiPublicUrl ]

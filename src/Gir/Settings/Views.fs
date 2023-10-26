@@ -429,12 +429,17 @@ let template
                                             paymentWidgetHelpText
                                             paymentWidgetSettings.Enabled
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
-                                        textareaView
+                                        checkboxView
                                             "aprWidgetEnabled"
                                             "Enable APR Widget"
+                                            paymentWidgetHelpText
+                                            aprWidgetSettings.Enabled
+                                            (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
+                                        textareaView
+                                            "aprWidgetAccountClass"
+                                            "Add APR Account class"
                                             (Some
-                                                "To enable the APR widget, please enter the account class in the text area field. If you need to enable multiple widgets, enter the numbers separated by semicolons, like this: 1;2;3."
-                                            )
+                                                "To enable the APR widget, please enter the account class in the text area field. If you need to enable multiple widgets, enter the numbers separated by semicolons, like this: 1;2;3.")
                                             aprWidgetSettings.AccountClass
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         checkboxView

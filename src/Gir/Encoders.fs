@@ -158,19 +158,18 @@ let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
           "extras", extrasEncoder checkoutFlags.Extras ]
 
 let paymentWidgetSettingsEncoder (paymentWidgetSettings: PaymentWidgetSettings) =
-    Encode.object
-        [ "enabled", Encode.bool paymentWidgetSettings.Enabled ]
+    Encode.object [ "enabled", Encode.bool paymentWidgetSettings.Enabled ]
 
 let aprWidgetSettingEncoder (aprWidgetSettings: AprWidgetSettings) =
-    Encode.object 
-        [ "accountClass", Encode.option Encode.string aprWidgetSettings.AccountClass ]
+    Encode.object
+        [ "accountClass", Encode.option Encode.string aprWidgetSettings.AccountClass
+          "enabled", Encode.bool aprWidgetSettings.Enabled ]
 
 let additionalFeaturesEncoder (additionalFeatures: AdditionalFeatures) =
     Encode.object [ "partnerShippingEnabled", Encode.bool additionalFeatures.PartnerShippingEnabled ]
 
 let sharedWidgetSettingsEncoder (sharedWidgetSettings: SharedWidgetSettings) =
-    Encode.object
-        [ "customStyles", Encode.bool sharedWidgetSettings.CustomStyles ]
+    Encode.object [ "customStyles", Encode.bool sharedWidgetSettings.CustomStyles ]
 
 let settingsEncoder (settings: Settings) =
     Encode.object
@@ -180,7 +179,7 @@ let settingsEncoder (settings: Settings) =
           "orderReference", Encode.string settings.OrderReference
           "paymentWidgetSettings", paymentWidgetSettingsEncoder settings.PaymentWidgetSettings
           "additionalFeatures", additionalFeaturesEncoder settings.AdditionalFeatures
-          "aprWidgetSettings", aprWidgetSettingEncoder settings.AprWidgetSettings 
+          "aprWidgetSettings", aprWidgetSettingEncoder settings.AprWidgetSettings
           "sharedWidgetCustomStyles", sharedWidgetSettingsEncoder settings.SharedWidgetSettings ]
     |> Encode.toString 0
 

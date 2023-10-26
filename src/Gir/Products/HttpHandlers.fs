@@ -35,7 +35,7 @@ let detailHandler
         | Some product ->
             if
                 isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl
-                && (settings.PaymentWidgetSettings.Enabled || Option.isSome settings.AprWidgetSettings.AccountClass)
+                && (settings.PaymentWidgetSettings.Enabled || settings.AprWidgetSettings.Enabled)
             then
                 match Session.tryGetPaymentWidgetState ctx with
                 | Some paymentWidgetState ->
