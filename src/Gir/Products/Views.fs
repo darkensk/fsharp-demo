@@ -540,7 +540,7 @@ let detailTemplate
         | Some str ->
             let accountClassListFromString =
                 str.Split([| ';' |], System.StringSplitOptions.RemoveEmptyEntries)
-                |> Array.map (fun s -> s.Trim())
+                |> Array.map (fun accountClassName -> accountClassName.Trim())
                 |> Array.toList
 
             let aprWidgetElementView =
