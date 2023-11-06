@@ -340,9 +340,9 @@ let defaultExtraInitSettings: ExtraInitSettings =
       UseCustomEmailNewsletterSubscriptionText = false
       SkipEmailZipEntry = false }
 
-let defaultPaymentWidgetSettings: PaymentWidgetSettings = { Enabled = true }
+let defaultPaymentWidgetSettings: PaymentWidgetSettings = { Enabled = false }
 
-let defaultAprWidgetSettings: AprWidgetSettings = { Enabled = true }
+let defaultAprWidgetSettings: AprWidgetSettings = { Enabled = false }
 
 let defaultAdditionalFeatures: AdditionalFeatures =
     { PartnerShippingEnabled = false }
