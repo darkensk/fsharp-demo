@@ -161,9 +161,7 @@ let paymentWidgetSettingsEncoder (paymentWidgetSettings: PaymentWidgetSettings) 
     Encode.object [ "enabled", Encode.bool paymentWidgetSettings.Enabled ]
 
 let aprWidgetSettingEncoder (aprWidgetSettings: AprWidgetSettings) =
-    Encode.object
-        [ "accountClass", Encode.option Encode.string aprWidgetSettings.AccountClass
-          "enabled", Encode.bool aprWidgetSettings.Enabled ]
+    Encode.object [ "enabled", Encode.bool aprWidgetSettings.Enabled ]
 
 let additionalFeaturesEncoder (additionalFeatures: AdditionalFeatures) =
     Encode.object [ "partnerShippingEnabled", Encode.bool additionalFeatures.PartnerShippingEnabled ]

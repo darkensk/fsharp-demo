@@ -110,17 +110,15 @@ let extraInitSettingsDecoder =
             get.Required.Field "useCustomEmailNewsletterSubscriptionText" Decode.bool
           SkipEmailZipEntry = get.Required.Field "skipEmailZipEntry" Decode.bool })
 
-let paymentWidgetSettingsDecoder =
+let paymentWidgetSettingsDecoder: Decoder<PaymentWidgetSettings> =
     Decode.object (fun (get: Decode.IGetters) -> { Enabled = get.Required.Field "enabled" Decode.bool })
 
 let additionalFeaturesDecoder =
     Decode.object (fun (get: Decode.IGetters) ->
         { PartnerShippingEnabled = get.Required.Field "partnerShippingEnabled" Decode.bool })
 
-let aprWidgetSettingsDecoder =
-    Decode.object (fun (get: Decode.IGetters) ->
-        { AccountClass = get.Optional.Field "accountClass" Decode.string
-          Enabled = get.Required.Field "enabled" Decode.bool })
+let aprWidgetSettingsDecoder: Decoder<AprWidgetSettings> =
+    Decode.object (fun (get: Decode.IGetters) -> { Enabled = get.Required.Field "enabled" Decode.bool })
 
 let sharedWidgetSettingsDecoder =
     Decode.object (fun (get: Decode.IGetters) -> { CustomStyles = get.Required.Field "customStyles" Decode.bool })

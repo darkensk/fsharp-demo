@@ -78,9 +78,7 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
               OrderReference = getValue "orderReference"
               PaymentWidgetSettings = { Enabled = checkboxValue "paymentWidgetEnabled" }
               AdditionalFeatures = { PartnerShippingEnabled = checkboxValue "partnerShippingEnabled" }
-              AprWidgetSettings =
-                { AccountClass = getTextAreaValue "aprWidgetAccountClass"
-                  Enabled = checkboxValue "aprWidgetEnabled" }
+              AprWidgetSettings = { Enabled = checkboxValue "aprWidgetEnabled" }
               SharedWidgetSettings = { CustomStyles = checkboxValue "sharedWidgetCustomStyles" } }
 
         Session.setSettings ctx formData

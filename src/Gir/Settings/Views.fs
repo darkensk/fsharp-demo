@@ -435,13 +435,6 @@ let template
                                             paymentWidgetHelpText
                                             aprWidgetSettings.Enabled
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
-                                        textareaView
-                                            "aprWidgetAccountClass"
-                                            "Add APR Account class"
-                                            (Some
-                                                "Please enter the account class in the text area field. If you need to initializate multiple widgets, enter the numbers separated by semicolons, like this: 1;2;3.")
-                                            aprWidgetSettings.AccountClass
-                                            (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         checkboxView
                                             "sharedWidgetCustomStyles"
                                             "Use Custom Styles in Widgets"
