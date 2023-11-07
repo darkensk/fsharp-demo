@@ -465,56 +465,137 @@ let languageSelectView (widgetName: string) =
         | "avarda-apr-widget" -> "APR Widget"
         | _ -> "Widget"
 
-    details
-        []
-        [ summary [ _class "select-language-summary" ] [ str $"Select language of {widgetHeader}" ]
-          div
-              [ _class "select-language-container" ]
-              [ button
-                    [ _class "select-flag"
-                      _id "flag-en"
-                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'en')" ]
-                    [ img
-                          [ _class "flag"
-                            _src "/img/flags/gb.svg"
-                            _alt "English language"
-                            _ariaHidden "true" ] ]
-                button
-                    [ _class "select-flag"
-                      _id "flag-se"
-                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'sv')" ]
-                    [ img
-                          [ _class "flag"
-                            _src "/img/flags/se.svg"
-                            _alt "Swedish language"
-                            _ariaHidden "true" ] ]
-                button
-                    [ _class "select-flag"
-                      _id "flag-no"
-                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'nb')" ]
-                    [ img
-                          [ _class "flag"
-                            _src "/img/flags/no.svg"
-                            _alt "Norwegian language"
-                            _ariaHidden "true" ] ]
-                button
-                    [ _class "select-flag"
-                      _id "flag-dk"
-                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'da')" ]
-                    [ img
-                          [ _class "flag"
-                            _src "/img/flags/dk.svg"
-                            _alt "Danish language"
-                            _ariaHidden "true" ] ]
-                button
-                    [ _class "select-flag"
-                      _id "flag-fi"
-                      _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'fi');" ]
-                    [ img
-                          [ _class "flag"
-                            _src "/img/flags/fi.svg"
-                            _alt "Finnish language"
-                            _ariaHidden "true" ] ] ] ]
+    div
+        [ _class "select-language-container" ]
+        [ button
+              [ _class "select-flag"
+                _id "flag-en"
+                _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'en')" ]
+              [ img
+                    [ _class "flag"
+                      _src "/img/flags/gb.svg"
+                      _alt "English language"
+                      _ariaHidden "true" ] ]
+          button
+              [ _class "select-flag"
+                _id "flag-se"
+                _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'sv')" ]
+              [ img
+                    [ _class "flag"
+                      _src "/img/flags/se.svg"
+                      _alt "Swedish language"
+                      _ariaHidden "true" ] ]
+          button
+              [ _class "select-flag"
+                _id "flag-no"
+                _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'nb')" ]
+              [ img
+                    [ _class "flag"
+                      _src "/img/flags/no.svg"
+                      _alt "Norwegian language"
+                      _ariaHidden "true" ] ]
+          button
+              [ _class "select-flag"
+                _id "flag-dk"
+                _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'da')" ]
+              [ img
+                    [ _class "flag"
+                      _src "/img/flags/dk.svg"
+                      _alt "Danish language"
+                      _ariaHidden "true" ] ]
+          button
+              [ _class "select-flag"
+                _id "flag-fi"
+                _onclick $"document.querySelector('{widgetName}').setAttribute('lang', 'fi');" ]
+              [ img
+                    [ _class "flag"
+                      _src "/img/flags/fi.svg"
+                      _alt "Finnish language"
+                      _ariaHidden "true" ] ] ]
+
+let settingsView (widgetName: string) =
+    match widgetName with
+    | "avarda-payment-widget" ->
+        details
+            []
+            [ summary [] [ str "Setup Payment widget" ]
+              div
+                  [ _data "widget-name" "avarda-payment-widget"; _class "widget-settings" ]
+                  [ h5 [] [ str "Language" ]
+                    languageSelectView "avarda-payment-widget"
+                    h5 [] [ str "Account class" ]
+                    div
+                        [ _class "settings-view" ]
+                        [ label
+                              [ _for "account-class" ]
+                              [ input
+                                    [ _type "text"
+                                      _id "account-class"
+                                      _name "method-type"
+                                      _placeholder "enter account-class value" ] ] ]
+                    button [ _class "btn amado-btn" ] [ str "Set payment widget account class" ] ] ]
+    | "avarda-apr-widget" ->
+        details
+            []
+            [ summary [] [ str "Setup Apr Widget" ]
+              div
+                  [ _data "widget-name" "avarda-apr-widget"; _class "widget-settings" ]
+                  [ h5 [] [ str "Language" ]
+                    languageSelectView "avarda-apr-widget"
+                    h5 [] [ str "Method type" ]
+                    div
+                        [ _class "settings-view" ]
+                        [ label
+                              [ _for "invoice" ]
+                              [ input
+                                    [ _type "radio"
+                                      _id "invoice"
+                                      _name "method-type"
+                                      _value "invoice"
+                                      _checked ]
+                                str "invoice" ]
+                          label
+                              [ _for "loan" ]
+                              [ input [ _type "radio"; _id "loan"; _name "method-type"; _value "loan" ]
+                                str "loan" ]
+                          label
+                              [ _for "direct-invoice" ]
+                              [ input
+                                    [ _type "radio"
+                                      _id "direct-invoice"
+                                      _name "method-type"
+                                      _value "direct-invoice" ]
+                                str "direct-invoice" ]
+                          label
+                              [ _for "b2b-invoice" ]
+                              [ input [ _type "radio"; _id "b2b-invoice"; _name "method-type"; _value "b2b-invoice" ]
+                                str "b2b-invoice" ]
+                          label
+                              [ _for "large-amount-loan" ]
+                              [ input
+                                    [ _type "radio"
+                                      _id "large-amount-loan"
+                                      _name "method-type"
+                                      _value "large-amount-loan" ]
+                                str "large-amount-loan" ]
+                          h5 [] [ str "Account class" ]
+                          label
+                              [ _for "account-class" ]
+                              [ input
+                                    [ _type "text"
+                                      _id "account-class"
+                                      _name "method-type"
+                                      _placeholder "enter account-class value" ] ]
+                          h5 [] [ str "Price" ]
+                          label
+                              [ _for "price" ]
+                              [ input
+                                    [ _type "text"
+                                      _id "price"
+                                      _name "method-type"
+                                      _placeholder "enter price value" ] ] ]
+                    button [ _class "btn amado-btn" ] [ str "Set APR widget values" ] ] ]
+    | _ -> div [] []
 
 let detailTemplate
     (settings: Settings)
@@ -526,35 +607,6 @@ let detailTemplate
     =
     let selectedLanguageIsoCode =
         settings.ExtraInitSettings.Language |> languageToIsoCode
-
-
-    let aprWidgetView (accountClassString: string) =
-        aprWidget
-            [ _languageAttribute selectedLanguageIsoCode
-              _paymentMethod "Invoice"
-              _accountClass accountClassString ]
-            [ str "" ]
-
-    let aprWidgetsView (accountClassSettings: string option) =
-        match accountClassSettings with
-        | Some str ->
-            let accountClassListFromString =
-                str.Split([| ';' |], System.StringSplitOptions.RemoveEmptyEntries)
-                |> Array.map (fun accountClassName -> accountClassName.Trim())
-                |> Array.toList
-
-            let aprWidgetElementView =
-                [ languageSelectView "avarda-apr-widget" ]
-                |> List.append (accountClassListFromString |> List.map aprWidgetView)
-
-            div [] aprWidgetElementView
-
-        | None ->
-            div
-                []
-                [ aprWidget [ _languageAttribute selectedLanguageIsoCode; _paymentMethod "Invoice" ] [ str "" ]
-                  (languageSelectView "avarda-apr-widget") ]
-
 
     div
         []
@@ -727,11 +779,18 @@ let detailTemplate
                                                             [ _priceAttribute <| sprintf "%M" product.Price
                                                               _languageAttribute selectedLanguageIsoCode ]
                                                             [ str "" ]
-                                                        languageSelectView "avarda-payment-widget" ]
+                                                        settingsView "avarda-payment-widget" ]
                                               else
                                                   str ""
                                               if settings.AprWidgetSettings.Enabled then
-                                                  aprWidgetsView settings.AprWidgetSettings.AccountClass
+                                                  div
+                                                      []
+                                                      [ aprWidget
+                                                            [ _languageAttribute selectedLanguageIsoCode
+                                                              _paymentMethod "invoice"
+                                                              _priceAttribute <| sprintf "%M" product.Price ]
+                                                            [ str "" ]
+                                                        settingsView "avarda-apr-widget" ]
                                               else
                                                   str "" ] ] ] ] ] ]
           subscribeSectionView

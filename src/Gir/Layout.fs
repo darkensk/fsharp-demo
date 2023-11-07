@@ -200,4 +200,5 @@ let layout (content: XmlNode List) =
                    script [ _src "/js/popper.min.js" ] []
                    script [ _src "/js/bootstrap.min.js" ] []
                    script [ _src "/js/plugins.js" ] []
-                   script [ _src "/js/active.js" ] [] ]) ]
+                   script [ _src "/js/active.js" ] []
+                   script [ _src "/js/widgetSettings.js" ] [] ]) ]

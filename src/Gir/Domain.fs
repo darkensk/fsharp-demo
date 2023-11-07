@@ -131,9 +131,7 @@ type PaymentWidgetSettings = { Enabled: bool }
 
 type AdditionalFeatures = { PartnerShippingEnabled: bool }
 
-type AprWidgetSettings =
-    { AccountClass: string option
-      Enabled: bool }
+type AprWidgetSettings = { Enabled: bool }
 
 type SharedWidgetSettings = { CustomStyles: bool }
 
@@ -344,8 +342,7 @@ let defaultExtraInitSettings: ExtraInitSettings =
 
 let defaultPaymentWidgetSettings: PaymentWidgetSettings = { Enabled = false }
 
-let defaultAprWidgetSettings: AprWidgetSettings =
-    { AccountClass = None; Enabled = false }
+let defaultAprWidgetSettings: AprWidgetSettings = { Enabled = false }
 
 let defaultAdditionalFeatures: AdditionalFeatures =
     { PartnerShippingEnabled = false }
