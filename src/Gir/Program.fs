@@ -69,14 +69,18 @@ let webApp (root: CompositionRoot) =
           POST
           >=> choose
               [ routef "/product/%i/add" (fun (productId: int) ->
-                    Cart.HttpHandlers.addToCartHandler productId root.GetAllProducts
+                    Cart.HttpHandlers.addToCartValidationHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
+                    >=> Cart.HttpHandlers.addToCartHandler productId root.GetAllProducts
                     >=> Cart.HttpHandlers.updateItemsHandler
                         root.CheckoutBackendApiUrl
                         root.ApiPublicUrl
                         root.GetPartnerAccessToken
                     >=> redirectHandler)
                 routef "/product/%i/remove" (fun (productId: int) ->
-                    Cart.HttpHandlers.removeFromCartHandler productId root.GetAllProducts
+                    Cart.HttpHandlers.removeFromCartValidationHandler
+                        root.CheckoutBackendApiUrl
+                        root.GetPartnerAccessToken
+                    >=> Cart.HttpHandlers.removeFromCartHandler productId root.GetAllProducts
                     >=> Cart.HttpHandlers.updateItemsHandler
                         root.CheckoutBackendApiUrl
                         root.ApiPublicUrl
