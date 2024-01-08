@@ -6,13 +6,13 @@ const changeAprWidgetAttributes = () => {
 
   if (!aprWidgetElement) return;
 
-  const settings = [...document.querySelectorAll('[data-widget-name="avarda-apr-widget"] input[type="radio"]')]
+  const settings = [...document.querySelectorAll('[data-widget-name="avarda-apr-widget"] input[type="radio"]')];
   const accountClass = document.querySelector('[data-widget-name="avarda-apr-widget"] input[id="account-class"]').value;
   const price = document.querySelector('[data-widget-name="avarda-apr-widget"] input[id="price"]').value;
 
   const checkedPaymentMethod = settings.find(item => {
     return item.checked;
-  })
+  });
 
   if (accountClass === "") {
     aprWidgetElement.removeAttribute('account-class');
@@ -21,11 +21,11 @@ const changeAprWidgetAttributes = () => {
   }
 
   if (price !== "") {
-    aprWidgetElement.setAttribute('price', price)
+    aprWidgetElement.setAttribute('price', price);
   }
 
   if (checkedPaymentMethod) {
-    aprWidgetElement.setAttribute('payment-method', checkedPaymentMethod.value)
+    aprWidgetElement.setAttribute('payment-method', checkedPaymentMethod.value);
   }
 }
 
@@ -34,14 +34,25 @@ const changePaymentWidgetAttributes = () => {
 
   if (!paymentWidgetElement) return;
 
+  const settings = [...document.querySelectorAll('[data-widget-name="avarda-payment-widget"] input[type="radio"]')];
   const accountClass = document.querySelector('[data-widget-name="avarda-payment-widget"] input[type="text"]').value;
+
+  const checkedPaymentMethod = settings.find(item => {
+    return item.checked;
+  });
 
   if (accountClass === "") {
     paymentWidgetElement.removeAttribute('account-class');
   } else {
     paymentWidgetElement.setAttribute('account-class', accountClass);
   }
+
+  if (checkedPaymentMethod.value !== "no-value") {
+    paymentWidgetElement.setAttribute('payment-method', checkedPaymentMethod.value);
+  } else {
+    paymentWidgetElement.removeAttribute('payment-method');
+  }
 }
 
-if (buttonAprWidget) buttonAprWidget.addEventListener('click', () => changeAprWidgetAttributes())
-if (buttonPaymentWidget) buttonPaymentWidget.addEventListener('click', () => changePaymentWidgetAttributes())
+if (buttonAprWidget) buttonAprWidget.addEventListener('click', () => changeAprWidgetAttributes());
+if (buttonPaymentWidget) buttonPaymentWidget.addEventListener('click', () => changePaymentWidgetAttributes());

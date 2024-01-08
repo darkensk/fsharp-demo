@@ -523,6 +523,26 @@ let settingsView (widgetName: string) =
                   [ _data "widget-name" "avarda-payment-widget"; _class "widget-settings" ]
                   [ h5 [] [ str "Language" ]
                     languageSelectView "avarda-payment-widget"
+                    h5 [] [ str "Method type" ]
+                    div
+                        [ _class "settings-view" ]
+                        [ label
+                              [ _for "direct-invoice" ]
+                              [ input
+                                    [ _type "radio"
+                                      _id "direct-invoice"
+                                      _name "pw-method-type"
+                                      _value "direct-invoice"
+                                      _checked ]
+                                str "direct-invoice" ]
+                          label
+                              [ _for "loan" ]
+                              [ input [ _type "radio"; _id "loan"; _name "pw-method-type"; _value "loan" ]
+                                str "loan" ]
+                          label
+                              [ _for "no-value" ]
+                              [ input [ _type "radio"; _id "no-value"; _name "pw-method-type"; _value "no-value" ]
+                                str "No payment method value" ] ]
                     h5 [] [ str "Account class" ]
                     div
                         [ _class "settings-view" ]
