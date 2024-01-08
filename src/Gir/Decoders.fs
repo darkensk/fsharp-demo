@@ -146,11 +146,27 @@ let decodeExtraIdentifiers =
     Decode.object (fun (get: Decode.IGetters) -> { OrderReference = get.Required.Field "orderReference" Decode.string })
 
 
+let decodeCurrentB2BStep: (string -> JsonValue -> Result<CurrentB2BStep, DecoderError>) =
+    Decode.object (fun (get: Decode.IGetters) ->
+        { Current = (get.Required.Field "current" Decode.string) |> stringToB2BStep })
+
+let decodeCurrentB2CStep: (string -> JsonValue -> Result<CurrentB2CStep, DecoderError>) =
+    Decode.object (fun (get: Decode.IGetters) ->
+        { Current = (get.Required.Field "current" Decode.string) |> stringToB2CStep })
+
+let decodeB2BData: (string -> JsonValue -> Result<B2BData, DecoderError>) =
+    Decode.object (fun (get: Decode.IGetters) -> { Step = get.Required.Field "step" decodeCurrentB2BStep })
+
+let decodeB2CData: (string -> JsonValue -> Result<B2CData, DecoderError>) =
+    Decode.object (fun (get: Decode.IGetters) -> { Step = get.Required.Field "step" decodeCurrentB2CStep })
+
 let decodePaymentStatus =
     Decode.object (fun (get: Decode.IGetters) ->
         { PurchaseId = get.Required.Field "purchaseId" Decode.string
           ExtraIdentifiers = get.Required.Field "extraIdentifiers" decodeExtraIdentifiers
-          Mode = get.Required.Field "mode" Decode.string })
+          Mode = get.Required.Field "mode" Decode.string
+          B2B = get.Optional.Field "b2B" decodeB2BData
+          B2C = get.Optional.Field "b2C" decodeB2CData })
 
 
 let getPaymentStatusDecoder (paymentStatusString: string) =

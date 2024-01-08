@@ -193,6 +193,66 @@ let clearCartHandler (getProducts: unit -> Product list) next (ctx: HttpContext)
         return! next ctx
     }
 
+let isPurchaseCompleted (b2bData: B2BData option) (b2cData: B2CData option) =
+    match (b2bData, b2cData) with
+    | (Some b2b, None) -> b2b.Step.Current = B2BCompleted
+    | (None, Some b2c) -> b2c.Step.Current = B2CCompleted
+    | _ -> false
+
+
+let addToCartValidationHandler
+    (backendUrl: string)
+    (getPartnerAccessToken: Market -> Task<string>)
+    (next: HttpContext -> 'a)
+    (ctx: HttpContext)
+    =
+    task {
+        let cartState = Session.getCartState ctx
+        let settings = Session.getSettings ctx
+
+        if List.isEmpty cartState.Items then
+            return! next ctx
+        else
+            match Session.tryGetPurchaseId ctx with
+            | Some purchaseId ->
+                let! partnerToken = getPartnerAccessToken settings.Market
+                let! paymentStatus = getPaymentStatus backendUrl partnerToken purchaseId
+
+                if isPurchaseCompleted paymentStatus.B2B paymentStatus.B2C then
+                    Session.deletePurchaseId ctx
+                    Session.deleteCartState ctx
+            | None -> ()
+
+            return! next ctx
+    }
+
+let removeFromCartValidationHandler
+    (backendUrl: string)
+    (getPartnerAccessToken: Market -> Task<string>)
+    (next: HttpContext -> 'a)
+    (ctx: HttpContext)
+    =
+    task {
+        let cartState = Session.getCartState ctx
+        let settings = Session.getSettings ctx
+
+        if List.isEmpty cartState.Items then
+            return! next ctx
+        else
+            match Session.tryGetPurchaseId ctx with
+            | Some purchaseId ->
+                let! partnerToken = getPartnerAccessToken settings.Market
+                let! paymentStatus = getPaymentStatus backendUrl partnerToken purchaseId
+
+                if isPurchaseCompleted paymentStatus.B2B paymentStatus.B2C then
+                    Session.deletePurchaseId ctx
+                    Session.deleteCartState ctx
+            | None -> ()
+
+            return! next ctx
+    }
+
+
 let updateItemsHandler
     (backendUrl: string)
     (apiPublicUrl: string)
@@ -204,19 +264,16 @@ let updateItemsHandler
         let cartState = Session.getCartState ctx
         let settings = Session.getSettings ctx
 
-        if List.isEmpty cartState.Items then
-            return! next ctx
-        else
-            let! partnerToken = getPartnerAccessToken settings.Market
-            let sessionPurchaseId = Session.tryGetPurchaseId ctx
+        let! partnerToken = getPartnerAccessToken settings.Market
+        let sessionPurchaseId = Session.tryGetPurchaseId ctx
 
-            match sessionPurchaseId with
-            | Some purchaseId -> do! updateItems backendUrl apiPublicUrl settings cartState partnerToken purchaseId
-            | None ->
-                let! initPaymentResponse = getPurchaseToken backendUrl apiPublicUrl cartState partnerToken settings
-                Session.setPurchaseId ctx initPaymentResponse.PurchaseId
+        match sessionPurchaseId with
+        | Some purchaseId -> do! updateItems backendUrl apiPublicUrl settings cartState partnerToken purchaseId
+        | None ->
+            let! initPaymentResponse = getPurchaseToken backendUrl apiPublicUrl cartState partnerToken settings
+            Session.setPurchaseId ctx initPaymentResponse.PurchaseId
 
-            return! next ctx
+        return! next ctx
     }
 
 let completedHandler (backendUrl: string) (getPartnerAccessToken: Market -> Task<string>) next (ctx: HttpContext) =

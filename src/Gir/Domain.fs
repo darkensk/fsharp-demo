@@ -361,7 +361,98 @@ let defaultSettings: Settings =
 
 type ExtraIdentifiers = { OrderReference: string }
 
+type B2BStep =
+    | B2BInitialized
+    | B2BEnterCompanyInfo
+    | B2BCompanyAddressInfo
+    | B2BWaitingForSwish
+    | B2BRedirectedToDirectPaymentBank
+    | B2BRedirectedToNets
+    | B2BWaitingForBankId
+    | B2BRedirectedToTupas
+    | B2BCompleted
+    | B2BHandledByMerchant
+    | B2BTimedOut
+    | B2BCanceled
+    | B2BRedirectedToNetsEident
+    | B2BRedirectedToVipps
+    | B2BUnknownStep
+
+let stringToB2BStep =
+    function
+    | "Initialized" -> B2BInitialized
+    | "EnterCompanyInfo" -> B2BEnterCompanyInfo
+    | "CompanyAddressInfo" -> B2BCompanyAddressInfo
+    | "WaitingForSwish" -> B2BWaitingForSwish
+    | "RedirectedToDirectPaymentBank" -> B2BRedirectedToDirectPaymentBank
+    | "RedirectedToNets" -> B2BRedirectedToNets
+    | "WaitingForBankId" -> B2BWaitingForBankId
+    | "RedirectedToTupas" -> B2BRedirectedToTupas
+    | "Completed" -> B2BCompleted
+    | "HandledByMerchant" -> B2BHandledByMerchant
+    | "TimedOut" -> B2BTimedOut
+    | "Canceled" -> B2BCanceled
+    | "RedirectedToNetsEident" -> B2BRedirectedToNetsEident
+    | "RedirectedToVipps" -> B2BRedirectedToVipps
+    | _ -> B2BUnknownStep
+
+type B2CStep =
+    | B2CInitialized
+    | B2CEmailZipEntry
+    | B2CSsnEntry
+    | B2CPhoneNumberEntry
+    | B2CPhoneNumberEntryForKnownCustomer
+    | B2CPersonalInfoWithoutSsn
+    | B2CPersonalInfo
+    | B2CWaitingForSwish
+    | B2CRedirectedToDirectPaymentBank
+    | B2CRedirectedToNets
+    | B2CWaitingForBankId
+    | B2CRedirectedToTupas
+    | B2CCompleted
+    | B2CTimedOut
+    | B2CHandledByMerchant
+    | B2CAwaitingCreditApproval
+    | B2CRedirectedToNetsEident
+    | B2CCanceled
+    | B2CRedirectedToVipps
+    | B2CUnknownStep
+
+let stringToB2CStep =
+    function
+    | "Initialized" -> B2CInitialized
+    | "EmailZipEntry" -> B2CEmailZipEntry
+    | "SsnEntry" -> B2CSsnEntry
+    | "PhoneNumberEntry" -> B2CPhoneNumberEntry
+    | "PhoneNumberEntryForKnownCustomer" -> B2CPhoneNumberEntryForKnownCustomer
+    | "PersonalInfoWithoutSsn" -> B2CPersonalInfoWithoutSsn
+    | "PersonalInfo" -> B2CPersonalInfo
+    | "WaitingForSwish" -> B2CWaitingForSwish
+    | "RedirectedToDirectPaymentBank" -> B2CRedirectedToDirectPaymentBank
+    | "RedirectedToNets" -> B2CRedirectedToNets
+    | "WaitingForBankId" -> B2CWaitingForBankId
+    | "RedirectedToTupas" -> B2CRedirectedToTupas
+    | "Completed" -> B2CCompleted
+    | "TimedOut" -> B2CTimedOut
+    | "HandledByMerchant" -> B2CHandledByMerchant
+    | "AwaitingCreditApproval" -> B2CAwaitingCreditApproval
+    | "RedirectedToNetsEident" -> B2CRedirectedToNetsEident
+    | "Canceled" -> B2CCanceled
+    | "RedirectedToVipps" -> B2CRedirectedToVipps
+    | _ -> B2CUnknownStep
+
+type CurrentB2BStep = { Current: B2BStep }
+
+type CurrentB2CStep = { Current: B2CStep }
+
+type B2BData = { Step: CurrentB2BStep }
+
+type B2CData = { Step: CurrentB2CStep }
+
+
 type PaymentStatus =
     { PurchaseId: string
       ExtraIdentifiers: ExtraIdentifiers
-      Mode: string }
+      Mode: string
+      B2B: B2BData option
+      B2C: B2CData option }
