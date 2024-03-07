@@ -79,7 +79,10 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
               PaymentWidgetSettings = { Enabled = checkboxValue "paymentWidgetEnabled" }
               AdditionalFeatures = { PartnerShippingEnabled = checkboxValue "partnerShippingEnabled" }
               AprWidgetSettings = { Enabled = checkboxValue "aprWidgetEnabled" }
-              SharedWidgetSettings = { CustomStyles = checkboxValue "sharedWidgetCustomStyles" } }
+              SharedWidgetSettings = { CustomStyles = checkboxValue "sharedWidgetCustomStyles" }
+              ShippingSettings =
+                { IncludeShippingParameters = checkboxValue "includeShippingParameters"
+                  IncludeDefaultShippingItem = checkboxValue "includeDefaultShippingItem" } }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx

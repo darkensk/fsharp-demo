@@ -103,7 +103,12 @@ let cartHandler
         if List.isEmpty cartState.Items then
             return!
                 htmlView
-                    (cartView settings cartState checkoutFrontendBundleUrl "" partnerShippingBundleUrl
+                    (cartView
+                        settings
+                        cartState
+                        checkoutFrontendBundleUrl
+                        { PurchaseToken = ""; PurchaseId = "" }
+                        partnerShippingBundleUrl
                      <| getProducts ())
                     next
                     ctx
@@ -116,18 +121,31 @@ let cartHandler
 
                 return!
                     htmlView
-                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl
+                        (cartView
+                            settings
+                            cartState
+                            checkoutFrontendBundleUrl
+                            { PurchaseToken = purchaseToken
+                              PurchaseId = purchaseId }
+                            partnerShippingBundleUrl
                          <| getProducts ())
                         next
                         ctx
             | None ->
                 let! initPurchaseResponse = getPurchaseToken cartState partnerToken settings
                 let purchaseToken = initPurchaseResponse.Jwt
-                Session.setPurchaseId ctx initPurchaseResponse.PurchaseId
+                let purchaseId = initPurchaseResponse.PurchaseId
+                Session.setPurchaseId ctx purchaseId
 
                 return!
                     htmlView
-                        (cartView settings cartState checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl
+                        (cartView
+                            settings
+                            cartState
+                            checkoutFrontendBundleUrl
+                            { PurchaseToken = purchaseToken
+                              PurchaseId = purchaseId }
+                            partnerShippingBundleUrl
                          <| getProducts ())
                         next
                         ctx

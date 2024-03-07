@@ -178,7 +178,8 @@ let template
           PaymentWidgetSettings = paymentWidgetSettings
           AdditionalFeatures = additionalFeatures
           AprWidgetSettings = aprWidgetSettings
-          SharedWidgetSettings = sharedWidgetSettings } =
+          SharedWidgetSettings = sharedWidgetSettings
+          ShippingSettings = shippingSettings } =
         settings
 
     let marketsOptions =
@@ -231,14 +232,18 @@ let template
                                 [ h1 [ _class "settings-heading" ] [ str "Settings Page" ]
                                   form
                                       [ _id "settings"; _action "/settings/save"; _method "POST" ]
-                                      [ div [] [ h3 [ _class "settings-heading" ] [ str "Market" ] ]
+                                      [ div
+                                            [ _class "settings-row" ]
+                                            [ h3 [ _class "settings-heading" ] [ str "Market" ] ]
                                         selectView
                                             "market"
                                             "Market"
                                             marketsOptions
                                             (marketToString settings.Market)
                                             true
-                                        div [] [ h3 [ _class "settings-heading" ] [ str "Extra Identifiers" ] ]
+                                        div
+                                            [ _class "settings-row" ]
+                                            [ h3 [ _class "settings-heading" ] [ str "Extra Identifiers" ] ]
                                         textInput
                                             "orderReference"
                                             "Order Reference"
@@ -246,7 +251,9 @@ let template
                                             settings.OrderReference
                                             true
                                             None
-                                        div [] [ h3 [ _class "settings-heading" ] [ str "Extra Init Options" ] ]
+                                        div
+                                            [ _class "settings-row" ]
+                                            [ h3 [ _class "settings-heading" ] [ str "Extra Init Options" ] ]
                                         selectView
                                             "language"
                                             "Language"
@@ -365,7 +372,9 @@ let template
                                             None
                                             initSettings.SkipEmailZipEntry
                                             true
-                                        div [] [ h3 [ _class "settings-heading" ] [ str "Extra Checkout Flags" ] ]
+                                        div
+                                            [ _class "settings-row" ]
+                                            [ h3 [ _class "settings-heading" ] [ str "Extra Checkout Flags" ] ]
                                         checkboxView "disableFocus" "Disable Focus" None checkoutFlags.DisableFocus true
                                         checkboxView
                                             "beforeSubmitCallbackEnabled"
@@ -422,7 +431,9 @@ let template
                                                 "Make sure you enable either SMS or Email newsletter checkbox in order to display extra t&c")
                                             checkoutFlags.Extras.ExtraTermsAndConditions
                                             true
-                                        div [] [ h3 [ _class "settings-heading" ] [ str "Payment and APR Widget" ] ]
+                                        div
+                                            [ _class "settings-row" ]
+                                            [ h3 [ _class "settings-heading" ] [ str "Payment and APR Widget" ] ]
                                         checkboxView
                                             "paymentWidgetEnabled"
                                             "Enable Payment Widget"
@@ -441,7 +452,9 @@ let template
                                             None
                                             sharedWidgetSettings.CustomStyles
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
-                                        div [] [ h3 [ _class "settings-heading" ] [ str "Additional Features" ] ]
+                                        div
+                                            [ _class "settings-row" ]
+                                            [ h3 [ _class "settings-heading" ] [ str "Additional Features" ] ]
                                         checkboxView
                                             "partnerShippingEnabled"
                                             "Enable Partner Shipping Module"
@@ -449,6 +462,18 @@ let template
                                                 "`partnerShippingBundleUrl` has to be provided and shipping module has to be setup on current partner in order to be used")
                                             additionalFeatures.PartnerShippingEnabled
                                             (String.IsNullOrEmpty partnerShippingBundleUrl |> not)
+                                        checkboxView
+                                            "includeShippingParameters"
+                                            "Include shipping parameters in init payment"
+                                            None
+                                            shippingSettings.IncludeShippingParameters
+                                            true
+                                        checkboxView
+                                            "includeDefaultShippingItem"
+                                            "Include default shipping item in init payment"
+                                            None
+                                            shippingSettings.IncludeDefaultShippingItem
+                                            true
                                         div
                                             [ _style
                                                   "display: flex; flex: 1; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 10px;" ]

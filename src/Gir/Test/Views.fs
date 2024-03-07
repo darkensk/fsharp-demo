@@ -6,7 +6,10 @@ open Gir.Layout
 
 let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
     div
-        [ _id "checkout-form"; _style "padding: 20px;" ]
+        [ _id "checkout-form"
+          _style "padding: 20px;"
+          _data "purchaseToken" purchaseToken ]
+
         [ script [ _type "application/javascript"; _src "/js/checkout-integration-simple.js" ] []
           script
               [ _type "application/javascript" ]
