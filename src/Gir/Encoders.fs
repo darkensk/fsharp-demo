@@ -49,7 +49,7 @@ let checkoutItemEncoder (checkoutItem: CheckoutItem) =
 
     Encode.object (
         [ "description", Encode.string checkoutItem.Name
-          "notes", Encode.string "-"
+          "notes", Encode.string checkoutItem.Notes
           "amount", Encode.decimal checkoutItem.Price
           "taxCode", Encode.string "20%"
           "taxAmount", Encode.decimal roundedProductTax
@@ -145,6 +145,7 @@ let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: Ca
         let defaultShippingItem: CheckoutItem list =
             if settings.ShippingSettings.IncludeDefaultShippingItem = true then
                 [ { Name = "Shipping"
+                    Notes = "SHI001"
                     Price = 10M
                     Quantity = 1
                     ShippingParameters = None } ]
@@ -155,6 +156,7 @@ let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: Ca
             List.map
                 (fun (cartItem: CartItem) ->
                     { Name = cartItem.ProductDetail.Name
+                      Notes = "-"
                       Price = cartItem.ProductDetail.Price
                       Quantity = cartItem.Qty
                       ShippingParameters =

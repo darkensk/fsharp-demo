@@ -18,6 +18,7 @@ type Product =
 
 type CheckoutItem =
     { Name: string
+      Notes: string
       Price: decimal
       Quantity: int
       ShippingParameters: ShippingParameters option }
