@@ -184,12 +184,7 @@ let languageSelectView =
 
 let partnerShippingScriptView (partnerShippingBundleUrl: string) (isPartnerShippingEnabled: bool) =
     if isPartnerShippingEnabled && not (String.IsNullOrEmpty partnerShippingBundleUrl) then
-        script
-            [ _src partnerShippingBundleUrl
-              _type "module"
-              _async
-              _crossorigin "annonymous" ]
-            []
+        script [ _src partnerShippingBundleUrl; _type "application/ecmascript"; _async ] []
     else
         div [] []
 

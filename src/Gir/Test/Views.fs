@@ -4,6 +4,10 @@ open Giraffe.ViewEngine
 open Gir.Layout
 open System
 
+open System
+
+
+
 
 let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) (partnerShippingBundleUrl: string) =
     div
@@ -16,15 +20,7 @@ let template (checkoutFrontendBundleUrl: string) (purchaseToken: string) (partne
               [ _type "application/javascript" ]
               [ rawText
                 <| sprintf """initCheckout("%s", "%s");""" checkoutFrontendBundleUrl purchaseToken ]
-          (if not (String.IsNullOrEmpty partnerShippingBundleUrl) then
-               script
-                   [ _src partnerShippingBundleUrl
-                     _type "module"
-                     _async
-                     _crossorigin "annonymous" ]
-                   []
-           else
-               div [] []) ]
+          script [ _src partnerShippingBundleUrl; _async; _crossorigin "annonymous" ] [] ]
 
 let testCheckoutView (checkoutFrontendBundleUrl: string) (purchaseToken: string) (partnerShippingBundleUrl: string) =
     [ template checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl ]

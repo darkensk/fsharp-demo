@@ -133,3 +133,15 @@ Open [http://localhost:5000](localhost:5000) or [https://localhost:5001](localho
 #### Partner Shipping Module
 
 [Partner Shipping Module documentation](https://docs.avarda.com/checkout-3/shipping-broker/provider-specific-integration-guide/partner-shipping/)
+
+#### Deployment to Azure Web App
+
+`dotnet publish ./src/Gir/ -o ./dist`
+
+Zip it and use this to deploy:
+
+`az webapp deploy --resource-group TempShippingModule --name avardaxpostnord --src-path ./dist/deploy.zip --subscription "AVD Payments Test - CSP"`
+
+Don't forget to setup ENV variables in Configuration and ENTRYPOINT `dotnet Gir.dll` in web app settings.
+
+Available to test on [https://avardaxpostnord.azurewebsites.net](https://avardaxpostnord.azurewebsites.net)

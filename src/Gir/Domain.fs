@@ -361,7 +361,7 @@ let defaultPaymentWidgetSettings: PaymentWidgetSettings = { Enabled = false }
 let defaultAprWidgetSettings: AprWidgetSettings = { Enabled = false }
 
 let defaultAdditionalFeatures: AdditionalFeatures =
-    { PartnerShippingEnabled = false }
+    { PartnerShippingEnabled = true }
 
 let defaultSharedWidgetSettings: SharedWidgetSettings = { CustomStyles = false }
 

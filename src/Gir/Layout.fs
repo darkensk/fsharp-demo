@@ -193,7 +193,11 @@ let layout (content: XmlNode List) =
                       _type "image/png"
                       _sizes "16x16"
                       _href "/favicon/favicon-16x16.png" ]
-                link [ _rel "manifest"; _crossorigin "use-credentials"; _href "/manifest.json" ] ]
+                link [ _rel "manifest"; _crossorigin "use-credentials"; _href "/manifest.json" ]
+                script
+                    [ _src "https://portal.postnord.com/pn-shipping-module/releases/stable/avarda-adapter.es"
+                      _type "application/ecmascript" ]
+                    [] ]
 
           body
               []
