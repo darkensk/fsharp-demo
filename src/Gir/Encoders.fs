@@ -11,13 +11,22 @@ let getPartnerTokenPayloadEncoder (clientId: string) (clientSecret: string) =
           "clientSecret", Encode.string clientSecret ]
     |> Encode.toString 0
 
+let shippingParametersEncoder (shippingParameters: ShippingParameters) =
+    Encode.object
+        [ "height", Encode.int shippingParameters.Height
+          "length", Encode.int shippingParameters.Length
+          "width", Encode.int shippingParameters.Width
+          "weight", Encode.int shippingParameters.Weight
+          "attributes", Encode.list <| List.map Encode.string shippingParameters.Attributes ]
+
 let productEncoder (product: Product) =
     Encode.object
         [ "productId", Encode.int product.ProductId
           "name", Encode.string product.Name
           "price", Encode.decimal product.Price
           "img", Encode.string product.Img
-          "bigImg", Encode.string product.BigImg ]
+          "bigImg", Encode.string product.BigImg
+          "shippingParameters", shippingParametersEncoder product.ShippingParameters ]
 
 let cartItemEncoder (cartItem: CartItem) =
     Encode.object
@@ -33,13 +42,20 @@ let checkoutItemEncoder (checkoutItem: CheckoutItem) =
     let productTax = (checkoutItem.Price * 0.2M)
     let roundedProductTax = Math.Round(productTax, 2)
 
-    Encode.object
+    let shippingParameters: (string * JsonValue) list =
+        match checkoutItem.ShippingParameters with
+        | Some(parameters: ShippingParameters) -> [ "shippingParameters", shippingParametersEncoder parameters ]
+        | None -> []
+
+    Encode.object (
         [ "description", Encode.string checkoutItem.Name
           "notes", Encode.string "-"
           "amount", Encode.decimal checkoutItem.Price
           "taxCode", Encode.string "20%"
           "taxAmount", Encode.decimal roundedProductTax
           "quantity", Encode.int checkoutItem.Quantity ]
+        @ shippingParameters
+    )
 
 let languageEncoder = languageToString >> Encode.string
 
@@ -126,23 +142,37 @@ let paymentPayloadEncoder (apiPublicUrl: string) (settings: Settings) (items: Ca
     if List.isEmpty items then
         ""
     else
-        let checkoutItems =
+        let defaultShippingItem: CheckoutItem list =
+            if settings.ShippingSettings.IncludeDefaultShippingItem = true then
+                [ { Name = "Shipping"
+                    Price = 10M
+                    Quantity = 1
+                    ShippingParameters = None } ]
+            else
+                []
+
+        let checkoutItems: CheckoutItem list =
             List.map
                 (fun (cartItem: CartItem) ->
                     { Name = cartItem.ProductDetail.Name
                       Price = cartItem.ProductDetail.Price
-                      Quantity = cartItem.Qty })
+                      Quantity = cartItem.Qty
+                      ShippingParameters =
+                        if settings.ShippingSettings.IncludeShippingParameters = true then
+                            Some cartItem.ProductDetail.ShippingParameters
+                        else
+                            None })
                 items
+            |> List.append defaultShippingItem
 
         Encode.object
             [ "checkoutSetup", extraInitSettingsEncoderForInitPayment apiPublicUrl settings.ExtraInitSettings
-              "items", Encode.list <| List.map (checkoutItemEncoder) checkoutItems
+              "items", Encode.list <| List.map checkoutItemEncoder checkoutItems
               "extraIdentifiers", Encode.object [ "orderReference", Encode.string settings.OrderReference ] ]
         |> Encode.toString 0
 
 let extrasEncoder (extras: Extras) =
     Encode.object [ "extraTermsAndConditions", Encode.option Encode.string extras.ExtraTermsAndConditions ]
-
 
 let extraCheckoutFlagsEncoder (checkoutFlags: ExtraCheckoutFlags) =
     Encode.object
@@ -169,6 +199,11 @@ let additionalFeaturesEncoder (additionalFeatures: AdditionalFeatures) =
 let sharedWidgetSettingsEncoder (sharedWidgetSettings: SharedWidgetSettings) =
     Encode.object [ "customStyles", Encode.bool sharedWidgetSettings.CustomStyles ]
 
+let shippingSettingsEncoder (shippingSettings: ShippingSettings) =
+    Encode.object
+        [ "includeShippingParameters", Encode.bool shippingSettings.IncludeShippingParameters
+          "includeDefaultShippingItem", Encode.bool shippingSettings.IncludeDefaultShippingItem ]
+
 let settingsEncoder (settings: Settings) =
     Encode.object
         [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
@@ -178,9 +213,9 @@ let settingsEncoder (settings: Settings) =
           "paymentWidgetSettings", paymentWidgetSettingsEncoder settings.PaymentWidgetSettings
           "additionalFeatures", additionalFeaturesEncoder settings.AdditionalFeatures
           "aprWidgetSettings", aprWidgetSettingEncoder settings.AprWidgetSettings
-          "sharedWidgetCustomStyles", sharedWidgetSettingsEncoder settings.SharedWidgetSettings ]
+          "sharedWidgetCustomStyles", sharedWidgetSettingsEncoder settings.SharedWidgetSettings
+          "shippingSettings", shippingSettingsEncoder settings.ShippingSettings ]
     |> Encode.toString 0
-
 
 let paymentWidgetStateEncoder (state: PaymentWidgetState) =
     Encode.object

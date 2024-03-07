@@ -1,16 +1,26 @@
 module Gir.Domain
 
+
+type ShippingParameters =
+    { Height: int
+      Length: int
+      Width: int
+      Weight: int
+      Attributes: string list }
+
 type Product =
     { ProductId: int
       Name: string
       Price: decimal
       Img: string
-      BigImg: string }
+      BigImg: string
+      ShippingParameters: ShippingParameters }
 
 type CheckoutItem =
     { Name: string
       Price: decimal
-      Quantity: int }
+      Quantity: int
+      ShippingParameters: ShippingParameters option }
 
 type CartEvent =
     | Add of productId: int * quantity: int
@@ -135,6 +145,10 @@ type AprWidgetSettings = { Enabled: bool }
 
 type SharedWidgetSettings = { CustomStyles: bool }
 
+type ShippingSettings =
+    { IncludeShippingParameters: bool
+      IncludeDefaultShippingItem: bool }
+
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
       ExtraInitSettings: ExtraInitSettings
@@ -143,7 +157,8 @@ type Settings =
       PaymentWidgetSettings: PaymentWidgetSettings
       AdditionalFeatures: AdditionalFeatures
       AprWidgetSettings: AprWidgetSettings
-      SharedWidgetSettings: SharedWidgetSettings }
+      SharedWidgetSettings: SharedWidgetSettings
+      ShippingSettings: ShippingSettings }
 
 let languageToString =
     function
@@ -349,6 +364,10 @@ let defaultAdditionalFeatures: AdditionalFeatures =
 
 let defaultSharedWidgetSettings: SharedWidgetSettings = { CustomStyles = false }
 
+let defaultShippingSettings: ShippingSettings =
+    { IncludeShippingParameters = false
+      IncludeDefaultShippingItem = false }
+
 let defaultSettings: Settings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
       ExtraInitSettings = defaultExtraInitSettings
@@ -357,7 +376,8 @@ let defaultSettings: Settings =
       PaymentWidgetSettings = defaultPaymentWidgetSettings
       AdditionalFeatures = defaultAdditionalFeatures
       AprWidgetSettings = defaultAprWidgetSettings
-      SharedWidgetSettings = defaultSharedWidgetSettings }
+      SharedWidgetSettings = defaultSharedWidgetSettings
+      ShippingSettings = defaultShippingSettings }
 
 type ExtraIdentifiers = { OrderReference: string }
 
@@ -456,3 +476,7 @@ type PaymentStatus =
       Mode: string
       B2B: B2BData option
       B2C: B2CData option }
+
+type PurchaseIdentifiers =
+    { PurchaseToken: string
+      PurchaseId: string }

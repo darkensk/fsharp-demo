@@ -29,7 +29,7 @@ let getRequestPartnerAccessToken (url: string) (clientId: string) (clientSecret:
     }
 
 let isValid (tokenString: string) =
-    let handler = JsonWebTokenHandler()
+    let handler: JsonWebTokenHandler = JsonWebTokenHandler()
     let jwt = handler.ReadJsonWebToken(tokenString)
 
     if jwt.ValidTo > System.DateTime.UtcNow then

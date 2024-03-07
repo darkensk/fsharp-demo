@@ -6,17 +6,26 @@ open Gir.Domain
 open Gir.Utils
 open System
 
-let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
-    let flags = settings.ExtraCheckoutFlags
 
-    let extraTermsAndConditions =
+
+let initCheckoutInstance
+    (settings: Settings)
+    (checkoutFrontendBundleUrl: string)
+    (purchaseIdentifiers: PurchaseIdentifiers)
+    =
+    let flags: ExtraCheckoutFlags = settings.ExtraCheckoutFlags
+
+    let extraTermsAndConditions: string =
         match flags.Extras.ExtraTermsAndConditions with
-        | Some termsAndConditions -> termsAndConditions
+        | Some(termsAndConditions: string) -> termsAndConditions
         | None -> ""
 
     div
-        [ _id "checkout-form"; _style "padding-top: 50px;" ]
-        (match purchaseToken with
+        [ _id "checkout-form"
+          _style "padding-top: 50px;"
+          _data "purchaseId" purchaseIdentifiers.PurchaseId
+          _data "purchaseToken" purchaseIdentifiers.PurchaseToken ]
+        (match purchaseIdentifiers.PurchaseToken with
          | "" -> []
          | _ ->
              [ script [ _type "application/javascript"; _src "/js/checkout-integration.js" ] []
@@ -26,7 +35,7 @@ let initCheckoutInstance (settings: Settings) (checkoutFrontendBundleUrl: string
                      <| sprintf
                          """initCheckout("%s", "%s", %b, %b, %b, %b, %b, %b, %b, %b, %b, "%s");"""
                          checkoutFrontendBundleUrl
-                         purchaseToken
+                         purchaseIdentifiers.PurchaseToken
                          flags.DisableFocus
                          flags.CustomStyles
                          flags.BeforeSubmitCallbackEnabled
@@ -189,7 +198,7 @@ let template
     (cartState: CartState)
     (products: Product list)
     (checkoutFrontendBundleUrl: string)
-    (purchaseToken: string)
+    (purchaseIdentifiers: PurchaseIdentifiers)
     (partnerShippingBundleUrl: string)
     =
     let products = products |> List.map (productDiv settings)
@@ -235,7 +244,7 @@ let template
                                 [ _class "container-fluid" ]
                                 [ div
                                       [ _class "row"; _id "cart-product-list" ]
-                                      (match purchaseToken with
+                                      (match purchaseIdentifiers.PurchaseToken with
                                        | "" ->
                                            [ div
                                                  [ _class "col-12 col-lg-8" ]
@@ -269,19 +278,24 @@ let template
                                              cartSummaryView settings cartState
                                              div
                                                  [ _class "col-12 col-lg-8" ]
-                                                 [ initCheckoutInstance settings checkoutFrontendBundleUrl purchaseToken
+                                                 [ initCheckoutInstance
+                                                       settings
+                                                       checkoutFrontendBundleUrl
+                                                       purchaseIdentifiers
                                                    languageSelectView ] ]) ] ] ]
                 partnerShippingScriptView partnerShippingBundleUrl settings.AdditionalFeatures.PartnerShippingEnabled
                 subscribeSectionView
                 footerView ] ]
 
+
+
 let cartView
     (settings: Settings)
     (cartState: CartState)
     (checkoutFrontendBundleUrl: string)
-    (purchaseToken: string)
+    (purchaseIdentifiers: PurchaseIdentifiers)
     (partnerShippingBundleUrl: string)
     (products: Product list)
     =
-    [ template settings cartState products checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl ]
+    [ template settings cartState products checkoutFrontendBundleUrl purchaseIdentifiers partnerShippingBundleUrl ]
     |> layout

@@ -771,6 +771,43 @@ let detailTemplate
                                                         []
                                                         [ str
                                                               "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid quae eveniet culpa officia quidem mollitia impedit iste asperiores nisi reprehenderit consequatur, autem, nostrum pariatur enim?" ] ]
+                                              details
+                                                  [ _class "mb-5 mt-0" ]
+                                                  [ summary [] [ str "Shipping parameters" ]
+                                                    div
+                                                        [ _class "short_overview mb-0" ]
+                                                        [ p
+                                                              [ _class "mb-0" ]
+                                                              [ str
+                                                                <| sprintf
+                                                                    "Height: %imm"
+                                                                    product.ShippingParameters.Height ]
+                                                          p
+                                                              [ _class "mb-0" ]
+                                                              [ str
+                                                                <| sprintf
+                                                                    "Length: %imm"
+                                                                    product.ShippingParameters.Length ]
+                                                          p
+                                                              [ _class "mb-0" ]
+                                                              [ str
+                                                                <| sprintf
+                                                                    "Width: %imm"
+                                                                    product.ShippingParameters.Width ]
+                                                          p
+                                                              [ _class "mb-0" ]
+                                                              [ str
+                                                                <| sprintf
+                                                                    "Weight: %ig"
+                                                                    product.ShippingParameters.Weight ]
+                                                          p
+                                                              [ _class "mb-0" ]
+                                                              [ str
+                                                                <| sprintf
+                                                                    "Attributes: %s"
+                                                                    (String.concat
+                                                                        ";"
+                                                                        product.ShippingParameters.Attributes) ] ] ]
                                               form
                                                   [ _class "cart clearfix"
                                                     _method "post"

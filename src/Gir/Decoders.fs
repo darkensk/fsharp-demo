@@ -9,13 +9,22 @@ let partnerAccessTokenDecoder =
 
 let purchaseTokenDecoder = Decode.field "jwt" Decode.string |> Decode.fromString
 
+let shippingParametersDecoder =
+    Decode.object (fun (get: Decode.IGetters) ->
+        { Height = get.Required.Field "height" Decode.int
+          Length = get.Required.Field "length" Decode.int
+          Width = get.Required.Field "width" Decode.int
+          Weight = get.Required.Field "weight" Decode.int
+          Attributes = get.Required.Field "attributes" (Decode.list Decode.string) })
+
 let productDecoder =
     Decode.object (fun (get: Decode.IGetters) ->
         { ProductId = get.Required.Field "productId" Decode.int
           Name = get.Required.Field "name" Decode.string
           Price = get.Required.Field "price" Decode.decimal
           Img = get.Required.Field "img" Decode.string
-          BigImg = get.Required.Field "bigImg" Decode.string })
+          BigImg = get.Required.Field "bigImg" Decode.string
+          ShippingParameters = get.Required.Field "shippingParameters" shippingParametersDecoder })
 
 let cartItemDecoder =
     Decode.object (fun (get: Decode.IGetters) ->
@@ -123,6 +132,11 @@ let aprWidgetSettingsDecoder: Decoder<AprWidgetSettings> =
 let sharedWidgetSettingsDecoder =
     Decode.object (fun (get: Decode.IGetters) -> { CustomStyles = get.Required.Field "customStyles" Decode.bool })
 
+let shippingSettingsDecoder =
+    Decode.object (fun (get: Decode.IGetters) ->
+        { IncludeShippingParameters = get.Required.Field "includeShippingParameters" Decode.bool
+          IncludeDefaultShippingItem = get.Required.Field "includeDefaultShippingItem" Decode.bool })
+
 let decodeSettings =
     Decode.object (fun (get: Decode.IGetters) ->
         { ExtraCheckoutFlags = get.Required.Field "extraCheckoutFlags" extraCheckoutFlagsDecoder
@@ -134,7 +148,8 @@ let decodeSettings =
           PaymentWidgetSettings = get.Required.Field "paymentWidgetSettings" paymentWidgetSettingsDecoder
           AdditionalFeatures = get.Required.Field "additionalFeatures" additionalFeaturesDecoder
           AprWidgetSettings = get.Required.Field "aprWidgetSettings" aprWidgetSettingsDecoder
-          SharedWidgetSettings = get.Required.Field "sharedWidgetCustomStyles" sharedWidgetSettingsDecoder })
+          SharedWidgetSettings = get.Required.Field "sharedWidgetCustomStyles" sharedWidgetSettingsDecoder
+          ShippingSettings = get.Required.Field "shippingSettings" shippingSettingsDecoder })
 
 let settingsDecoder (settingsString: string) =
     match Decode.fromString decodeSettings settingsString with
