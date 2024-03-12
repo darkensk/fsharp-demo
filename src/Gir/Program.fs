@@ -65,7 +65,10 @@ let webApp (root: CompositionRoot) =
                     "/test"
                     (choose
                         [ subRoutef "/%s" (fun (purchaseToken: string) ->
-                              Test.HttpHandlers.testCheckoutHandler root.CheckoutFrontendBundle purchaseToken) ]) ]
+                              Test.HttpHandlers.testCheckoutHandler
+                                  root.CheckoutFrontendBundle
+                                  purchaseToken
+                                  root.PartnerShippingBundle) ]) ]
           POST
           >=> choose
               [ routef "/product/%i/add" (fun (productId: int) ->

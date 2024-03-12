@@ -5,8 +5,9 @@ open Microsoft.AspNetCore.Http
 open Views
 
 
-let testCheckoutHandler (checkoutFrontendBundleUrl: string) (purchaseToken: string) =
-    htmlView <| testCheckoutView checkoutFrontendBundleUrl purchaseToken
+let testCheckoutHandler (checkoutFrontendBundleUrl: string) (purchaseToken: string) (partnerShippingBundleUrl: string) =
+    htmlView
+    <| testCheckoutView checkoutFrontendBundleUrl purchaseToken partnerShippingBundleUrl
 
 let easterEggHandler (next: HttpFunc) (ctx: HttpContext) =
     let purchaseToken =
