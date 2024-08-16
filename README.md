@@ -67,7 +67,7 @@ International*:
 
 <hr>
 
-Please refer to articles [How to get started](https://docs.avarda.com/checkout-3/how-to-get-started/) and
+Please refer to articles [Getting started](https://docs.avarda.com/checkout-3/getting-started/) and
 [Embed Checkout](https://docs.avarda.com/checkout-3/embed-checkout/) for more info.
 
 One way of adding the env variables is adding a "launchSettings.json" `src/Gir/Properties/launchSettings.json`:
@@ -106,7 +106,7 @@ Open [http://localhost:5000](localhost:5000) or [https://localhost:5001](localho
 
 ### Checkout 3
 
-[Avarda Checkout 3 Documentation](https://docs.avarda.com/checkout-3/checkout-3-0/)
+[Avarda Checkout 3 Documentation](https://docs.avarda.com/checkout-3/overview/)
 
 #### Payment Widget
 
@@ -114,4 +114,4 @@ Open [http://localhost:5000](localhost:5000) or [https://localhost:5001](localho
 
 #### Partner Shipping Module
 
-[Partner Shipping Module documentation](https://docs.avarda.com/checkout-3/overview/shipping-broker/provider-specific-integration-guide/partner-shipping/)
+[Partner Shipping Module documentation](https://docs.avarda.com/checkout-3/shipping-broker/provider-specific-integration-guide/partner-shipping/)
