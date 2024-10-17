@@ -121,3 +121,7 @@ details:not([open])>div {
 .settings-view input[type="text"] {
   width: 100%;
 }
+
+label {
+  margin-bottom: 0;
+}
