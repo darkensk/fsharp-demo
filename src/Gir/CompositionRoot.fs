@@ -16,7 +16,8 @@ type CompositionRoot =
       EnabledMarkets: Market list
       PaymentWidgetBundle: string
       GetPaymentWidgetToken: string -> Task<PaymentWidgetState>
-      PartnerShippingBundle: string }
+      PartnerShippingBundle: string
+      LiveInvoiceBundleUrl: string }
 
 let dummyProducts: Product list =
     let createProduct id name price img bigImg shippingParameters =
@@ -278,4 +279,5 @@ module CompositionRoot =
           EnabledMarkets = enabledMarkets
           PaymentWidgetBundle = cfg.["paymentWidgetBundleUrl"]
           GetPaymentWidgetToken = Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"]
-          PartnerShippingBundle = cfg.["partnerShippingBundleUrl"] }
+          PartnerShippingBundle = cfg.["partnerShippingBundleUrl"]
+          LiveInvoiceBundleUrl = cfg.["liveInvoiceBundleUrl"] }

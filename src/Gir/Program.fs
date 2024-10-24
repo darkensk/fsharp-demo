@@ -68,7 +68,20 @@ let webApp (root: CompositionRoot) =
                               Test.HttpHandlers.testCheckoutHandler
                                   root.CheckoutFrontendBundle
                                   purchaseToken
-                                  root.PartnerShippingBundle) ]) ]
+                                  root.PartnerShippingBundle) ])
+                subRoute
+                    "/live-invoice"
+                    (choose
+                        [ route "/"
+                          >=> fun (next: HttpFunc) (ctx: HttpContext) ->
+                              match ctx.TryGetQueryStringValue "liveInvoiceId" with
+                              | Some liveInvoiceId ->
+                                  LiveInvoice.HttpHandlers.testLiveInvoiceHandler
+                                      root.LiveInvoiceBundleUrl
+                                      liveInvoiceId
+                                      next
+                                      ctx
+                              | None -> text "liveInvoiceId query parameter is missing" next ctx ]) ]
           POST
           >=> choose
               [ routef "/product/%i/add" (fun (productId: int) ->
