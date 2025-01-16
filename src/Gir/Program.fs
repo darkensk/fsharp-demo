@@ -44,8 +44,8 @@ let webApp (root: CompositionRoot) =
                     root.ApiPublicUrl
                     root.GetPartnerAccessToken
                 >=> text "OK - Session Timed Out Callback Successfull"
-                route "/pay-frame/"
-                >=> PayFrame.HttpHandlers.payFrameHandler root.GetAllProducts
+                route "/pay-frame"
+                >=> PayFrame.HttpHandlers.payFrameHandler root.PayFrameBundle root.SiteKey root.GetAllProducts
                 route "/settings/"
                 >=> Settings.HttpHandlers.settingsHandler
                     root.PaymentWidgetBundle

@@ -5,7 +5,13 @@ open Gir.Layout
 open Gir.Domain
 open Gir.Utils
 
-let template (settings: Settings) (cartState: CartState) (products: Product list) =
+let template
+    (settings: Settings)
+    (cartState: CartState)
+    (payFrameBundle: string)
+    (siteKey: string)
+    (products: Product list)
+    =
     let products = products |> List.map (productDiv settings)
 
     div
@@ -44,13 +50,23 @@ let template (settings: Settings) (cartState: CartState) (products: Product list
                             div [ _class "amado-navbar-toggler" ] [ span [] []; span [] []; span [] [] ] ]
                       headerView cartState
                       div
-                          [ _id "pay-frame"; _class "pay-frame-view" ]
+                          [ _id "pay-frame"; _class "pay-frame-view section-padding-100" ]
                           [ script [ _type "application/javascript"; _src "/js/pay-frame-integration.js" ] []
+                            script
+                                [ _type "application/javascript" ]
+                                [ rawText <| sprintf """initPayFrame("%s","%s");""" payFrameBundle siteKey ]
                             div [] [] ] ]
+                subscribeSectionView
                 footerView ] ]
 
 
 
 
-let payFrameView (settings: Settings) (cartState: CartState) (products: Product list) =
-    [ template settings cartState products ] |> layout
+let payFrameView
+    (settings: Settings)
+    (cartState: CartState)
+    (payFrameBundle: string)
+    (siteKey: string)
+    (products: Product list)
+    =
+    [ template settings cartState payFrameBundle siteKey products ] |> layout

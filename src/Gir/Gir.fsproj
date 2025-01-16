@@ -21,7 +21,6 @@
     <Compile Include="Cart/CheckoutIntegration.fs" />
     <Compile Include="Cart/HttpHandlers.fs" />
     <Compile Include="PayFrame/Views.fs" />
-    <Compile Include="PayFrame/PayFrameIntegration.fs" />
     <Compile Include="PayFrame/HttpHandlers.fs" />
     <Compile Include="Test/Views.fs" />
     <Compile Include="Test/HttpHandlers.fs" />
