@@ -121,3 +121,8 @@ details:not([open])>div {
 .settings-view input[type="text"] {
   width: 100%;
 }
+
+.pay-frame-view {
+  flex: 1;
+  padding-top: 20px
+}
