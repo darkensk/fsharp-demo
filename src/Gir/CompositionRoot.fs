@@ -18,7 +18,9 @@ type CompositionRoot =
       GetPaymentWidgetToken: string -> Task<PaymentWidgetState>
       PartnerShippingBundle: string
       PayFrameBundle: string
-      SiteKey: string }
+      PayFrameSiteKey: string
+      PayFrameDomain: string
+      PayFrameLanguage: string }
 
 let dummyProducts: Product list =
     let createProduct id name price img bigImg shippingParameters =
@@ -281,5 +283,7 @@ module CompositionRoot =
           PaymentWidgetBundle = cfg.["paymentWidgetBundleUrl"]
           GetPaymentWidgetToken = Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"]
           PartnerShippingBundle = cfg.["partnerShippingBundleUrl"]
-          PayFrameBundle = cfg.["payFrameBundle"]
-          SiteKey = cfg.["siteKey"] }
+          PayFrameBundle = cfg.["payFrameBundleUrl"]
+          PayFrameSiteKey = cfg.["payFrameSiteKey"]
+          PayFrameDomain = cfg.["payFrameDomain"]
+          PayFrameLanguage = cfg.["payFrameLanguage"] }

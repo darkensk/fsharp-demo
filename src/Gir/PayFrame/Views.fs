@@ -10,6 +10,8 @@ let template
     (cartState: CartState)
     (payFrameBundle: string)
     (siteKey: string)
+    (domain: string)
+    (language: string)
     (products: Product list)
     =
     let products = products |> List.map (productDiv settings)
@@ -54,7 +56,13 @@ let template
                           [ script [ _type "application/javascript"; _src "/js/pay-frame-integration.js" ] []
                             script
                                 [ _type "application/javascript" ]
-                                [ rawText <| sprintf """initPayFrame("%s","%s");""" payFrameBundle siteKey ]
+                                [ rawText
+                                  <| sprintf
+                                      """initPayFrame("%s","%s", "%s", "%s");"""
+                                      payFrameBundle
+                                      siteKey
+                                      domain
+                                      language ]
                             div [] [] ] ]
                 subscribeSectionView
                 footerView ] ]
@@ -67,6 +75,9 @@ let payFrameView
     (cartState: CartState)
     (payFrameBundle: string)
     (siteKey: string)
+    (domain: string)
+    (language: string)
     (products: Product list)
     =
-    [ template settings cartState payFrameBundle siteKey products ] |> layout
+    [ template settings cartState payFrameBundle siteKey domain language products ]
+    |> layout

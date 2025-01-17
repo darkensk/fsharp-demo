@@ -1,4 +1,4 @@
-const initPayFrame = (payFrameBundleUrl, siteKey) => {
+const initPayFrame = (payFrameBundleUrl, siteKey, domain, language) => {
   (function (e, t, n, a, o, i) {
     e[a] =
       e[a] ||
@@ -19,9 +19,9 @@ const initPayFrame = (payFrameBundleUrl, siteKey) => {
   );
 
   window.avardaMyPagesWidgetInit({
-    domain: 'se',
+    domain,
     rootNode: document.getElementById('pay-frame'),
-    siteKey: siteKey,
-    language: 'en',
+    siteKey,
+    language,
   })
 }
