@@ -19,7 +19,6 @@ type CompositionRoot =
       PartnerShippingBundle: string
       PayFrameBundle: string
       PayFrameSiteKey: string
-      PayFrameDomain: string
       PayFrameLanguage: string }
 
 let dummyProducts: Product list =
@@ -285,5 +284,4 @@ module CompositionRoot =
           PartnerShippingBundle = cfg.["partnerShippingBundleUrl"]
           PayFrameBundle = cfg.["payFrameBundleUrl"]
           PayFrameSiteKey = cfg.["payFrameSiteKey"]
-          PayFrameDomain = cfg.["payFrameDomain"]
           PayFrameLanguage = cfg.["payFrameLanguage"] }

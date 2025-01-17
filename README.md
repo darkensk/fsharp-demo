@@ -26,9 +26,10 @@ Checkout 3.0 and PayFrame integration in F# + Giraffe
 
 - `payFrameSiteKey` - **_NEW_** The siteKey parameter is a required unique identifier provided by Avarda
 
-- `payFrameDomain` - **_NEW_** ISO 3166-1 alpha-2 country code
+- `payFrameLanguage` - **_NEW_** ISO 639-1 language code (optional) - default `en`
 
-- `payFrameLanguage` - **_NEW_** ISO 639-1 language code
+Alternatively you can pass `siteKey`, and `language` as query parameters on the `pay-frame` page like this:
+`https://localhost:5000/pay-frame?siteKey=cc2898b0-362c-445a-b777-80408e74b9a8&language=sv`
 
 ### Available markets:
 
@@ -96,7 +97,6 @@ One way of adding the env variables is adding a "launchSettings.json" `src/Gir/P
         "paymentWidgetBundleUrl": "<paymentWidgetUrl>",
         "payFrameBundleUrl": "<payFrameBundleUrl>",
         "payFrameSiteKey": "<siteKey>",
-        "payFrameDomain": "<domain>",
         "payFrameLanguage": "<language>"
       }
     }
@@ -133,5 +133,3 @@ Open [http://localhost:5000](localhost:5000) or [https://localhost:5001](localho
 #### Partner Shipping Module
 
 [Partner Shipping Module documentation](https://docs.avarda.com/checkout-3/shipping-broker/provider-specific-integration-guide/partner-shipping/)
-
-

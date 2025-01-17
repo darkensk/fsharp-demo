@@ -13,31 +13,26 @@ let checkIfNotEmpty (queryParamKey: string) (defaultValue: string) (ctx: HttpCon
     | None -> defaultValue
     | Some value -> if String.IsNullOrEmpty(value) then defaultValue else value
 
+let validationHandler (payFrameBundle: string) (next: HttpFunc) (ctx: HttpContext) =
+    if not <| String.IsNullOrEmpty(payFrameBundle) then
+        next ctx
+    else
+        redirectTo false "/" next ctx
+
+
 let payFrameHandler
     (payFrameBundleUrl: string)
     (defaultSiteKey: string)
-    (defaultDomain: string)
     (defaultLanguage: string)
-    (getProducts: unit -> Product list)
     (next: HttpFunc)
     (ctx: HttpContext)
     =
     task {
         let cartState = Session.getCartState ctx
-        let settings = Session.getSettings ctx
 
         let maybeQuerySiteKey = checkIfNotEmpty "siteKey" defaultSiteKey ctx
 
-        let maybeQueryDomain = checkIfNotEmpty "domain" defaultDomain ctx
-
-
         let maybeQueryLanguage = checkIfNotEmpty "language" defaultLanguage ctx
 
-
-        return!
-            htmlView
-                (payFrameView settings cartState payFrameBundleUrl maybeQuerySiteKey maybeQueryDomain maybeQueryLanguage
-                 <| getProducts ())
-                next
-                ctx
+        return! htmlView (payFrameView cartState payFrameBundleUrl maybeQuerySiteKey maybeQueryLanguage) next ctx
     }

@@ -3,18 +3,8 @@ module Gir.PayFrame.Views
 open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
-open Gir.Utils
 
-let template
-    (settings: Settings)
-    (cartState: CartState)
-    (payFrameBundle: string)
-    (siteKey: string)
-    (domain: string)
-    (language: string)
-    (products: Product list)
-    =
-    let products = products |> List.map (productDiv settings)
+let template (cartState: CartState) (payFrameBundle: string) (siteKey: string) (language: string) =
 
     div
         []
@@ -57,12 +47,7 @@ let template
                             script
                                 [ _type "application/javascript" ]
                                 [ rawText
-                                  <| sprintf
-                                      """initPayFrame("%s","%s", "%s", "%s");"""
-                                      payFrameBundle
-                                      siteKey
-                                      domain
-                                      language ]
+                                  <| sprintf """initPayFrame("%s","%s", "%s");""" payFrameBundle siteKey language ]
                             div [] [] ] ]
                 subscribeSectionView
                 footerView ] ]
@@ -70,14 +55,5 @@ let template
 
 
 
-let payFrameView
-    (settings: Settings)
-    (cartState: CartState)
-    (payFrameBundle: string)
-    (siteKey: string)
-    (domain: string)
-    (language: string)
-    (products: Product list)
-    =
-    [ template settings cartState payFrameBundle siteKey domain language products ]
-    |> layout
+let payFrameView (cartState: CartState) (payFrameBundle: string) (siteKey: string) (language: string) =
+    [ template cartState payFrameBundle siteKey language ] |> layout

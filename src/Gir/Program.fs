@@ -16,9 +16,9 @@ open CompositionRoot
 
 
 let redirectHandler next (ctx: HttpContext) =
-    let reffererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
+    let refererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
 
-    redirectTo false reffererUrl next ctx
+    redirectTo false refererUrl next ctx
 
 let webApp (root: CompositionRoot) =
     choose
@@ -45,12 +45,8 @@ let webApp (root: CompositionRoot) =
                     root.GetPartnerAccessToken
                 >=> text "OK - Session Timed Out Callback Successfull"
                 route "/pay-frame"
-                >=> PayFrame.HttpHandlers.payFrameHandler
-                    root.PayFrameBundle
-                    root.PayFrameSiteKey
-                    root.PayFrameDomain
-                    root.PayFrameLanguage
-                    root.GetAllProducts
+                >=> PayFrame.HttpHandlers.validationHandler root.PayFrameBundle
+                >=> PayFrame.HttpHandlers.payFrameHandler root.PayFrameBundle root.PayFrameSiteKey root.PayFrameLanguage
                 route "/settings/"
                 >=> Settings.HttpHandlers.settingsHandler
                     root.PaymentWidgetBundle
