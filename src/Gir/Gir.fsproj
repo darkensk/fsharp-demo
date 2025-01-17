@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -20,6 +20,8 @@
     <Compile Include="Cart/Views.fs" />
     <Compile Include="Cart/CheckoutIntegration.fs" />
     <Compile Include="Cart/HttpHandlers.fs" />
+    <Compile Include="PayFrame/Views.fs" />
+    <Compile Include="PayFrame/HttpHandlers.fs" />
     <Compile Include="Test/Views.fs" />
     <Compile Include="Test/HttpHandlers.fs" />
     <Compile Include="Settings/Views.fs" />

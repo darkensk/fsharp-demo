@@ -1,10 +1,10 @@
 # GirShop
 
-Checkout 3.0 integration in F# + Giraffe
+Checkout 3.0 and PayFrame integration in F# + Giraffe
 
 - Install .NET 6 [https://dotnet.microsoft.com/en-us/download/dotnet/6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
-### Add following variables to your environment variables:
+### For testing Checkout 3 add following variables to your environment variables:
 
 - `apiPublicUrl` - URL where the server is running
 
@@ -16,9 +16,19 @@ Checkout 3.0 integration in F# + Giraffe
 
 - `checkoutFrontendBundleUrl` - Checkout 3.0 Frontend JS bundle url
 
-- `paymentWidgetBundleUrl` - **_NEW_** Payment Widget bundle url (optional)
+- `paymentWidgetBundleUrl` - Payment Widget bundle url (optional)
 
-- `partnerShippingBundleUrl` - **_NEW_** Partner Shipping bundle url (optional)
+- `partnerShippingBundleUrl` - Partner Shipping bundle url (optional)
+
+### For testing PayFrame add following variables to your environment variables:
+
+- `payFrameBundleUrl` - **_NEW_** PayFrame Frontend JS bundle url
+
+- `payFrameSiteKey` - **_NEW_** The siteKey parameter is a required unique identifier provided by Avarda
+
+- `payFrameDomain` - **_NEW_** ISO 3166-1 alpha-2 country code
+
+- `payFrameLanguage` - **_NEW_** ISO 639-1 language code
 
 ### Available markets:
 
@@ -83,7 +93,11 @@ One way of adding the env variables is adding a "launchSettings.json" `src/Gir/P
         "swedenClientSecret": "<clientSecret>",
         "checkoutBackendApiUrl": "<checkoutApiUrl>",
         "checkoutFrontendBundleUrl": "<checkoutBundleUrl>",
-        "paymentWidgetBundleUrl": "<paymentWidgetUrl>"
+        "paymentWidgetBundleUrl": "<paymentWidgetUrl>",
+        "payFrameBundleUrl": "<payFrameBundleUrl>",
+        "payFrameSiteKey": "<siteKey>",
+        "payFrameDomain": "<domain>",
+        "payFrameLanguage": "<language>"
       }
     }
   }
@@ -106,7 +120,11 @@ Open [http://localhost:5000](localhost:5000) or [https://localhost:5001](localho
 
 ### Checkout 3
 
-[Avarda Checkout 3 Documentation](https://docs.avarda.com/checkout-3/overview/)
+[Avarda Checkout 3 documentation](https://docs.avarda.com/checkout-3/overview/)
+
+#### PayFrame
+
+[PayFrame documentation](https://docs.avarda.com/pay-frame/overview/)
 
 #### Payment Widget
 
@@ -115,3 +133,5 @@ Open [http://localhost:5000](localhost:5000) or [https://localhost:5001](localho
 #### Partner Shipping Module
 
 [Partner Shipping Module documentation](https://docs.avarda.com/checkout-3/shipping-broker/provider-specific-integration-guide/partner-shipping/)
+
+
