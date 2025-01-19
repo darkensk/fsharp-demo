@@ -40,7 +40,9 @@ let headerView (cartState: CartState) =
                       li [] [ a [ _href "/" ] [ str "Shop" ] ]
                       li [] [ a [ _href "/" ] [ str "Product" ] ]
                       li [ _class "active" ] [ a [ _href "/cart/" ] [ str "Cart" ] ]
-                      li [] [ a [ _href "/cart/" ] [ str "Checkout" ] ] ] ]
+                      li [] [ a [ _href "/cart/" ] [ str "Checkout" ] ]
+                      li [] [ a [ _href "/pay-frame" ] [ str "Pay Frame" ] ] ] ]
+
           div
               [ _class "amado-btn-group mt-30 mb-100" ]
               [ a [ _href "#"; _class "btn amado-btn mb-15" ] [ str "%Discount%" ]
