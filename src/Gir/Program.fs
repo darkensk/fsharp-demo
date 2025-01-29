@@ -71,7 +71,11 @@ let webApp (root: CompositionRoot) =
                               Test.HttpHandlers.testCheckoutHandler
                                   root.CheckoutFrontendBundle
                                   purchaseToken
-                                  root.PartnerShippingBundle) ]) ]
+                                  root.PartnerShippingBundle) ])
+                route "/.well-known/apple-developer-merchantid-domain-association.txt"
+                >=> setHttpHeader "Content-Type" "text/plain"
+                >=> setStatusCode 200
+                >=> setBodyFromString root.AppleDeveloperMerchantidDomainAssociation ]
           POST
           >=> choose
               [ routef "/product/%i/add" (fun (productId: int) ->
