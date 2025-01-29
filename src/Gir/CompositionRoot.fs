@@ -19,7 +19,8 @@ type CompositionRoot =
       PartnerShippingBundle: string
       PayFrameBundle: string
       PayFrameSiteKey: string
-      PayFrameLanguage: string }
+      PayFrameLanguage: string
+      AppleDeveloperMerchantidDomainAssociation: string }
 
 let dummyProducts: Product list =
     let createProduct id name price img bigImg shippingParameters =
@@ -284,4 +285,5 @@ module CompositionRoot =
           PartnerShippingBundle = cfg.["partnerShippingBundleUrl"]
           PayFrameBundle = cfg.["payFrameBundleUrl"]
           PayFrameSiteKey = cfg.["payFrameSiteKey"]
-          PayFrameLanguage = cfg.["payFrameLanguage"] }
+          PayFrameLanguage = cfg.["payFrameLanguage"]
+          AppleDeveloperMerchantidDomainAssociation = cfg.["apple-developer-merchantid-domain-association"] }
