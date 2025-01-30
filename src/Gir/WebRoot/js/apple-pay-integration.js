@@ -67,12 +67,7 @@ async function onApplePayButtonClicked() {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          return response.json();
-        })
-        .then((data) => {
-          const authorizeResponseRawTextArea =
-            document.getElementById("authorize-merchant");
-          authorizeResponseRawTextArea.value = JSON.stringify(data);
+          return response;
         })
         .catch((error) => console.error("Error:", error));
 
