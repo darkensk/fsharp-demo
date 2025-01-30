@@ -224,3 +224,8 @@ let paymentWidgetStateEncoder (state: PaymentWidgetState) =
         [ "paymentId", Encode.string state.PaymentId
           "widgetJwt", Encode.string state.WidgetJwt ]
     |> Encode.toString 0
+
+
+let paymentSessionPayloadEncoder (validationUrl: string) =
+    Encode.object [ "validationUrl", Encode.string validationUrl ]
+    |> Encode.toString 0

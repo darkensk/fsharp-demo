@@ -24,6 +24,8 @@
     <Compile Include="PayFrame/HttpHandlers.fs" />
     <Compile Include="Test/Views.fs" />
     <Compile Include="Test/HttpHandlers.fs" />
+    <Compile Include="ApplePay/Views.fs" />
+    <Compile Include="ApplePay/HttpHandlers.fs" />
     <Compile Include="Settings/Views.fs" />
     <Compile Include="Settings/HttpHandlers.fs" />
     <Compile Include="CompositionRoot.fs" />
