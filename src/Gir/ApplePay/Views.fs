@@ -63,4 +63,7 @@ let applePayView =
               [ _class "container" ]
               [ div
                     [ _class "textarea-container" ]
-                    [ label [] [ rawText "Apple Pay session response:"; textarea [ _id "apple-response" ] [] ] ] ] ]
+                    [ label
+                          []
+                          [ rawText "Tokenized ApplePay token:"
+                            textarea [ _id "tokenized-apple-pay-token" ] [] ] ] ] ]
