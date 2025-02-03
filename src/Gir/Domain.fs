@@ -481,3 +481,16 @@ type PaymentStatus =
 type PurchaseIdentifiers =
     { PurchaseToken: string
       PurchaseId: string }
+
+type TokenHeaderData =
+    { PublicKeyHash: string
+      EphemeralPublicKey: string
+      TransactionId: string }
+
+type TokenData =
+    { Data: string
+      Signature: string
+      Header: TokenHeaderData
+      Version: string }
+
+type SwapTokenPayload = { Type: string; TokenData: TokenData }

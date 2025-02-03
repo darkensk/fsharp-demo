@@ -112,7 +112,8 @@ let webApp (root: CompositionRoot) =
                 >=> setStatusCode 500
                 >=> text "ERROR - Backend notification failed"
                 route "/be2be/succeed" >=> text "OK - Backend notification received"
-                route "/authorize-merchant" >=> ApplePay.HttpHandlers.authorizeMerchantHandler ]
+                route "/authorize-merchant" >=> ApplePay.HttpHandlers.authorizeMerchantHandler
+                route "/swap-tokens" >=> ApplePay.HttpHandlers.swapTokensHandler ]
           setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
