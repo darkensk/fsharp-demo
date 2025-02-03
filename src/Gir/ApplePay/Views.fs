@@ -47,7 +47,11 @@ let applePayView =
                 _src "https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js" ]
               []
 
-          script [ _type "application/javascript"; _src "/js/apple-pay-integration.js" ] []
+          script
+              [ _crossorigin "true"
+                _type "application/javascript"
+                _src "https://dvsg0gir0shop0temp.z6.web.core.windows.net/assets/apple-pay-integration.js" ]
+              []
 
           applePayButton
               [ _buttonStyleAttribute "black"
