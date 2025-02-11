@@ -494,3 +494,7 @@ type TokenData =
       Version: string }
 
 type SwapTokenPayload = { Type: string; TokenData: TokenData }
+
+type AuthorizeMerchantPayload =
+    { validationUrl: string
+      merchantDomain: string }
