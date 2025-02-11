@@ -12,9 +12,9 @@ open Gir.Domain
 
 let applePayHandler (next: HttpFunc) (ctx: HttpContext) = (htmlView <| applePayView) next ctx
 
-let authorizeMerchant validationUrl =
+let authorizeMerchant (payload: AuthorizeMerchantPayload) =
     task {
-        let encodedPayload = paymentSessionPayloadEncoder validationUrl
+        let encodedPayload = paymentSessionPayloadEncoder payload
 
         return!
             Http.AsyncRequestString(
@@ -40,13 +40,12 @@ let swapTokens (payload: SwapTokenPayload) =
             |> Async.StartAsTask
     }
 
-type AuthorizeMerchantPayload = { validationUrl: string }
 
 let authorizeMerchantHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
             let! payload = ctx.BindJsonAsync<AuthorizeMerchantPayload>()
-            let! authorizeMerchantResponse = authorizeMerchant payload.validationUrl
+            let! authorizeMerchantResponse = authorizeMerchant payload
 
             return! text authorizeMerchantResponse next ctx
         }

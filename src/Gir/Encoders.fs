@@ -226,8 +226,10 @@ let paymentWidgetStateEncoder (state: PaymentWidgetState) =
     |> Encode.toString 0
 
 
-let paymentSessionPayloadEncoder (validationUrl: string) =
-    Encode.object [ "validationUrl", Encode.string validationUrl ]
+let paymentSessionPayloadEncoder (payload: AuthorizeMerchantPayload) =
+    Encode.object
+        [ "validationUrl", Encode.string payload.validationUrl
+          "merchantDomain", Encode.string payload.merchantDomain ]
     |> Encode.toString 0
 
 
