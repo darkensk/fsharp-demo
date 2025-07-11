@@ -2,7 +2,7 @@
 
 Checkout 3.0 and PayFrame integration in F# + Giraffe
 
-- Install .NET 6 [https://dotnet.microsoft.com/en-us/download/dotnet/6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- Install .NET 8 [https://dotnet.microsoft.com/en-us/download/dotnet/8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 ### For testing Checkout 3 add following variables to your environment variables:
 
@@ -111,10 +111,10 @@ dotnet tool restore
 
 dotnet paket install
 
-dotnet fake build
+dotnet run
 ```
 
-Open [http://localhost:5000](localhost:5000) or [https://localhost:5001](localhost:5001)
+Open [http://localhost:5000](localhost:5000)
 
 ## Documentation:
 

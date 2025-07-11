@@ -241,10 +241,14 @@ module CompositionRoot =
             | Austria -> ("austriaClientId", "austriaClientSecret")
 
         let hasCredentials market =
-            market
-            |> credentialsByMarket
-            |> (fun (clientId: string, clientSecret: string) ->
-                (cfg.[clientId] = null || cfg.[clientSecret] = null) |> not)
+            let clientIdKey, clientSecretKey = credentialsByMarket market
+            let clientId = cfg.[clientIdKey]
+            let clientSecret = cfg.[clientSecretKey]
+
+            not (
+                System.String.IsNullOrWhiteSpace(clientId)
+                || System.String.IsNullOrWhiteSpace(clientSecret)
+            )
 
         let enabledMarkets = List.filter hasCredentials allMarkets
 

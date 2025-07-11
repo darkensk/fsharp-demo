@@ -16,6 +16,9 @@ config.development.json
 local.settings.json
 .paket/
 .vscode/
+
+# MacOS
 .DS_Store
-global.json
+
+# Local configuration 
 src/Gir/Properties/launchSettings.json
