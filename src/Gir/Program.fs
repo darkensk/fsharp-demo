@@ -24,96 +24,101 @@ let webApp (root: CompositionRoot) =
     choose
         [ GET
           >=> choose
-              [ route "/cart/"
-                >=> Cart.HttpHandlers.cartHandler
-                    root.CheckoutFrontendBundle
-                    root.GetPurchaseToken
-                    root.GetAllProducts
-                    root.GetPartnerAccessToken
-                    root.ReclaimPurchaseToken
-                    root.PartnerShippingBundle
-                route "/cart/clear"
-                >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
-                >=> redirectTo false "/cart/"
-                route "/cart/completed"
-                >=> Cart.HttpHandlers.completedHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
-                >=> text "OK - CompletedCallback Successfull"
-                route "/cart/sessionExpired"
-                >=> Cart.HttpHandlers.sessionExpiredHandler
-                    root.CheckoutBackendApiUrl
-                    root.ApiPublicUrl
-                    root.GetPartnerAccessToken
-                >=> text "OK - Session Timed Out Callback Successfull"
-                route "/pay-frame"
-                >=> PayFrame.HttpHandlers.validationHandler root.PayFrameBundle
-                >=> PayFrame.HttpHandlers.payFrameHandler root.PayFrameBundle root.PayFrameSiteKey root.PayFrameLanguage
-                route "/settings/"
-                >=> Settings.HttpHandlers.settingsHandler
-                    root.PaymentWidgetBundle
-                    root.EnabledMarkets
-                    root.PartnerShippingBundle
-                subRoute
-                    "/product"
-                    (choose
-                        [ subRoutef
-                              "/%i"
-                              (Products.HttpHandlers.detailHandler
-                                  root.GetPaymentWidgetToken
-                                  root.GetPartnerAccessToken
-                                  root.PaymentWidgetBundle
-                                  root.GetProductById
-                                  root.ApiPublicUrl) ])
-                route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
-                subRoute
-                    "/test"
-                    (choose
-                        [ subRoutef "/%s" (fun (purchaseToken: string) ->
-                              Test.HttpHandlers.testCheckoutHandler
-                                  root.CheckoutFrontendBundle
-                                  purchaseToken
-                                  root.PartnerShippingBundle) ])
-                route "/.well-known/apple-developer-merchantid-domain-association.txt"
-                >=> setHttpHeader "Content-Type" "text/plain"
-                >=> setStatusCode 200
-                >=> setBodyFromString root.AppleDeveloperMerchantidDomainAssociation
-                route "/apple-pay" >=> ApplePay.HttpHandlers.applePayHandler ]
+                  [ route "/cart/"
+                    >=> Cart.HttpHandlers.cartHandler
+                            root.CheckoutFrontendBundle
+                            root.GetPurchaseToken
+                            root.GetAllProducts
+                            root.GetPartnerAccessToken
+                            root.ReclaimPurchaseToken
+                            root.PartnerShippingBundle
+                    route "/cart/clear"
+                    >=> Cart.HttpHandlers.clearCartHandler root.GetAllProducts
+                    >=> redirectTo false "/cart/"
+                    route "/cart/completed"
+                    >=> Cart.HttpHandlers.completedHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
+                    >=> text "OK - CompletedCallback Successfull"
+                    route "/cart/sessionExpired"
+                    >=> Cart.HttpHandlers.sessionExpiredHandler
+                            root.CheckoutBackendApiUrl
+                            root.ApiPublicUrl
+                            root.GetPartnerAccessToken
+                    >=> text "OK - Session Timed Out Callback Successfull"
+                    route "/pay-frame"
+                    >=> PayFrame.HttpHandlers.validationHandler root.PayFrameBundle
+                    >=> PayFrame.HttpHandlers.payFrameHandler
+                            root.PayFrameBundle
+                            root.PayFrameSiteKey
+                            root.PayFrameLanguage
+                    route "/settings/"
+                    >=> Settings.HttpHandlers.settingsHandler
+                            root.PaymentWidgetBundle
+                            root.EnabledMarkets
+                            root.PartnerShippingBundle
+                    subRoute
+                        "/product"
+                        (choose
+                            [ subRoutef
+                                  "/%i"
+                                  (Products.HttpHandlers.detailHandler
+                                      root.GetPaymentWidgetToken
+                                      root.GetPartnerAccessToken
+                                      root.PaymentWidgetBundle
+                                      root.GetProductById
+                                      root.ApiPublicUrl) ])
+                    route "/" >=> Products.HttpHandlers.listHandler root.GetAllProducts
+                    subRoute
+                        "/test"
+                        (choose
+                            [ subRoutef "/%s" (fun (purchaseToken: string) ->
+                                  Test.HttpHandlers.testCheckoutHandler
+                                      root.CheckoutFrontendBundle
+                                      purchaseToken
+                                      root.PartnerShippingBundle) ])
+                    route "/.well-known/apple-developer-merchantid-domain-association.txt"
+                    >=> setHttpHeader "Content-Type" "text/plain"
+                    >=> setStatusCode 200
+                    >=> setBodyFromString root.AppleDeveloperMerchantidDomainAssociation
+                    route "/apple-pay" >=> ApplePay.HttpHandlers.applePayHandler ]
           POST
           >=> choose
-              [ routef "/product/%i/add" (fun (productId: int) ->
-                    Cart.HttpHandlers.addToCartValidationHandler root.CheckoutBackendApiUrl root.GetPartnerAccessToken
-                    >=> Cart.HttpHandlers.addToCartHandler productId root.GetAllProducts
-                    >=> Cart.HttpHandlers.updateItemsHandler
-                        root.CheckoutBackendApiUrl
-                        root.ApiPublicUrl
-                        root.GetPartnerAccessToken
-                    >=> redirectHandler)
-                routef "/product/%i/remove" (fun (productId: int) ->
-                    Cart.HttpHandlers.removeFromCartValidationHandler
-                        root.CheckoutBackendApiUrl
-                        root.GetPartnerAccessToken
-                    >=> Cart.HttpHandlers.removeFromCartHandler productId root.GetAllProducts
-                    >=> Cart.HttpHandlers.updateItemsHandler
-                        root.CheckoutBackendApiUrl
-                        root.ApiPublicUrl
-                        root.GetPartnerAccessToken
-                    >=> redirectHandler)
-                routef "/product/%i/removeAll" (fun (productId: int) ->
-                    Cart.HttpHandlers.removeAllFromCartHandler productId root.GetAllProducts
-                    >=> Cart.HttpHandlers.updateItemsHandler
-                        root.CheckoutBackendApiUrl
-                        root.ApiPublicUrl
-                        root.GetPartnerAccessToken
-                    >=> redirectHandler)
-                route "/test/" >=> Test.HttpHandlers.easterEggHandler
-                route "/settings/save"
-                >=> Settings.HttpHandlers.saveSettingsHandler
-                >=> redirectTo false "/settings/"
-                route "/be2be/fail"
-                >=> setStatusCode 500
-                >=> text "ERROR - Backend notification failed"
-                route "/be2be/succeed" >=> text "OK - Backend notification received"
-                route "/authorize-merchant" >=> ApplePay.HttpHandlers.authorizeMerchantHandler
-                route "/swap-tokens" >=> ApplePay.HttpHandlers.swapTokensHandler ]
+                  [ routef "/product/%i/add" (fun (productId: int) ->
+                        Cart.HttpHandlers.addToCartValidationHandler
+                            root.CheckoutBackendApiUrl
+                            root.GetPartnerAccessToken
+                        >=> Cart.HttpHandlers.addToCartHandler productId root.GetAllProducts
+                        >=> Cart.HttpHandlers.updateItemsHandler
+                                root.CheckoutBackendApiUrl
+                                root.ApiPublicUrl
+                                root.GetPartnerAccessToken
+                        >=> redirectHandler)
+                    routef "/product/%i/remove" (fun (productId: int) ->
+                        Cart.HttpHandlers.removeFromCartValidationHandler
+                            root.CheckoutBackendApiUrl
+                            root.GetPartnerAccessToken
+                        >=> Cart.HttpHandlers.removeFromCartHandler productId root.GetAllProducts
+                        >=> Cart.HttpHandlers.updateItemsHandler
+                                root.CheckoutBackendApiUrl
+                                root.ApiPublicUrl
+                                root.GetPartnerAccessToken
+                        >=> redirectHandler)
+                    routef "/product/%i/removeAll" (fun (productId: int) ->
+                        Cart.HttpHandlers.removeAllFromCartHandler productId root.GetAllProducts
+                        >=> Cart.HttpHandlers.updateItemsHandler
+                                root.CheckoutBackendApiUrl
+                                root.ApiPublicUrl
+                                root.GetPartnerAccessToken
+                        >=> redirectHandler)
+                    route "/test/" >=> Test.HttpHandlers.easterEggHandler
+                    route "/settings/save"
+                    >=> Settings.HttpHandlers.saveSettingsHandler
+                    >=> redirectTo false "/settings/"
+                    route "/be2be/fail"
+                    >=> setStatusCode 500
+                    >=> text "ERROR - Backend notification failed"
+                    route "/be2be/succeed" >=> text "OK - Backend notification received"
+                    route "/authorize-merchant" >=> ApplePay.HttpHandlers.authorizeMerchantHandler
+                    route "/swap-tokens" >=> ApplePay.HttpHandlers.swapTokensHandler ]
           setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
@@ -164,10 +169,7 @@ let configureServices (services: IServiceCollection) =
     services.ConfigureApplicationCookie(Action<_> cookieOptions) |> ignore
 
 let configureLogging (builder: ILoggingBuilder) =
-    builder
-        .AddFilter(fun (logLevel: LogLevel) -> logLevel.Equals LogLevel.Error)
-        .AddConsole()
-        .AddDebug()
+    builder.AddFilter(fun (logLevel: LogLevel) -> logLevel.Equals LogLevel.Error).AddConsole().AddDebug()
     |> ignore
 
 [<EntryPoint>]
