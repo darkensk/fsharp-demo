@@ -24,7 +24,7 @@ Target.create "Run" (fun _ ->
     [ "app", Tools.dotnet "watch run" appSrcPath ] |> runParallel)
 
 
-let dependencies = [ "Clean" ==> "Publish"; "Clean" ==> "Run" ]
+let dependencies = [ "Clean" ==> "Run" ]
 
 [<EntryPoint>]
 let main args = runOrDefault "Run" args
