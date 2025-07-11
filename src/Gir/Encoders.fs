@@ -224,31 +224,3 @@ let paymentWidgetStateEncoder (state: PaymentWidgetState) =
         [ "paymentId", Encode.string state.PaymentId
           "widgetJwt", Encode.string state.WidgetJwt ]
     |> Encode.toString 0
-
-
-let paymentSessionPayloadEncoder (payload: AuthorizeMerchantPayload) =
-    Encode.object
-        [ "validationUrl", Encode.string payload.validationUrl
-          "merchantDomain", Encode.string payload.merchantDomain ]
-    |> Encode.toString 0
-
-
-let tokenHeaderDataEncoder (tokenHeaderData: TokenHeaderData) =
-    Encode.object
-        [ "publicKeyHash", Encode.string tokenHeaderData.PublicKeyHash
-          "ephemeralPublicKey", Encode.string tokenHeaderData.EphemeralPublicKey
-          "transactionId", Encode.string tokenHeaderData.TransactionId ]
-
-
-let tokenDataEncoder (tokenData: TokenData) =
-    Encode.object
-        [ "data", Encode.string tokenData.Data
-          "signature", Encode.string tokenData.Signature
-          "header", tokenHeaderDataEncoder tokenData.Header
-          "version", Encode.string tokenData.Version ]
-
-let swapTokensPayloadEncoder (payload: SwapTokenPayload) =
-    Encode.object
-        [ "type", Encode.string payload.Type
-          "tokenData", tokenDataEncoder payload.TokenData ]
-    |> Encode.toString 0

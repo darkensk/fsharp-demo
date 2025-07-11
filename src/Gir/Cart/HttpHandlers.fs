@@ -286,7 +286,12 @@ let updateItemsHandler
         let sessionPurchaseId = Session.tryGetPurchaseId ctx
 
         match sessionPurchaseId with
-        | Some purchaseId -> do! updateItems backendUrl apiPublicUrl settings cartState partnerToken purchaseId
+        | Some purchaseId ->
+            if List.isEmpty cartState.Items then
+                Session.deleteCartState ctx
+                Session.deletePurchaseId ctx
+            else
+                do! updateItems backendUrl apiPublicUrl settings cartState partnerToken purchaseId
         | None ->
             let! initPaymentResponse = getPurchaseToken backendUrl apiPublicUrl cartState partnerToken settings
             Session.setPurchaseId ctx initPaymentResponse.PurchaseId

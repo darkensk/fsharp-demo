@@ -78,8 +78,7 @@ let webApp (root: CompositionRoot) =
                     route "/.well-known/apple-developer-merchantid-domain-association.txt"
                     >=> setHttpHeader "Content-Type" "text/plain"
                     >=> setStatusCode 200
-                    >=> setBodyFromString root.AppleDeveloperMerchantidDomainAssociation
-                    route "/apple-pay" >=> ApplePay.HttpHandlers.applePayHandler ]
+                    >=> setBodyFromString root.AppleDeveloperMerchantidDomainAssociation ]
           POST
           >=> choose
                   [ routef "/product/%i/add" (fun (productId: int) ->
@@ -116,9 +115,7 @@ let webApp (root: CompositionRoot) =
                     route "/be2be/fail"
                     >=> setStatusCode 500
                     >=> text "ERROR - Backend notification failed"
-                    route "/be2be/succeed" >=> text "OK - Backend notification received"
-                    route "/authorize-merchant" >=> ApplePay.HttpHandlers.authorizeMerchantHandler
-                    route "/swap-tokens" >=> ApplePay.HttpHandlers.swapTokensHandler ]
+                    route "/be2be/succeed" >=> text "OK - Backend notification received" ]
           setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
