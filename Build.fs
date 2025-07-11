@@ -9,10 +9,8 @@ open BuildTools
 
 initializeContext ()
 
-let publishPath = Path.getFullName "publish"
 let srcPath = Path.getFullName "src"
 let appSrcPath = srcPath </> "Gir"
-let appPublishPath = publishPath </> "app"
 
 // Targets
 let clean proj =
@@ -20,11 +18,6 @@ let clean proj =
 
 Target.create "Clean" (fun _ -> appSrcPath |> clean)
 
-Target.create "Publish" (fun _ ->
-    [ appPublishPath ] |> Shell.cleanDirs
-    let publishArgs = sprintf "publish -c Release -o \"%s\"" appPublishPath
-    run Tools.dotnet publishArgs appSrcPath
-    [ appPublishPath </> "appsettings.Development.json" ] |> File.deleteAll)
 
 Target.create "Run" (fun _ ->
     Environment.setEnvironVar "ASPNETCORE_ENVIRONMENT" "Development"
