@@ -277,7 +277,11 @@ let template
                                                                    (List.map (cartItemView settings) cartState.Items) ] ] ]
                                              cartSummaryView settings cartState
                                              div
-                                                 [ _class "col-12 col-lg-8" ]
+                                                 ([ _class "col-12 col-lg-8" ]
+                                                  @ if settings.ExtraCheckoutFlags.CustomStyles then
+                                                        [ _style "padding: 0px;" ]
+                                                    else
+                                                        [])
                                                  [ initCheckoutInstance
                                                        settings
                                                        checkoutFrontendBundleUrl
