@@ -29,7 +29,7 @@ let headerView (cartState: CartState) =
     let cartSizeString = "\"" + (string cartSize) + "\""
 
     header
-        [ _class "header-area clearfix" ]
+        [ _class "header-area clearfix"; _style "background-color: #f5f5f5;" ]
         [ div [ _class "nav-close" ] [ i [ _class "fa fa-close"; _ariaHidden "true" ] [] ]
           div [ _class "logo" ] [ a [ _href "/" ] [ img [ _src "/img/core-img/logo.png"; _alt "" ] ] ]
           nav
@@ -196,7 +196,7 @@ let layout (content: XmlNode List) =
                 link [ _rel "manifest"; _crossorigin "use-credentials"; _href "/manifest.json" ] ]
 
           body
-              []
+              [ _style "background-color: #f5f5f5;" ]
               (content
                @ [ script [ _src "/js/jquery/jquery-3.7.1.min.js" ] []
                    script [ _src "/js/popper.min.js" ] []
