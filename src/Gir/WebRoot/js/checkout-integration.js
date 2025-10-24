@@ -29,10 +29,10 @@ const styles = {
       minHeight: 55,
       fontWeight: 400,
       padding: {
-        top: 10,
-        right: 16,
-        bottom: 10,
-        left: 16,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
       },
       borderRadius: 0,
     },
@@ -65,10 +65,10 @@ const styles = {
       minHeight: 55,
       fontWeight: 400,
       padding: {
-        top: 10,
-        right: 16,
-        bottom: 10,
-        left: 16,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
       },
       borderRadius: 0,
     },
@@ -344,6 +344,7 @@ const styles = {
     },
   },
   spinnerColor: "#aeaeae",
+  backgroundColor: "#f5f5f5",
 };
 
 const initCheckout = (
