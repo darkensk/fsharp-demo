@@ -150,6 +150,8 @@ type ShippingSettings =
     { IncludeShippingParameters: bool
       IncludeDefaultShippingItem: bool }
 
+type PayFrameSettings = { PayFrameV2Enabled: bool }
+
 type Settings =
     { ExtraCheckoutFlags: ExtraCheckoutFlags
       ExtraInitSettings: ExtraInitSettings
@@ -159,7 +161,8 @@ type Settings =
       AdditionalFeatures: AdditionalFeatures
       AprWidgetSettings: AprWidgetSettings
       SharedWidgetSettings: SharedWidgetSettings
-      ShippingSettings: ShippingSettings }
+      ShippingSettings: ShippingSettings
+      PayFrameSettings: PayFrameSettings }
 
 let languageToString =
     function
@@ -369,6 +372,8 @@ let defaultShippingSettings: ShippingSettings =
     { IncludeShippingParameters = false
       IncludeDefaultShippingItem = false }
 
+let defaultPayFrameSettings: PayFrameSettings = { PayFrameV2Enabled = false }
+
 let defaultSettings: Settings =
     { ExtraCheckoutFlags = defaultExtraCheckoutFlags
       ExtraInitSettings = defaultExtraInitSettings
@@ -378,7 +383,8 @@ let defaultSettings: Settings =
       AdditionalFeatures = defaultAdditionalFeatures
       AprWidgetSettings = defaultAprWidgetSettings
       SharedWidgetSettings = defaultSharedWidgetSettings
-      ShippingSettings = defaultShippingSettings }
+      ShippingSettings = defaultShippingSettings
+      PayFrameSettings = defaultPayFrameSettings }
 
 type ExtraIdentifiers = { OrderReference: string }
 

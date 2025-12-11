@@ -4,7 +4,21 @@ open Giraffe.ViewEngine
 open Gir.Layout
 open Gir.Domain
 
-let template (cartState: CartState) (payFrameBundle: string) (siteKey: string) (language: string) =
+let template
+    (cartState: CartState)
+    (payFrameBundle: string)
+    (payFrameSettings: PayFrameSettings)
+    (siteKey: string)
+    (language: string)
+    =
+    let payFrameBundleUrl =
+        if payFrameSettings.PayFrameV2Enabled then
+            if payFrameBundle.Contains("/v2/") then
+                payFrameBundle
+            else
+                payFrameBundle.Replace("/pay-frame.js", "/v2/pay-frame.js")
+        else
+            payFrameBundle.Replace("/v2/pay-frame.js", "/pay-frame.js")
 
     div
         []
@@ -47,7 +61,7 @@ let template (cartState: CartState) (payFrameBundle: string) (siteKey: string) (
                             script
                                 [ _type "application/javascript" ]
                                 [ rawText
-                                  <| sprintf """initPayFrame("%s","%s", "%s");""" payFrameBundle siteKey language ]
+                                  <| sprintf """initPayFrame("%s","%s", "%s");""" payFrameBundleUrl siteKey language ]
                             div [] [] ] ]
                 subscribeSectionView
                 footerView ] ]
@@ -55,5 +69,12 @@ let template (cartState: CartState) (payFrameBundle: string) (siteKey: string) (
 
 
 
-let payFrameView (cartState: CartState) (payFrameBundle: string) (siteKey: string) (language: string) =
-    [ template cartState payFrameBundle siteKey language ] |> layout
+let payFrameView
+    (cartState: CartState)
+    (payFrameBundle: string)
+    (payFrameSettings: PayFrameSettings)
+    (siteKey: string)
+    (language: string)
+    =
+    [ template cartState payFrameBundle payFrameSettings siteKey language ]
+    |> layout

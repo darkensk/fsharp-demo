@@ -40,6 +40,12 @@ let isPaymentWidgetEnabledGlobally (paymentWidgetBundleUrl: string) =
     | "" -> false
     | _ -> true
 
+let isPayFrameEnabledGlobally (payFrameBundleUrl: string) =
+    match payFrameBundleUrl with
+    | null -> false
+    | "" -> false
+    | _ -> true
+
 [<RequireQualifiedAccess>]
 module Task =
     open FSharp.Control.Tasks
@@ -94,9 +100,14 @@ module Session =
 
     let getSettings (ctx: HttpContext) =
         match ctx.Session.GetString(settingsKey) with
-        | null -> defaultSettings
+        | null -> failwith "Settings not initialized"
         | v -> settingsDecoder v
 
     let setSettings (ctx: HttpContext) (settings: Settings) =
         let encodedSettings = settingsEncoder settings
         ctx.Session.SetString(settingsKey, encodedSettings)
+
+    let tryGetSettings (ctx: HttpContext) =
+        match ctx.Session.GetString(settingsKey) with
+        | null -> None
+        | v -> Some (settingsDecoder v)

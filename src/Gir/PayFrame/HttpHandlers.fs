@@ -22,6 +22,7 @@ let validationHandler (payFrameBundle: string) (next: HttpFunc) (ctx: HttpContex
 
 let payFrameHandler
     (payFrameBundleUrl: string)
+    (payFrameUseV2: bool)
     (defaultSiteKey: string)
     (defaultLanguage: string)
     (next: HttpFunc)
@@ -29,10 +30,15 @@ let payFrameHandler
     =
     task {
         let cartState = Session.getCartState ctx
+        let settings = Session.getSettings ctx
 
         let maybeQuerySiteKey = checkIfNotEmpty "siteKey" defaultSiteKey ctx
 
         let maybeQueryLanguage = checkIfNotEmpty "language" defaultLanguage ctx
 
-        return! htmlView (payFrameView cartState payFrameBundleUrl maybeQuerySiteKey maybeQueryLanguage) next ctx
+        return!
+            htmlView
+                (payFrameView cartState payFrameBundleUrl settings.PayFrameSettings maybeQuerySiteKey maybeQueryLanguage)
+                next
+                ctx
     }

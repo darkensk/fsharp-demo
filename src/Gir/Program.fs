@@ -1,5 +1,7 @@
 module Gir.App
 
+open FSharp.Control.Tasks
+open System.Threading.Tasks
 open Giraffe
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
@@ -13,6 +15,8 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open System
 open System.IO
 open CompositionRoot
+open Gir.Domain
+open Gir.Utils
 
 
 let redirectHandler next (ctx: HttpContext) =
@@ -48,6 +52,7 @@ let webApp (root: CompositionRoot) =
                     >=> PayFrame.HttpHandlers.validationHandler root.PayFrameBundle
                     >=> PayFrame.HttpHandlers.payFrameHandler
                             root.PayFrameBundle
+                            root.PayFrameUseV2
                             root.PayFrameSiteKey
                             root.PayFrameLanguage
                     route "/settings/"
@@ -55,6 +60,8 @@ let webApp (root: CompositionRoot) =
                             root.PaymentWidgetBundle
                             root.EnabledMarkets
                             root.PartnerShippingBundle
+                            root.PayFrameUseV2
+                            root.PayFrameBundle
                     subRoute
                         "/product"
                         (choose
@@ -141,6 +148,20 @@ let configureCors (builder: CorsPolicyBuilder) =
 let configureApp (root: CompositionRoot) (app: IApplicationBuilder) =
     let env = app.ApplicationServices.GetService<IWebHostEnvironment>()
 
+    let settingsMiddleware : Func<HttpContext, RequestDelegate, Task> =
+        Func<HttpContext, RequestDelegate, Task>(fun (context: HttpContext) (next: RequestDelegate) ->
+            task {
+                match Session.tryGetSettings context with
+                | Some _ -> ()
+                | None ->
+                    let customDefaultSettings =
+                        { defaultSettings with
+                            PayFrameSettings = { PayFrameV2Enabled = root.PayFrameUseV2 } }
+                    Session.setSettings context customDefaultSettings
+                
+                do! next.Invoke(context)
+            } :> Task)
+
     (match env.IsDevelopment() with
      | true -> app.UseDeveloperExceptionPage()
      | false -> app.UseGiraffeErrorHandler errorHandler)
@@ -148,6 +169,7 @@ let configureApp (root: CompositionRoot) (app: IApplicationBuilder) =
         .UseCors(configureCors)
         .UseStaticFiles()
         .UseSession()
+        .Use(settingsMiddleware)
         .UseGiraffe(webApp root)
 
 let cookieOptions =
