@@ -48,6 +48,7 @@ let webApp (root: CompositionRoot) =
                     >=> PayFrame.HttpHandlers.validationHandler root.PayFrameBundle
                     >=> PayFrame.HttpHandlers.payFrameHandler
                             root.PayFrameBundle
+                            root.PayFrameUseV2
                             root.PayFrameSiteKey
                             root.PayFrameLanguage
                     route "/settings/"
@@ -55,6 +56,8 @@ let webApp (root: CompositionRoot) =
                             root.PaymentWidgetBundle
                             root.EnabledMarkets
                             root.PartnerShippingBundle
+                            root.PayFrameUseV2
+                            root.PayFrameBundle
                     subRoute
                         "/product"
                         (choose

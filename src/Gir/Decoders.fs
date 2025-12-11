@@ -137,6 +137,10 @@ let shippingSettingsDecoder =
         { IncludeShippingParameters = get.Required.Field "includeShippingParameters" Decode.bool
           IncludeDefaultShippingItem = get.Required.Field "includeDefaultShippingItem" Decode.bool })
 
+let payFrameSettingsDecoder =
+    Decode.object (fun (get: Decode.IGetters) ->
+        { PayFrameV2Enabled = get.Required.Field "payFrameV2Enabled" Decode.bool })
+
 let decodeSettings =
     Decode.object (fun (get: Decode.IGetters) ->
         { ExtraCheckoutFlags = get.Required.Field "extraCheckoutFlags" extraCheckoutFlagsDecoder
@@ -149,7 +153,8 @@ let decodeSettings =
           AdditionalFeatures = get.Required.Field "additionalFeatures" additionalFeaturesDecoder
           AprWidgetSettings = get.Required.Field "aprWidgetSettings" aprWidgetSettingsDecoder
           SharedWidgetSettings = get.Required.Field "sharedWidgetCustomStyles" sharedWidgetSettingsDecoder
-          ShippingSettings = get.Required.Field "shippingSettings" shippingSettingsDecoder })
+          ShippingSettings = get.Required.Field "shippingSettings" shippingSettingsDecoder
+          PayFrameSettings = get.Required.Field "payFrameSettings" payFrameSettingsDecoder })
 
 let settingsDecoder (settingsString: string) =
     match Decode.fromString decodeSettings settingsString with

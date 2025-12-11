@@ -169,6 +169,7 @@ let template
     (settings: Settings)
     (cartState: CartState)
     (partnerShippingBundleUrl: string)
+    (payFrameBundleUrl: string)
     =
     let checkboxStateOptions =
         [ ("Hidden", false); ("Checked", false); ("Unchecked", false) ]
@@ -179,7 +180,8 @@ let template
           AdditionalFeatures = additionalFeatures
           AprWidgetSettings = aprWidgetSettings
           SharedWidgetSettings = sharedWidgetSettings
-          ShippingSettings = shippingSettings } =
+          ShippingSettings = shippingSettings
+          PayFrameSettings = payFrameSettings } =
         settings
 
     let marketsOptions =
@@ -454,6 +456,15 @@ let template
                                             (isPaymentWidgetEnabledGlobally paymentWidgetBundleUrl)
                                         div
                                             [ _class "settings-row" ]
+                                            [ h3 [ _class "settings-heading" ] [ str "Pay Frame" ] ]
+                                        checkboxView
+                                            "payFrameV2Enabled"
+                                            "Enable Pay Frame v2"
+                                            (Some "Requires 'payFrame' environment variables specified")
+                                            payFrameSettings.PayFrameV2Enabled
+                                            (isPayFrameEnabledGlobally payFrameBundleUrl)
+                                        div
+                                            [ _class "settings-row" ]
                                             [ h3 [ _class "settings-heading" ] [ str "Additional Features" ] ]
                                         checkboxView
                                             "partnerShippingEnabled"
@@ -496,6 +507,7 @@ let settingsView
     (settings: Settings)
     (cartState: CartState)
     (partnerShippingBundleUrl: string)
+    (payFrameBundleUrl: string)
     =
-    [ template paymentWidgetBundleUrl enabledMarkets settings cartState partnerShippingBundleUrl ]
+    [ template paymentWidgetBundleUrl enabledMarkets settings cartState partnerShippingBundleUrl payFrameBundleUrl ]
     |> layout

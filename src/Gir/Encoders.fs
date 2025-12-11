@@ -206,6 +206,9 @@ let shippingSettingsEncoder (shippingSettings: ShippingSettings) =
         [ "includeShippingParameters", Encode.bool shippingSettings.IncludeShippingParameters
           "includeDefaultShippingItem", Encode.bool shippingSettings.IncludeDefaultShippingItem ]
 
+let payFrameSettingsEncoder (payFrameSettings: PayFrameSettings) =
+    Encode.object [ "payFrameV2Enabled", Encode.bool payFrameSettings.PayFrameV2Enabled ]
+
 let settingsEncoder (settings: Settings) =
     Encode.object
         [ "extraCheckoutFlags", extraCheckoutFlagsEncoder settings.ExtraCheckoutFlags
@@ -216,7 +219,8 @@ let settingsEncoder (settings: Settings) =
           "additionalFeatures", additionalFeaturesEncoder settings.AdditionalFeatures
           "aprWidgetSettings", aprWidgetSettingEncoder settings.AprWidgetSettings
           "sharedWidgetCustomStyles", sharedWidgetSettingsEncoder settings.SharedWidgetSettings
-          "shippingSettings", shippingSettingsEncoder settings.ShippingSettings ]
+          "shippingSettings", shippingSettingsEncoder settings.ShippingSettings
+          "payFrameSettings", payFrameSettingsEncoder settings.PayFrameSettings ]
     |> Encode.toString 0
 
 let paymentWidgetStateEncoder (state: PaymentWidgetState) =

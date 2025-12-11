@@ -12,14 +12,21 @@ let settingsHandler
     (paymentWidgetBundleUrl: string)
     (enabledMarkets: Market list)
     (partnerShippingBundleUrl: string)
+    (payFrameUseV2: bool)
+    (payFrameBundleUrl: string)
     (next: HttpFunc)
     (ctx: HttpContext)
     =
     let cartState = Session.getCartState ctx
-    let settings = Session.getSettings ctx
+
+    let customDefaultSettings =
+        { defaultSettings with
+            PayFrameSettings = { PayFrameV2Enabled = payFrameUseV2 } }
+
+    let settings = Session.getSettingsWithCustomDefaults ctx customDefaultSettings
 
     (htmlView
-     <| settingsView paymentWidgetBundleUrl enabledMarkets settings cartState partnerShippingBundleUrl)
+     <| settingsView paymentWidgetBundleUrl enabledMarkets settings cartState partnerShippingBundleUrl payFrameBundleUrl)
         next
         ctx
 
@@ -82,7 +89,8 @@ let saveSettingsHandler (next: HttpFunc) (ctx: HttpContext) =
               SharedWidgetSettings = { CustomStyles = checkboxValue "sharedWidgetCustomStyles" }
               ShippingSettings =
                 { IncludeShippingParameters = checkboxValue "includeShippingParameters"
-                  IncludeDefaultShippingItem = checkboxValue "includeDefaultShippingItem" } }
+                  IncludeDefaultShippingItem = checkboxValue "includeDefaultShippingItem" }
+              PayFrameSettings = { PayFrameV2Enabled = checkboxValue "payFrameV2Enabled" } }
 
         Session.setSettings ctx formData
         Session.deleteCartState ctx

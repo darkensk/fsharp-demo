@@ -20,6 +20,7 @@ type CompositionRoot =
       PayFrameBundle: string
       PayFrameSiteKey: string
       PayFrameLanguage: string
+      PayFrameUseV2: bool
       AppleDeveloperMerchantidDomainAssociation: string }
 
 let dummyProducts: Product list =
@@ -290,4 +291,5 @@ module CompositionRoot =
           PayFrameBundle = cfg.["payFrameBundleUrl"]
           PayFrameSiteKey = cfg.["payFrameSiteKey"]
           PayFrameLanguage = cfg.["payFrameLanguage"]
+          PayFrameUseV2 = cfg.["payFrameBundleUrl"].Contains("v2")
           AppleDeveloperMerchantidDomainAssociation = cfg.["apple-developer-merchantid-domain-association"] }
