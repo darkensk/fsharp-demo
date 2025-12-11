@@ -30,12 +30,7 @@ let payFrameHandler
     =
     task {
         let cartState = Session.getCartState ctx
-
-        let customDefaultSettings =
-            { defaultSettings with
-                PayFrameSettings = { PayFrameV2Enabled = payFrameUseV2 } }
-
-        let settings = Session.getSettingsWithCustomDefaults ctx customDefaultSettings
+        let settings = Session.getSettings ctx
 
         let maybeQuerySiteKey = checkIfNotEmpty "siteKey" defaultSiteKey ctx
 

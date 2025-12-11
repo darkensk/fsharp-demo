@@ -18,12 +18,7 @@ let settingsHandler
     (ctx: HttpContext)
     =
     let cartState = Session.getCartState ctx
-
-    let customDefaultSettings =
-        { defaultSettings with
-            PayFrameSettings = { PayFrameV2Enabled = payFrameUseV2 } }
-
-    let settings = Session.getSettingsWithCustomDefaults ctx customDefaultSettings
+    let settings = Session.getSettings ctx
 
     (htmlView
      <| settingsView paymentWidgetBundleUrl enabledMarkets settings cartState partnerShippingBundleUrl payFrameBundleUrl)

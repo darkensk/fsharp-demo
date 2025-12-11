@@ -100,14 +100,14 @@ module Session =
 
     let getSettings (ctx: HttpContext) =
         match ctx.Session.GetString(settingsKey) with
-        | null -> defaultSettings
-        | v -> settingsDecoder v
-
-    let getSettingsWithCustomDefaults (ctx: HttpContext) (customDefaultSettings: Settings) =
-        match ctx.Session.GetString(settingsKey) with
-        | null -> customDefaultSettings
+        | null -> failwith "Settings not initialized"
         | v -> settingsDecoder v
 
     let setSettings (ctx: HttpContext) (settings: Settings) =
         let encodedSettings = settingsEncoder settings
         ctx.Session.SetString(settingsKey, encodedSettings)
+
+    let tryGetSettings (ctx: HttpContext) =
+        match ctx.Session.GetString(settingsKey) with
+        | null -> None
+        | v -> Some (settingsDecoder v)
