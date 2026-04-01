@@ -17,7 +17,7 @@ open System.IO
 open CompositionRoot
 open Gir.Domain
 open Gir.Utils
-
+open Azure.Identity
 
 let redirectHandler next (ctx: HttpContext) =
     let refererUrl = ctx.Request.GetTypedHeaders().Referer.ToString()
@@ -139,10 +139,7 @@ let errorHandler (ex: Exception) (logger: ILogger) =
 // ---------------------------------
 
 let configureCors (builder: CorsPolicyBuilder) =
-    builder.WithOrigins("http://localhost:5000").AllowAnyMethod().AllowAnyHeader()
-    |> ignore
-
-    builder.WithOrigins("https://localhost:5001").AllowAnyMethod().AllowAnyHeader()
+    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
     |> ignore
 
 let configureApp (root: CompositionRoot) (app: IApplicationBuilder) =
@@ -162,9 +159,12 @@ let configureApp (root: CompositionRoot) (app: IApplicationBuilder) =
                 do! next.Invoke(context)
             } :> Task)
 
-    (match env.IsDevelopment() with
-     | true -> app.UseDeveloperExceptionPage()
-     | false -> app.UseGiraffeErrorHandler errorHandler)
+    match env.IsDevelopment() with
+    | true -> app.UseDeveloperExceptionPage()
+    | false -> app.UseGiraffeErrorHandler errorHandler
+    |> ignore
+
+    app
         .UseHttpsRedirection()
         .UseCors(configureCors)
         .UseStaticFiles()
@@ -186,14 +186,36 @@ let configureServices (services: IServiceCollection) =
     services.AddMvc() |> ignore
 
     services.ConfigureApplicationCookie(Action<_> cookieOptions) |> ignore
-
+    
+let buildConfig () =
+    let env =
+        Environment.GetEnvironmentVariable("ENVIRONMENT")
+        |> Option.ofObj
+        |> Option.defaultValue "Development"
+    
+    Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env)
+    
+    let builder = ConfigurationBuilder()
+                      .AddJsonFile("appsettings.json")
+                      .AddJsonFile($"appsettings.{env}.json")
+                      .AddEnvironmentVariables()
+    
+    let tempConfig = builder.Build()
+    let vaultName = tempConfig["VaultName"]
+    
+    if not (String.IsNullOrWhiteSpace(vaultName)) then
+        builder.AddAzureKeyVault(Uri($"https://{vaultName}.vault.azure.net/"), DefaultAzureCredential())
+        |> ignore
+    
+    builder.Build()
+    
 let configureLogging (builder: ILoggingBuilder) =
     builder.AddFilter(fun (logLevel: LogLevel) -> logLevel.Equals LogLevel.Error).AddConsole().AddDebug()
     |> ignore
 
 [<EntryPoint>]
 let main _ =
-    let cfg = (ConfigurationBuilder()).AddEnvironmentVariables().Build()
+    let cfg = buildConfig()
 
     let root = CompositionRoot.compose cfg
 

@@ -9,6 +9,8 @@ nuget Giraffe
 nuget Thoth.Json.Net
 nuget FSharp.Data
 nuget Microsoft.AspNetCore.Session
+nuget Azure.Extensions.AspNetCore.Configuration.Secrets
+nuget Azure.Identity
 
 group Build
     source https://api.nuget.org/v3/index.json

@@ -226,70 +226,50 @@ module CompositionRoot =
               Germany
               Austria ]
 
-        let credentialsByMarket market =
-            match market with
-            | Sweden -> ("swedenClientId", "swedenClientSecret")
-            | Finland -> ("finlandClientId", "finlandClientSecret")
-            | Norway -> ("norwayClientId", "norwayClientSecret")
-            | Denmark -> ("denmarkClientId", "denmarkClientSecret")
-            | Slovakia -> ("slovakiaClientId", "slovakiaClientSecret")
-            | Czechia -> ("czechiaClientId", "czechiaClientSecret")
-            | Poland -> ("polandClientId", "polandClientSecret")
-            | Latvia -> ("latviaClientId", "latviaClientSecret")
-            | Estonia -> ("estoniaClientId", "estoniaClientSecret")
-            | International -> ("internationalClientId", "internationalClientSecret")
-            | Germany -> ("germanyClientId", "germanyClientSecret")
-            | Austria -> ("austriaClientId", "austriaClientSecret")
-
+        let credentials market = cfg.GetSection(market.ToString()).Get<ClientConfig>()
+        
         let hasCredentials market =
-            let clientIdKey, clientSecretKey = credentialsByMarket market
-            let clientId = cfg.[clientIdKey]
-            let clientSecret = cfg.[clientSecretKey]
-
-            not (
-                System.String.IsNullOrWhiteSpace(clientId)
-                || System.String.IsNullOrWhiteSpace(clientSecret)
-            )
-
+            credentials market
+            |> Option.ofObj
+            |> Option.exists (fun clientConfig ->
+                not (System.String.IsNullOrWhiteSpace(clientConfig.ClientId)) &&
+                not (System.String.IsNullOrWhiteSpace(clientConfig.ClientSecret))
+        )
+            
         let enabledMarkets = List.filter hasCredentials allMarkets
+        
+        let checkoutOptions = cfg.GetSection(nameof(CheckoutOptions)).Get<CheckoutOptions>()
 
-        let url = cfg.["checkoutBackendApiUrl"] + "/api/partner/tokens"
+        let url = checkoutOptions.BackendApiUrl + "/api/partner/tokens"
 
         let getPartnerAccessToken (market: Market) =
-            let getCachedToken = Cart.CheckoutIntegration.getCachedToken url market
+            let clientConfig = credentials market
+            Cart.CheckoutIntegration.getCachedToken url market clientConfig
+            
+        let payFrameOptions = cfg.GetSection(nameof(PayFrameOptions)).Get<PayFrameOptions>()
+        
+        let paymentWidgetBundleOptions = cfg.GetSection(nameof(PaymentWidgetOptions)).Get<PaymentWidgetOptions>()
+        
+        let partnerShippingOptions = cfg.GetSection(nameof(PartnerShippingOptions)).Get<PartnerShippingOptions>()
 
-            match market with
-            | Sweden -> getCachedToken cfg.["swedenClientId"] cfg.["swedenClientSecret"]
-            | Finland -> getCachedToken cfg.["finlandClientId"] cfg.["finlandClientSecret"]
-            | Norway -> getCachedToken cfg.["norwayClientId"] cfg.["norwayClientSecret"]
-            | Denmark -> getCachedToken cfg.["denmarkClientId"] cfg.["denmarkClientSecret"]
-            | Slovakia -> getCachedToken cfg.["slovakiaClientId"] cfg.["slovakiaClientSecret"]
-            | Czechia -> getCachedToken cfg.["czechiaClientId"] cfg.["czechiaClientSecret"]
-            | Poland -> getCachedToken cfg.["polandClientId"] cfg.["polandClientSecret"]
-            | Latvia -> getCachedToken cfg.["latviaClientId"] cfg.["latviaClientSecret"]
-            | Estonia -> getCachedToken cfg.["estoniaClientId"] cfg.["estoniaClientSecret"]
-            | International -> getCachedToken cfg.["internationalClientId"] cfg.["internationalClientSecret"]
-            | Germany -> getCachedToken cfg.["germanyClientId"] cfg.["germanyClientSecret"]
-            | Austria -> getCachedToken cfg.["austriaClientId"] cfg.["austriaClientSecret"]
-
-        { CheckoutFrontendBundle = cfg.["checkoutFrontendBundleUrl"]
-          CheckoutBackendApiUrl = cfg.["checkoutBackendApiUrl"]
+        { CheckoutFrontendBundle = checkoutOptions.FrontendBundleUrl
+          CheckoutBackendApiUrl = checkoutOptions.BackendApiUrl
           GetPartnerAccessToken = getPartnerAccessToken
           GetPurchaseToken =
-            Cart.CheckoutIntegration.getPurchaseToken cfg.["checkoutBackendApiUrl"] cfg.["apiPublicUrl"]
+            Cart.CheckoutIntegration.getPurchaseToken checkoutOptions.BackendApiUrl checkoutOptions.PublicUrl
           GetAllProducts = fun _ -> dummyProducts
           GetProductById =
             fun (productId: int) ->
                 dummyProducts
                 |> List.tryFind (fun (product: Product) -> product.ProductId = productId)
-          ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken cfg.["checkoutBackendApiUrl"]
-          ApiPublicUrl = cfg.["apiPublicUrl"]
+          ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken checkoutOptions.BackendApiUrl
+          ApiPublicUrl = checkoutOptions.PublicUrl
           EnabledMarkets = enabledMarkets
-          PaymentWidgetBundle = cfg.["paymentWidgetBundleUrl"]
-          GetPaymentWidgetToken = Products.PaymentWidgetIntegration.getPaymentWidgetToken cfg.["checkoutBackendApiUrl"]
-          PartnerShippingBundle = cfg.["partnerShippingBundleUrl"]
-          PayFrameBundle = cfg.["payFrameBundleUrl"]
-          PayFrameSiteKey = cfg.["payFrameSiteKey"]
-          PayFrameLanguage = cfg.["payFrameLanguage"]
-          PayFrameUseV2 = cfg.["payFrameBundleUrl"].Contains("v2")
-          AppleDeveloperMerchantidDomainAssociation = cfg.["apple-developer-merchantid-domain-association"] }
+          PaymentWidgetBundle = paymentWidgetBundleOptions.BundleUrl
+          GetPaymentWidgetToken = Products.PaymentWidgetIntegration.getPaymentWidgetToken checkoutOptions.BackendApiUrl
+          PartnerShippingBundle = partnerShippingOptions.BundleUrl
+          PayFrameBundle = payFrameOptions.BundleUrl
+          PayFrameSiteKey = payFrameOptions.SiteKey
+          PayFrameLanguage = payFrameOptions.Language
+          PayFrameUseV2 = payFrameOptions.BundleUrl.Contains("v2")
+          AppleDeveloperMerchantidDomainAssociation = cfg["apple-developer-merchantid-domain-association"] }

@@ -12,10 +12,10 @@ open Gir.Utils
 let mutable partnerAccessTokenCache: string option = None
 let mutable marketCache: string option = None
 
-let getRequestPartnerAccessToken (url: string) (clientId: string) (clientSecret: string) =
+let getRequestPartnerAccessToken (url: string) (clientConfig: ClientConfig) =
     task {
         let getPartnerAccessTokenPayload =
-            getPartnerTokenPayloadEncoder clientId clientSecret
+            getPartnerTokenPayloadEncoder clientConfig
 
         return!
             Http.AsyncRequestString(
@@ -37,7 +37,7 @@ let isValid (tokenString: string) =
     else
         None
 
-let getCachedToken (url: string) (market: Market) (clientId: string) (clientSecret: string) =
+let getCachedToken (url: string) (market: Market) (clientConfig: ClientConfig) =
     task {
         let marketString = marketToString market
 
@@ -52,12 +52,12 @@ let getCachedToken (url: string) (market: Market) (clientId: string) (clientSecr
             match validToken with
             | Some token -> return token
             | None ->
-                let! token = getRequestPartnerAccessToken url clientId clientSecret
+                let! token = getRequestPartnerAccessToken url clientConfig 
                 partnerAccessTokenCache <- Some token
                 marketCache <- Some marketString
                 return token
         else
-            let! token = getRequestPartnerAccessToken url clientId clientSecret
+            let! token = getRequestPartnerAccessToken url clientConfig
             partnerAccessTokenCache <- Some token
             marketCache <- Some marketString
             return token

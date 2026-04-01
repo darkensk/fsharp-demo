@@ -1,6 +1,21 @@
 module Gir.Domain
 
+type ClientConfig = { ClientId: string; ClientSecret: string }
 
+type PartnerShippingOptions = { BundleUrl: string }
+    
+type PaymentWidgetOptions = { BundleUrl: string }
+    
+type CheckoutOptions =
+    { PublicUrl: string
+      BackendApiUrl: string
+      FrontendBundleUrl: string }
+
+type PayFrameOptions =
+    { SiteKey: string
+      Language: string
+      BundleUrl: string }
+    
 type ShippingParameters =
     { Height: int
       Length: int
