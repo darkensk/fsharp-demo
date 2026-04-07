@@ -1,5 +1,6 @@
 module Gir.App
 
+open System.Reflection
 open FSharp.Control.Tasks
 open System.Threading.Tasks
 open Giraffe
@@ -199,6 +200,7 @@ let buildConfig () =
                       .AddJsonFile("appsettings.json")
                       .AddJsonFile($"appsettings.{env}.json")
                       .AddEnvironmentVariables()
+                      .AddUserSecrets(Assembly.GetExecutingAssembly())
     
     let tempConfig = builder.Build()
     let vaultName = tempConfig["VaultName"]

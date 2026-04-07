@@ -2,9 +2,9 @@ module Gir.Domain
 
 type ClientConfig = { ClientId: string; ClientSecret: string }
 
-type PartnerShippingOptions = { BundleUrl: string }
+type PartnerShippingOptions = { FrontendBundleUrl: string }
     
-type PaymentWidgetOptions = { BundleUrl: string }
+type PaymentWidgetOptions = { FrontendBundleUrl: string }
     
 type CheckoutOptions =
     { PublicUrl: string
@@ -14,7 +14,7 @@ type CheckoutOptions =
 type PayFrameOptions =
     { SiteKey: string
       Language: string
-      BundleUrl: string }
+      FrontendBundleUrl: string }
     
 type ShippingParameters =
     { Height: int

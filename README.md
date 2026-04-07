@@ -27,49 +27,30 @@ are now stored in `appsettings`:
     "FrontendBundleUrl": ""
   },
   "PaymentWidgetOptions" : {
-    "BundleUrl": ""
+    "FrontendBundleUrl": ""
   },
   "PartnerShippingOptions": {
-    "BundleUrl": ""
+    "FrontendBundleUrl": ""
   },
 ```
 
-now only `CheckoutOptions:PublicUrl` [default [http://localhost:5000](localhost:5000) ] may be changed for development purposes in `appsettings.Development.json` file matching the public port setup.
+now only `CheckoutOptions:PublicUrl` [default [http://localhost:5000](localhost:5000) ] may be changed for development purposes in `appsettings.Development.json` file matching the port setup in `launchSettings.json` (if used, just for consistency, more info in section [Local run](#local-run)).
 
-### PayFrame
+#### Markets
 
-For testing PayFrame add the `siteKey` [ required unique identifier provided by Avarda ] parameter to `appsettings.Development.json`. There is also an posibility to change optional property `language` [ ISO 639-1 language code - default `en` ]
+In order to test different markets specific for Checkout set up values for `clientId`and `clientSecret` based on market in the `appsettings.json` under `CheckoutOptions` (see example below). Market will be available in the `/settings/` page when credentials are set up properly.
 
-
-Template:
-
+Example:
 ```json
-  "PayFrame": {
-      "siteKey": "",
-      "language" ""
-  }
-```
-
-Alternatively you can pass `siteKey`, and `language` as query parameters on the `pay-frame` page like this:
-
-```json
-  https://localhost:5000/pay-frame?siteKey=cc2898b0-362c-445a-b777-80408e74b9a8&language=sv
-```
-
-### Makets
-
-In order to test different markets set up values for `clientId`and `clientSecret` based on market in the `appsettings.Development.json` (see template below). Market will be available in the `/settings/` page when credentials are set up.
-
-Template:
-```json
-  "Sweden": {
-      "clientId": "",
-      "clientSecret": ""
+  "CheckoutOptions": {
+    "Sweden": {
+      "ClientId": "***",
+      "ClientSecret": "***"
+    }
   }
 ```
 
 Available markets:
-
 ```json
     | Sweden
     | Finland
@@ -82,14 +63,27 @@ Available markets:
     | Poland
     | Latvia
     | Estonia
-    | International*
+    | International *
 ```
 
 \* - International market requires extra setup by Avarda, please contact Avarda representative or support.
 
-### Keyvault
+### PayFrame
 
-**_NEW_** -> For testing and local developlment Azure Keyvault support can be added by filling `VaultName` of your keyvault in `appsettings.Development.json`.
+For testing PayFrame add the `SiteKey` [ required unique identifier provided by Avarda ] parameter to `appsettings.json`. There is also an posibility to change optional property `Language` [ ISO 639-1 language code - default `en` ]
+
+Example:
+```json
+  "PayFrame": {
+      "SiteKey": "***",
+      "Language" "sv"
+  }
+```
+
+Alternatively you can pass `siteKey`, and `language` as query parameters on the `pay-frame` page like this:
+```json
+  https://localhost:5000/pay-frame?siteKey=cc2898b0-362c-445a-b777-80408e74b9a8&language=sv
+```
 
 <hr>
 
@@ -97,6 +91,10 @@ Please refer to articles [Getting started](https://docs.avarda.com/checkout-3/ge
 [Embed Checkout](https://docs.avarda.com/checkout-3/embed-checkout/) for more info.
 
 <hr>
+
+### Keyvault
+
+**_NEW_** -> For testing and local developlment Azure Keyvault support can be added by filling `VaultName` of your keyvault in `appsettings.json`.
 
 ### Local run
 
@@ -109,11 +107,29 @@ For easier development a `launchSettings.json` file can be added to `src/Gir/Pro
       "commandName": "Project",
       "dotnetRunMessages": true, // - optional 
       "launchBrowser": true, // - optional | only for IDE tooling
-      "applicationUrl": "https://localhost:7148;http://localhost:5168", // optional | - custom ports public;local 
+      "applicationUrl": "https://localhost:7148;http://localhost:5168", // optional | - custom local ports https;http 
       "environmentVariables": {} // - optional | if any variables are needed
     }
   }
 }
+```
+
+**Note:** Also for safer handling of sercet values add all of them to the standard `secrets.json` that is resolved last in the configuration builder rather than exposing them in `appsettings` and accidentally pushing them to Git. More info [here](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-10.0&tabs=windows).
+
+Example: 
+```json
+  {
+    "CheckoutOptions": {
+      "Sweden": {
+        "ClientId": "***",
+        "ClientSecret": "***"
+      }
+    },
+    "PayFrameOptions": {
+      "SiteKey": "***"
+    },
+    "VaultName": "***"
+  }
 ```
 
 After completing the whole setup including `appsettings` run following commands from `src/Gir` path:

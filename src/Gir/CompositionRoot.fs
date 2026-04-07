@@ -1,5 +1,6 @@
 module Gir.CompositionRoot
 
+open System
 open Microsoft.Extensions.Configuration
 open System.Threading.Tasks
 open Domain
@@ -226,14 +227,14 @@ module CompositionRoot =
               Germany
               Austria ]
 
-        let credentials market = cfg.GetSection(market.ToString()).Get<ClientConfig>()
+        let credentials market = cfg.GetSection(nameof(CheckoutOptions) + ":" + market.ToString()).Get<ClientConfig>()
         
         let hasCredentials market =
             credentials market
             |> Option.ofObj
             |> Option.exists (fun clientConfig ->
-                not (System.String.IsNullOrWhiteSpace(clientConfig.ClientId)) &&
-                not (System.String.IsNullOrWhiteSpace(clientConfig.ClientSecret))
+                not (String.IsNullOrWhiteSpace(clientConfig.ClientId)) &&
+                not (String.IsNullOrWhiteSpace(clientConfig.ClientSecret))
         )
             
         let enabledMarkets = List.filter hasCredentials allMarkets
@@ -265,11 +266,11 @@ module CompositionRoot =
           ReclaimPurchaseToken = Cart.CheckoutIntegration.reclaimPurchaseToken checkoutOptions.BackendApiUrl
           ApiPublicUrl = checkoutOptions.PublicUrl
           EnabledMarkets = enabledMarkets
-          PaymentWidgetBundle = paymentWidgetBundleOptions.BundleUrl
+          PaymentWidgetBundle = paymentWidgetBundleOptions.FrontendBundleUrl
           GetPaymentWidgetToken = Products.PaymentWidgetIntegration.getPaymentWidgetToken checkoutOptions.BackendApiUrl
-          PartnerShippingBundle = partnerShippingOptions.BundleUrl
-          PayFrameBundle = payFrameOptions.BundleUrl
+          PartnerShippingBundle = partnerShippingOptions.FrontendBundleUrl
+          PayFrameBundle = payFrameOptions.FrontendBundleUrl
           PayFrameSiteKey = payFrameOptions.SiteKey
           PayFrameLanguage = payFrameOptions.Language
-          PayFrameUseV2 = payFrameOptions.BundleUrl.Contains("v2")
+          PayFrameUseV2 = payFrameOptions.FrontendBundleUrl.Contains("v2")
           AppleDeveloperMerchantidDomainAssociation = cfg["apple-developer-merchantid-domain-association"] }
