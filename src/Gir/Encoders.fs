@@ -5,10 +5,10 @@ open Domain
 open System
 
 
-let getPartnerTokenPayloadEncoder (clientId: string) (clientSecret: string) =
+let getPartnerTokenPayloadEncoder (clientConfig: ClientConfig) =
     Encode.object
-        [ "clientId", Encode.string clientId
-          "clientSecret", Encode.string clientSecret ]
+        [ "clientId", Encode.string clientConfig.ClientId
+          "clientSecret", Encode.string clientConfig.ClientSecret ]
     |> Encode.toString 0
 
 let shippingParametersEncoder (shippingParameters: ShippingParameters) =
